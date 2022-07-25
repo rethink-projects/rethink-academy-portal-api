@@ -65,15 +65,10 @@ O layout da aplicação está disponível no Figma:
 
 - [x] Boilerplate inicial do Projeto
 - [x] Documentação do Projeto.
-- [ ] Desenvolvimento do Design System
-
-### ⚙️ Status de desenvolvimento
-
-<p align="right">(<a href="#top">Voltar ao topo</a>)</p>
 
 ## 🚀 Como executar o projeto
 
-Esse é o nosso repo para o frontend da aplicação.
+Esse é o nosso repo para o backend da aplicação.
 
 ### Pré-requisitos
 
@@ -121,7 +116,7 @@ $ npm run prisma:studio
 
 ```
 
-<p>Execute a aplicação em modo de desenvolvimento</p>
+<p>🛠 Execute a aplicação em modo de desenvolvimento</p>
 
 ```bash
 $ npm run dev
