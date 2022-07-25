@@ -4,7 +4,11 @@
   "description": "Api para o Portal Rethink Academy",
   "main": "src/server.ts",
   "scripts": {
-    "dev": "ts-node-dev --exit-child --transpile-only --ignore-watch node_modules src/server.ts"
+    "dev": "ts-node-dev --exit-child --transpile-only --ignore-watch node_modules src/server.ts",
+    "prisma:generate": "npx primsa generate",
+    "prisma:migrate": "npx prisma migrate dev",
+    "prisma:seed": "npx prisma db seed",
+    "prisma:studio": "npx prisma studio"
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
