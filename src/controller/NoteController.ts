@@ -2,12 +2,13 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-  const { email } = request.params;
   const {
+    email,
     title,
     content,
     categories,
-  }: { title: string; content: string; categories: boolean[] } = request.body;
+    isPublic,
+  }: { email:string, title: string; content: string; categories: boolean[]; isPublic: boolean } = request.body;
   try {
     const userByEmail = await prismaInstance.user.findFirst({
       where: { email },
@@ -20,9 +21,9 @@ const create = async (request: Request, response: Response) => {
         userId: userByEmail.id,
         title,
         content,
-        categories: {
-          ...categories,
-        },
+        categories: 
+          JSON.stringify(categories),
+        isPublic,
       },
     });
     console.log({ note });
@@ -53,11 +54,8 @@ const getNotesByUser = async (request: Request, response: Response) => {
     const notesFormated = notes.map((note) => {
       return {
         ...note,
-        categories: [
-          note.categories!["0"],
-          note.categories!["1"],
-          note.categories!["2"],
-        ],
+        categories:
+          JSON.parse(note.categories!),
       };
     });
 
@@ -69,4 +67,52 @@ const getNotesByUser = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, getNotesByUser };
+const update = async (request: Request, response: Response) => {
+  const { id } = request.params;
+  const {
+    title,
+    content,
+    categories,
+    isPublic,
+  }: { title: string; content: string; categories: boolean[], isPublic: boolean } = request.body;
+  try {
+    const note = await prismaInstance.note.update({
+      where: {id},
+      data: {
+        title,
+        content,
+        categories:
+          JSON.stringify(categories),
+        isPublic,
+      },
+    });
+    console.log({ note });
+
+    return response
+      .status(200)
+      .json({ note, message: "Nota alterada com sucesso." });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+const remove = async (request: Request, response: Response) => {
+  const { id } = request.params;
+  try {
+    await prismaInstance.note.delete({
+      where: {id},
+    });
+
+    return response
+      .status(200)
+      .json({ message: "Nota deletada com sucesso." });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default { create, getNotesByUser, update, remove };
