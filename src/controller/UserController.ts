@@ -66,8 +66,19 @@ const getUserById = async (request: Request, response: Response) => {
       where: { id },
       include: {
         profile: true,
+        note: true,
       },
     });
+    const userByEmail = await prismaInstance.user.findFirst({
+      where: { email: id },
+      include: {
+        profile: true,
+      },
+    });
+    if (userByEmail) {
+      return response.status(200).json({ user: userByEmail });
+    }
+
     return response.status(200).json({ user });
   } catch (error) {
     return response
