@@ -9,32 +9,32 @@ generator erd {
   provider = "prisma-erd-generator"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
 
 // comente o datasource e insira o novo 
-// datasource db {
-//   provider = "sqlite"
-//   url      = "file:./dev.db"
-// }
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
 // comente também o enum Roles completo 
 // comente a linha socials Json?  dentro model Profile
 
-enum Roles {
-  STUDENT
-  EMBASSADOR
-  RETHINKER
-}
+// enum Roles {
+//   STUDENT
+//   EMBASSADOR
+//   RETHINKER
+// }
 
 model User {
   id      String   @id @default(uuid())
   email   String   @unique
   name    String?
   surname String?
-  role    Roles?   @default(STUDENT)
-  // role    String?  
+  // role    Roles?   @default(STUDENT)
+  role    String?  
 
   profile Profile?
   note Note[] 
@@ -46,8 +46,8 @@ model Note {
   id      String   @id @default(uuid())
   title   String?
   content String?
-  categories Json?
-  // categories String?
+  // categories Json?
+  categories String?
   isPublic Boolean @default(false)
   user   User    @relation(fields: [userId], references: [id])
   userId String 
@@ -59,8 +59,8 @@ model Profile {
   id     String  @id @default(uuid())
   bio    String?
   avatar String?
-  social Json?
-  // social String?
+  // social Json?
+  social String?
   user   User    @relation(fields: [userId], references: [id])
   userId String  @unique
 
