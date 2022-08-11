@@ -8,9 +8,13 @@ generator erd {
   provider = "prisma-erd-generator"
 }
 
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
@@ -18,23 +22,41 @@ model User {
   email   String   @unique
   name    String?
   surname String?
-  role    Roles?   @default(STUDENT)
+  // role    Roles?   @default(STUDENT)
+  role    String?   @default("STUDENT")
   profile Profile?
+  tasks Tasks[]
 
   @@map("user")
 }
 
-enum Roles {
-  STUDENT
-  EMBASSADOR
-  RETHINKER
+model Tasks { 
+  id      String   @id @default(uuid())
+  name    String  
+  data    DateTime
+  startTime String
+  endTime String
+  tags   String @default("tags")
+  status String @default("status")
+  description String @default("description")
+  user   User    @relation(fields: [userId], references: [id])
+  userId String  
+
+  @@map("tasks")
 }
+
+// enum Roles {
+//   STUDENT
+//   EMBASSADOR
+//   RETHINKER
+// }
 
 model Profile {
   id     String  @id @default(uuid())
   bio    String?
   avatar String?
-  social Json?
+  // social Json?
+  social String?
   user   User    @relation(fields: [userId], references: [id])
   userId String  @unique
 
