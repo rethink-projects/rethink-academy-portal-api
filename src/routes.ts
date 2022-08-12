@@ -2,8 +2,8 @@ import { Router } from "express";
 import CourseController from "./controller/CourseController";
 import TrailController from "./controller/TrailController";
 import UserController from "./controller/UserController";
-import TeacherController from "./controller/TeacherController";
-import ClassController from "./controller/ClassController";
+// import TeacherController from "./controller/TeacherController";
+import LessonController from "./controller/LessonController";
 
 const router = Router();
 
@@ -23,17 +23,17 @@ router.post("/course", CourseController.create);
 router.delete("/course/:id", CourseController.deleteById);
 router.put("/course/:id", CourseController.update);
 
-router.get("/class", ClassController.getAll);
-router.get("/class/:id", ClassController.getById);
-router.post("/class", ClassController.create);
-router.delete("/class/:id", ClassController.deleteById);
-router.put("/class/:id", ClassController.update);
+router.get("/lesson", LessonController.getAll);
+router.get("/lesson/:id", LessonController.getById);
+router.post("/lesson", LessonController.create);
+router.delete("/lesson/:id", LessonController.deleteById);
+router.put("/lesson/:id", LessonController.update);
 
-router.post("/teacher", TeacherController.create);
-router.get("/teacher", TeacherController.getAll);
-router.get("/teacher/:id", TeacherController.getUserById);
-router.put("/teacher/:id", TeacherController.update);
-router.delete("/teacher/:id", TeacherController.deleteById);
+// router.post("/teacher", TeacherController.create);
+// router.get("/teacher", TeacherController.getAll);
+// router.get("/teacher/:id", TeacherController.getUserById);
+// router.put("/teacher/:id", TeacherController.update);
+// router.delete("/teacher/:id", TeacherController.deleteById);
 
 
 export { router };

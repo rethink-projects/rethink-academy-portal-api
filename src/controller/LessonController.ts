@@ -4,7 +4,7 @@ import { prismaInstance } from "../../database/prismaClient";
 const create = async (request: Request, response: Response) => {
     const { name, description, url, courseId, order, module } = request.body;
     try {
-        const classes = await prismaInstance.classes.create({
+        const lesson = await prismaInstance.lesson.create({
             data: {
                 name,
                 url,
@@ -16,7 +16,7 @@ const create = async (request: Request, response: Response) => {
         });
         return response
             .status(201)
-            .json({ classes, message: "Trilha criada com sucesso" });
+            .json({ lesson, message: "Trilha criada com sucesso" });
     } catch (error) {
         return response
             .status(400)
@@ -26,9 +26,9 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
     try {
-        const classes = await prismaInstance.classes.findMany();
+        const lessons = await prismaInstance.lesson.findMany();
 
-        return response.status(200).json({ classes });
+        return response.status(200).json({ lessons });
     } catch (error) {
         return response
             .status(400)
@@ -39,7 +39,7 @@ const getAll = async (request: Request, response: Response) => {
 const getById = async (request: Request, response: Response) => {
     const { id: courseId } = request.params;
     try {
-        const classes = await prismaInstance.classes.findFirst(
+        const lesson = await prismaInstance.lesson.findFirst(
             {
                 where: {
                     courseId: courseId,
@@ -47,7 +47,7 @@ const getById = async (request: Request, response: Response) => {
             }
         );
 
-        return response.status(200).json({ classes });
+        return response.status(200).json({ lesson });
     } catch (error) {
         return response
             .status(400)
@@ -59,7 +59,7 @@ const update = async (request: Request, response: Response) => {
     const { name, description, url, courseId, order, module } = request.body;
     const { id } = request.params;
     try {
-        const classes = await prismaInstance.classes.update({
+        const lesson = await prismaInstance.lesson.update({
             where: { id },
             data: {
                 name,
@@ -72,7 +72,7 @@ const update = async (request: Request, response: Response) => {
         });
         return response
             .status(200)
-            .json({ classes, message: "Trilha atualizada com sucesso" });
+            .json({ lesson, message: "Trilha atualizada com sucesso" });
     } catch (error) {
         return response
             .status(400)
@@ -83,13 +83,13 @@ const update = async (request: Request, response: Response) => {
 const deleteById = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
-        const classes = await prismaInstance.classes.delete({
+        const lesson = await prismaInstance.lesson.delete({
             where: { id },
         });
 
         return response
             .status(200)
-            .json({ classes, message: "Trilha deletada com sucesso" });
+            .json({ lesson, message: "Trilha deletada com sucesso" });
     } catch (error) {
         return response
             .status(400)

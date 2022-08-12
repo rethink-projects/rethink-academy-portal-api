@@ -44,7 +44,7 @@ const getById = async (request: Request, response: Response) => {
         const course = await prismaInstance.course.findFirst({
             where: { id },
             include: {
-                classes: true,
+                lesson: true,
                 teacher: true,
             },
         });

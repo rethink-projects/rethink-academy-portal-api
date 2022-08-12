@@ -9,32 +9,38 @@ generator erd {
   provider = "prisma-erd-generator"
 }
 
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 
-enum Roles {
-  STUDENT
-  EMBASSADOR
-  RETHINKER
-}
+// enum Roles {
+//   STUDENT
+//   EMBASSADOR
+//   RETHINKER
+// }
 
-enum Levels {
-  LOW
-  MEDIUM
-  HIGH
-}
+// enum Levels {
+//   LOW
+//   MEDIUM
+//   HIGH
+// }
 
 model User {
   id      String   @id @default(uuid())
   email   String   @unique
   name    String?
   surname String?
+  watched String[]
   role    Roles @default(STUDENT)
   profile Profile?
-  whatched Whatched?
+  course Course[]
 
   @@map("user")
 }
@@ -51,7 +57,7 @@ model Profile {
 }
 
 model Trail {
-  id      String   @id @default(uuid())
+  id      String   @id
   name    String   @unique
   description String
   course Course[]
@@ -60,7 +66,7 @@ model Trail {
 }
 
 model Course {
-  id String @id @default(uuid())
+  id String @id
   name String
   description String
   level Levels
@@ -69,43 +75,50 @@ model Course {
   skills String
   trail   Trail    @relation(fields: [trailId], references: [id])
   trailId String
-  classes Classes[]
-  teacher Teacher @relation(fields: [teacherId], references: [id])
+  teacher User @relation(fields: [teacherId], references: [id])
   teacherId String
+  modules Module[]
 
   @@map("course")
 }
 
-model Classes {
-  id String @id @default(uuid())
+model Lesson {
+  id String @id
   name String
-  url String
-  course Course @relation(fields: [courseId], references: [id])
-  courseId String
+  embedUrl String
   order Int
   description String
-  module Int
+  module     Module  @relation(fields: [moduleId], references: [id])
+  moduleId String
 
-  @@map("classe")
+  @@map("lesson")
 }
 
-model Whatched {
-  id String @id @default(uuid())
-  user User @relation(fields: [userId], references: [id])
-  userId String @unique
-  whatched String[]
+model Module {
+  id          String    @id @default(uuid())
+  name        String
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    String  
+  lessons Lesson[]
 
-  @@map("whatched")
-
+  @@map("module")
 }
 
-model Teacher {
-  id String @id @default(uuid())
-  name String
-  office String
-  avatar String
-  course Course[]
+// model Whatched {
+//   id String @id
+//   user User @relation(fields: [userId], references: [id])
+//   userId String @unique
 
-  @@map("teacher")
+//   @@map("whatched")
 
-}
+// }
+
+// model Teacher {
+//   id String @id
+//   name String
+//   office String
+//   avatar String
+//   course Course[]
+
+//   @@map("teacher")
+// }
