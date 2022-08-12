@@ -47,6 +47,7 @@ model Note {
   title   String?
   content String?
   // categories Json?
+  createdAt DateTime @default(now())
   categories String?
   isPublic Boolean @default(false)
   user   User    @relation(fields: [userId], references: [id])
