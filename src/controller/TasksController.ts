@@ -79,4 +79,66 @@ const createTask = async (request: Request, response: Response) => {
   }
 };
 
-export default { getTaskByUserEmail, createTask };
+const removeTask = async (request: Request, response: Response) => {
+  const { id } = request.params;
+  try {
+    await prismaInstance.tasks.delete({
+      where: {id},
+    });
+
+    return response
+      .status(200)
+      .json({ message: "Task deletada com sucesso." });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+const updateTask = async (request: Request, response: Response) => {
+  const { id } = request.params;
+  const {
+    name,
+    data,
+    startTime,
+    endTime,
+    tags,
+    status,
+    description,
+    email,
+  }: TasksProps = request.body;
+
+  if (!email) throw new Error("Email obrigatório");
+
+  const user = await prismaInstance.user.findFirst({
+    where: { email },
+  });
+  if (!user) throw new Error("Usuário não encontrado");
+
+  try {
+    const task = await prismaInstance.tasks.update({
+      where: {id},
+      data: {
+        name,
+        data,
+        startTime,
+        endTime,
+        tags,
+        status,
+        description,
+        userId: user.id,
+      },
+    });
+
+    return response
+      .status(200)
+      .json({ task, message: "Task alterada com sucesso." });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default { getTaskByUserEmail, createTask, removeTask, updateTask };

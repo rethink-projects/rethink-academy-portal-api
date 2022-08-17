@@ -11,5 +11,7 @@ router.get("/user/:id", UserController.getUserById);
 
 router.get("/tasks/:email", TasksController.getTaskByUserEmail);
 router.post("/tasks/", TasksController.createTask);
+router.delete("/tasks/:id", TasksController.removeTask);
+router.put("/tasks/:id", TasksController.updateTask);
 
 export { router };
