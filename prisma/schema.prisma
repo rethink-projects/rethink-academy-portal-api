@@ -4,37 +4,57 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 generator erd {
   provider = "prisma-erd-generator"
 }
 
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+// }
+
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 
 model User {
-  id      String   @id @default(uuid())
-  email   String   @unique
-  name    String?
-  surname String?
-  role    Roles?   @default(STUDENT)
-  profile Profile?
+  id           String         @id @default(uuid())
+  email        String         @unique
+  name         String?
+  surname      String?
+  // role    Roles?   @default(STUDENT)
+  role         String?        @default("STUDENT")
+  profile      Profile?
+  stickerNotes StickerNotes[]
 
   @@map("user")
 }
 
-enum Roles {
-  STUDENT
-  EMBASSADOR
-  RETHINKER
+model StickerNotes {
+  id          String   @id @default(uuid())
+  description String
+  data        DateTime
+  priority    Int      @default(3)
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("stickerNotes")
 }
+
+// enum Roles {
+//   STUDENT
+//   EMBASSADOR
+//   RETHINKER
+// }
 
 model Profile {
   id     String  @id @default(uuid())
   bio    String?
   avatar String?
-  social Json?
+  // social Json?
+  social String?
   user   User    @relation(fields: [userId], references: [id])
   userId String  @unique
 
