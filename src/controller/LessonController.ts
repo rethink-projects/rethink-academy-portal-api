@@ -2,13 +2,12 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-    const { name, description, url, courseId, order, module } = request.body;
+    const { name, description, embedUrl, order, module } = request.body;
     try {
         const lesson = await prismaInstance.lesson.create({
             data: {
                 name,
-                url,
-                courseId,
+                embedUrl,
                 order,
                 description,
                 module,
@@ -37,12 +36,12 @@ const getAll = async (request: Request, response: Response) => {
 };
 
 const getById = async (request: Request, response: Response) => {
-    const { id: courseId } = request.params;
+    const { id } = request.params;
     try {
         const lesson = await prismaInstance.lesson.findFirst(
             {
                 where: {
-                    courseId: courseId,
+                    id,
                 }
             }
         );
@@ -56,15 +55,14 @@ const getById = async (request: Request, response: Response) => {
 };
 
 const update = async (request: Request, response: Response) => {
-    const { name, description, url, courseId, order, module } = request.body;
+    const { name, description, embedUrl, order, module } = request.body;
     const { id } = request.params;
     try {
         const lesson = await prismaInstance.lesson.update({
             where: { id },
             data: {
                 name,
-                url,
-                courseId,
+                embedUrl,
                 order,
                 description,
                 module,

@@ -25,87 +25,106 @@ const students = [
     name: "Amanda",
     surname: "Duarte",
     email: "amanda.duarte@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
   },
   {
     id: "2",
     name: "Gabriel",
     surname: "Melo",
     email: "gabriel.melo@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
   },
   {
     id: "3",
-
     name: "Ana",
     surname: "Ramos",
     email: "ana.ramos@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
   },
   {
     id: "4",
-
     name: "Felipe",
     surname: "Reggiane",
     email: "felipe.reggiane@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
+
   },
   {
     id: "5",
-
     name: "Fernando",
     surname: "Henrique",
     email: "fernando.henrique@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
   },
   {
     id: "6",
-
     name: "Fabiana",
     surname: "Kamo",
     email: "fabiana.kamo@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
   },
   {
     id: "7",
-
     name: "Carolina",
     surname: "Valeriano ",
     email: "carolina.valeriano@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
+
   },
   {
     id: "8",
-    name: "Lucas", surname: "Araujo", email: "lucas.paula@rethink.dev"
+    name: "Lucas",
+    surname: "Araujo",
+    email: "lucas.paula@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
+
   },
   {
     id: "9",
-
     name: "Sthéphany",
     surname: "Tezza",
     email: "sthephany.tezza@rethink.dev",
+    watched: ["1", "2", "3", "4", "5"],
   },
 ];
 
-// const Teachers = [
-//   {
-//     id: "1",
-//     name: "Filipe",
-//     office: "Dev Sênior",
-//     avatar: "#",
-//   },
-//   {
-//     id: "2",
-//     name: "Gabriel",
-//     office: "Dev Junior",
-//     avatar: "#",
-//   },
-//   {
-//     id: "3",
-//     name: "Gabriel",
-//     office: "Tech Leader",
-//     avatar: "#",
-//   },
-//   {
-//     id: "4",
-//     name: "Arthur",
-//     office: "Arquiteto de Software",
-//     avatar: "#",
-//   },
-// ]
+const Teachers = [
+  {
+    id: "10",
+    name: "Filipe",
+    surname: "Prado",
+    email: "filipe@mail.com"
+  },
+  {
+    id: "11",
+    name: "Gabriel",
+    surname: "Gomes",
+    email: "gabriel@mail.com"
+  },
+  {
+    id: "12",
+    name: "Arthur",
+    surname: "Vargas",
+    email: "arthur@mail.com"
+  },
+]
+
+const profiles = [
+  {
+    id: "1",
+    bio: "Dev Sênior",
+    avatar: "#",
+    social: {},
+    userId: "10",
+  },
+  {
+    id: "2",
+    bio: "Estágiario de Engenharia",
+    avatar: "#",
+    social: {},
+    userId: "5",
+  }
+]
 
 const trails = [
   {
@@ -137,7 +156,7 @@ const courses = [
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     level: Levels.HIGH,
     workload: 500,
-    teacherId: "1",
+    teacherId: "10",
     learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     trailId: "4",
@@ -148,7 +167,7 @@ const courses = [
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     level: Levels.HIGH,
     workload: 500,
-    teacherId: "1",
+    teacherId: "10",
     learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     trailId: "1",
@@ -159,7 +178,7 @@ const courses = [
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     level: Levels.HIGH,
     workload: 500,
-    teacherId: "1",
+    teacherId: "10",
     learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     trailId: "2",
@@ -170,11 +189,19 @@ const courses = [
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     level: Levels.HIGH,
     workload: 500,
-    teacherId: "1",
+    teacherId: "10",
     learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
     trailId: "3",
   },
+]
+
+const modules = [
+  {
+    id: "1",
+    name: "Intodução",
+    courseId: "1",
+  }
 ]
 
 const lessons = [
@@ -182,55 +209,42 @@ const lessons = [
     id: "1",
     name: "Introdução 1",
     url: "#",
-    courseId: "1",
     order: 1,
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    module: 1,
+    moduleId: "1",
   },
   {
     id: "2",
     name: "Introdução 2",
     url: "#",
-    courseId: "1",
     order: 2,
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    module: 1,
+    moduleId: "1",
   },
   {
     id: "3",
     name: "Introdução 3",
     url: "#",
-    courseId: "1",
     order: 3,
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    module: 1,
+    moduleId: "1",
   },
   {
     id: "4",
     name: "Introdução 4",
     url: "#",
-    courseId: "1",
     order: 4,
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    module: 1,
+    moduleId: "1",
   },
   {
     id: "5",
     name: "Introdução 5",
     url: "#",
-    courseId: "1",
     order: 5,
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    module: 1,
+    moduleId: "1",
   },
-]
-
-const whatcheds = [
-  {
-    id: "1",
-    userId: "5",
-    whatched: ["1", "2", "3", "4", "5"],
-  }
 ]
 
 
@@ -238,28 +252,34 @@ async function main() {
   // students.forEach(async (student) => {
   //   await prisma.user.create({
   //     data: {
+  //       id: student.id,
   //       name: student.name,
   //       surname: student.surname,
+  //       role: "STUDENT",
   //       email: student.email,
+  //       watched: student.watched,
   //     },
   //   });
   // });
-  // whatcheds.forEach(async (whatched) => {
-  //   await prisma.whatched.create({
+  // profiles.forEach(async (profile) => {
+  //   await prisma.profile.create({
   //     data: {
-  //       id: whatched.id,
-  //       userId: whatched.userId,
-  //       whatched: whatched.whatched,
+  //       id: profile.id,
+  //       bio: profile.bio,
+  //       avatar: profile.avatar,
+  //       social: profile.social,
+  //       userId: profile.userId,
   //     },
   //   });
   // });
   // Teachers.forEach(async (teacher) => {
-  //   await prisma.teacher.create({
+  //   await prisma.user.create({
   //     data: {
   //       id: teacher.id,
   //       name: teacher.name,
-  //       office: teacher.office,
-  //       avatar: teacher.avatar,
+  //       surname: teacher.surname,
+  //       role: "RETHINKER",
+  //       email: teacher.email,
   //     },
   //   });
   // });
@@ -287,16 +307,24 @@ async function main() {
   //     },
   //   });
   // });
+  // modules.forEach(async (module) => {
+  //   await prisma.module.create({
+  //     data: {
+  //       id: module.id,
+  //       name: module.name,
+  //       courseId: module.courseId,
+  //     },
+  //   });
+  // });
   // lessons.forEach(async (lesson) => {
   //   await prisma.lesson.create({
   //     data: {
   //       id: lesson.id,
   //       name: lesson.name,
-  //       url: lesson.description,
-  //       courseId: lesson.courseId,
+  //       embedUrl: lesson.description,
   //       order: lesson.order,
   //       description: lesson.description,
-  //       module: lesson.module,
+  //       moduleId: lesson.moduleId,
   //     },
   //   });
   // });

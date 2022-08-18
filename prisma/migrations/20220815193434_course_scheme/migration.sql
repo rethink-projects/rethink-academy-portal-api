@@ -10,6 +10,7 @@ CREATE TABLE "user" (
     "email" TEXT NOT NULL,
     "name" TEXT,
     "surname" TEXT,
+    "watched" TEXT[],
     "role" "Roles" NOT NULL DEFAULT 'STUDENT',
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
@@ -51,35 +52,24 @@ CREATE TABLE "course" (
 );
 
 -- CreateTable
-CREATE TABLE "classe" (
+CREATE TABLE "lesson" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
-    "courseId" TEXT NOT NULL,
+    "embedUrl" TEXT NOT NULL,
     "order" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
-    "module" INTEGER NOT NULL,
+    "moduleId" TEXT NOT NULL,
 
-    CONSTRAINT "classe_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "lesson_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "whatched" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-    "whatched" TEXT[],
-
-    CONSTRAINT "whatched_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "teacher" (
+CREATE TABLE "module" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
-    "office" TEXT NOT NULL,
-    "avatar" TEXT NOT NULL,
+    "courseId" TEXT NOT NULL,
 
-    CONSTRAINT "teacher_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "module_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -91,9 +81,6 @@ CREATE UNIQUE INDEX "profile_userId_key" ON "profile"("userId");
 -- CreateIndex
 CREATE UNIQUE INDEX "trail_name_key" ON "trail"("name");
 
--- CreateIndex
-CREATE UNIQUE INDEX "whatched_userId_key" ON "whatched"("userId");
-
 -- AddForeignKey
 ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -101,10 +88,10 @@ ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "course" ADD CONSTRAINT "course_trailId_fkey" FOREIGN KEY ("trailId") REFERENCES "trail"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "course" ADD CONSTRAINT "course_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "teacher"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "course" ADD CONSTRAINT "course_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "classe" ADD CONSTRAINT "classe_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "lesson" ADD CONSTRAINT "lesson_moduleId_fkey" FOREIGN KEY ("moduleId") REFERENCES "module"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "whatched" ADD CONSTRAINT "whatched_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "module" ADD CONSTRAINT "module_courseId_fkey" FOREIGN KEY ("courseId") REFERENCES "course"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
