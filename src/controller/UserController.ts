@@ -59,11 +59,13 @@ const profile = async (request: Request, response: Response) => {
   }
 };
 
-const getUserById = async (request: Request, response: Response) => {
-  const { id } = request.params;
+const getUserByEmail = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  console.log({ params: request.params });
+
   try {
-    const user = await prismaInstance.user.findFirst({
-      where: { id },
+    const user = await prismaInstance.user.findUnique({
+      where: { email },
       include: {
         profile: true,
       },
@@ -76,4 +78,4 @@ const getUserById = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserById };
+export default { create, profile, getUserByEmail };
