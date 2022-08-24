@@ -15,7 +15,7 @@ const create = async (request: Request, response: Response) => {
         });
         return response
             .status(201)
-            .json({ lesson, message: "Trilha criada com sucesso" });
+            .json({ lesson, message: "Aula criada com sucesso" });
     } catch (error) {
         return response
             .status(400)
@@ -70,7 +70,7 @@ const update = async (request: Request, response: Response) => {
         });
         return response
             .status(200)
-            .json({ lesson, message: "Trilha atualizada com sucesso" });
+            .json({ lesson, message: "Aula atualizada com sucesso" });
     } catch (error) {
         return response
             .status(400)
@@ -87,7 +87,7 @@ const deleteById = async (request: Request, response: Response) => {
 
         return response
             .status(200)
-            .json({ lesson, message: "Trilha deletada com sucesso" });
+            .json({ lesson, message: "Aula deletada com sucesso" });
     } catch (error) {
         return response
             .status(400)

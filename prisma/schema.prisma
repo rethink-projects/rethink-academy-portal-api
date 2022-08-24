@@ -38,6 +38,7 @@ model User {
   email   String   @unique
   name    String?
   surname String?
+  main String?
   watched String[]
   role    Roles @default(STUDENT)
   profile Profile?
@@ -89,7 +90,7 @@ model Lesson {
   embedUrl String
   order Int
   description String
-  module     Module  @relation(fields: [moduleId], references: [id])
+  module     Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)  
   moduleId String
 
   @@map("lesson")

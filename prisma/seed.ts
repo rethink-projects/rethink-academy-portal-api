@@ -25,6 +25,7 @@ const students = [
     name: "Amanda",
     surname: "Duarte",
     email: "amanda.duarte@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
   },
   {
@@ -32,6 +33,7 @@ const students = [
     name: "Gabriel",
     surname: "Melo",
     email: "gabriel.melo@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
   },
   {
@@ -39,6 +41,7 @@ const students = [
     name: "Ana",
     surname: "Ramos",
     email: "ana.ramos@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
   },
   {
@@ -46,6 +49,7 @@ const students = [
     name: "Felipe",
     surname: "Reggiane",
     email: "felipe.reggiane@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
 
   },
@@ -54,6 +58,7 @@ const students = [
     name: "Fernando",
     surname: "Henrique",
     email: "fernando.henrique@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
   },
   {
@@ -61,6 +66,7 @@ const students = [
     name: "Fabiana",
     surname: "Kamo",
     email: "fabiana.kamo@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
   },
   {
@@ -68,6 +74,7 @@ const students = [
     name: "Carolina",
     surname: "Valeriano ",
     email: "carolina.valeriano@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
 
   },
@@ -76,6 +83,7 @@ const students = [
     name: "Lucas",
     surname: "Araujo",
     email: "lucas.paula@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
 
   },
@@ -84,6 +92,7 @@ const students = [
     name: "Sthéphany",
     surname: "Tezza",
     email: "sthephany.tezza@rethink.dev",
+    main: "Engenharia",
     watched: ["1", "2", "3", "4", "5"],
   },
 ];
@@ -249,85 +258,86 @@ const lessons = [
 
 
 async function main() {
-  // students.forEach(async (student) => {
-  //   await prisma.user.create({
-  //     data: {
-  //       id: student.id,
-  //       name: student.name,
-  //       surname: student.surname,
-  //       role: "STUDENT",
-  //       email: student.email,
-  //       watched: student.watched,
-  //     },
-  //   });
-  // });
-  // profiles.forEach(async (profile) => {
-  //   await prisma.profile.create({
-  //     data: {
-  //       id: profile.id,
-  //       bio: profile.bio,
-  //       avatar: profile.avatar,
-  //       social: profile.social,
-  //       userId: profile.userId,
-  //     },
-  //   });
-  // });
-  // Teachers.forEach(async (teacher) => {
-  //   await prisma.user.create({
-  //     data: {
-  //       id: teacher.id,
-  //       name: teacher.name,
-  //       surname: teacher.surname,
-  //       role: "RETHINKER",
-  //       email: teacher.email,
-  //     },
-  //   });
-  // });
-  // trails.forEach(async (trail) => {
-  //   await prisma.trail.create({
-  //     data: {
-  //       id: trail.id,
-  //       name: trail.name,
-  //       description: trail.description
-  //     },
-  //   });
-  // });
-  // courses.forEach(async (course) => {
-  //   await prisma.course.create({
-  //     data: {
-  //       id: course.id,
-  //       name: course.name,
-  //       description: course.description,
-  //       level: course.level,
-  //       workload: course.workload,
-  //       teacherId: course.teacherId,
-  //       learning: course.learning,
-  //       skills: course.skills,
-  //       trailId: course.trailId,
-  //     },
-  //   });
-  // });
-  // modules.forEach(async (module) => {
-  //   await prisma.module.create({
-  //     data: {
-  //       id: module.id,
-  //       name: module.name,
-  //       courseId: module.courseId,
-  //     },
-  //   });
-  // });
-  // lessons.forEach(async (lesson) => {
-  //   await prisma.lesson.create({
-  //     data: {
-  //       id: lesson.id,
-  //       name: lesson.name,
-  //       embedUrl: lesson.description,
-  //       order: lesson.order,
-  //       description: lesson.description,
-  //       moduleId: lesson.moduleId,
-  //     },
-  //   });
-  // });
+  students.forEach(async (student) => {
+    await prisma.user.create({
+      data: {
+        id: student.id,
+        name: student.name,
+        surname: student.surname,
+        role: "STUDENT",
+        email: student.email,
+        main: student.main,
+        watched: student.watched,
+      },
+    });
+  });
+  Teachers.forEach(async (teacher) => {
+    await prisma.user.create({
+      data: {
+        id: teacher.id,
+        name: teacher.name,
+        surname: teacher.surname,
+        role: "RETHINKER",
+        email: teacher.email,
+      },
+    });
+  });
+  profiles.forEach(async (profile) => {
+    await prisma.profile.create({
+      data: {
+        id: profile.id,
+        bio: profile.bio,
+        avatar: profile.avatar,
+        social: profile.social,
+        userId: profile.userId,
+      },
+    });
+  });
+  trails.forEach(async (trail) => {
+    await prisma.trail.create({
+      data: {
+        id: trail.id,
+        name: trail.name,
+        description: trail.description
+      },
+    });
+  });
+  courses.forEach(async (course) => {
+    await prisma.course.create({
+      data: {
+        id: course.id,
+        name: course.name,
+        description: course.description,
+        level: course.level,
+        workload: course.workload,
+        teacherId: course.teacherId,
+        learning: course.learning,
+        skills: course.skills,
+        trailId: course.trailId,
+      },
+    });
+  });
+  modules.forEach(async (module) => {
+    await prisma.module.create({
+      data: {
+        id: module.id,
+        name: module.name,
+        courseId: module.courseId,
+      },
+    });
+  });
+  lessons.forEach(async (lesson) => {
+    await prisma.lesson.create({
+      data: {
+        id: lesson.id,
+        name: lesson.name,
+        embedUrl: lesson.description,
+        order: lesson.order,
+        description: lesson.description,
+        moduleId: lesson.moduleId,
+      },
+    });
+  });
 }
 
 main()

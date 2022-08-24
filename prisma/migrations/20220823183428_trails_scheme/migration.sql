@@ -10,6 +10,7 @@ CREATE TABLE "user" (
     "email" TEXT NOT NULL,
     "name" TEXT,
     "surname" TEXT,
+    "main" TEXT,
     "watched" TEXT[],
     "role" "Roles" NOT NULL DEFAULT 'STUDENT',
 

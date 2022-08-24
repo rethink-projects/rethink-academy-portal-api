@@ -2,23 +2,17 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-    const { name, description, level, workload, teacherId, learning, skills, trailId } = request.body;
+    const { name, courseId } = request.body;
     try {
-        const course = await prismaInstance.course.create({
+        const module = await prismaInstance.module.create({
             data: {
                 name,
-                description,
-                level,
-                workload,
-                teacherId,
-                learning,
-                skills,
-                trailId,
+                courseId,
             },
         });
         return response
             .status(201)
-            .json({ course, message: "Curso criado com sucesso" });
+            .json({ module, message: "Módulo criado com sucesso" });
     } catch (error) {
         return response
             .status(400)
@@ -28,9 +22,9 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
     try {
-        const course = await prismaInstance.course.findMany();
+        const modules = await prismaInstance.module.findMany();
 
-        return response.status(200).json({ course });
+        return response.status(200).json({ modules });
     } catch (error) {
         return response
             .status(400)
@@ -41,15 +35,15 @@ const getAll = async (request: Request, response: Response) => {
 const getById = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
-        const course = await prismaInstance.course.findFirst({
-            where: { id },
-            include: {
-                lesson: true,
-                teacher: true,
-            },
-        });
+        const module = await prismaInstance.module.findFirst(
+            {
+                where: {
+                    id,
+                }
+            }
+        );
 
-        return response.status(200).json({ course });
+        return response.status(200).json({ module });
     } catch (error) {
         return response
             .status(400)
@@ -58,25 +52,19 @@ const getById = async (request: Request, response: Response) => {
 };
 
 const update = async (request: Request, response: Response) => {
-    const { name, description, level, workload, teacher, learning, skills, trailId } = request.body;
+    const { name, courseId } = request.body;
     const { id } = request.params;
     try {
-        const course = await prismaInstance.course.update({
+        const module = await prismaInstance.module.update({
             where: { id },
             data: {
                 name,
-                description,
-                level,
-                workload,
-                teacher,
-                learning,
-                skills,
-                trailId,
+                courseId,
             },
         });
         return response
             .status(200)
-            .json({ course, message: "Curso atualizado com sucesso" });
+            .json({ module, message: "Módulo atualizado com sucesso" });
     } catch (error) {
         return response
             .status(400)
@@ -87,17 +75,23 @@ const update = async (request: Request, response: Response) => {
 const deleteById = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
-        const course = await prismaInstance.course.delete({
+        // const deleteLessons = prismaInstance.lesson.deleteMany({
+        //     where: {
+        //         moduleId: id,
+        //     },
+        // })
+
+        const module = await prismaInstance.module.delete({
             where: { id },
         });
 
         return response
             .status(200)
-            .json({ course, message: "Curso deletado com sucesso" });
+            .json({ module, message: "Módulo deletado com sucesso" });
     } catch (error) {
         return response
             .status(400)
             .json({ message: "Algo de errado aconteceu.", error });
     }
 };
-export default { create, getAll, update, deleteById, getById };
+export default { create, getAll, getById, update, deleteById };
