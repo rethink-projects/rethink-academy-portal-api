@@ -11,6 +11,7 @@ router.post("/user", UserController.create);
 router.post("/user-profile", UserController.profile);
 
 router.get("/user/:email", UserController.getUserByEmail);
+router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
 
 router.post("/trail", TrailController.create);

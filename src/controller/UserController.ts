@@ -77,6 +77,35 @@ const getUserByEmail = async (request: Request, response: Response) => {
   }
 };
 
+const createWatched = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  const { watchedId } = request.body;
+  try {
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+      select: {
+        watched: true,
+      },
+    });
+
+    user?.watched.push(watchedId);
+
+    const userUpdated = await prismaInstance.user.update({
+      where: { email },
+      data: {
+        watched: user?.watched,
+      },
+    });
+
+    return response.status(200).json(userUpdated);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
 const getWatched = async (request: Request, response: Response) => {
   const { email } = request.params;
   try {
@@ -127,4 +156,4 @@ const getWatched = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserByEmail, getWatched };
+export default { create, profile, getUserByEmail, createWatched, getWatched };
