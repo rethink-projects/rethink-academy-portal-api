@@ -4,6 +4,7 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 generator erd {
   provider = "prisma-erd-generator"
 }
@@ -18,6 +19,7 @@ model User {
   email   String   @unique
   name    String?
   surname String?
+  title   String?
   role    Roles?   @default(STUDENT)
   profile Profile?
 
