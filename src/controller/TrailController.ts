@@ -9,6 +9,7 @@ const create = async (request: Request, response: Response) => {
         name,
         weight,
         description,
+        
       },
     });
     return response
