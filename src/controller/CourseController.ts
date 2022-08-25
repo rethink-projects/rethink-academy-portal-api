@@ -41,7 +41,7 @@ const getAll = async (request: Request, response: Response) => {
 const getById = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
-        const course = await prismaInstance.course.findFirst({
+        const course = await prismaInstance.course.findUnique({
             where: { id },
             include: {
                 lesson: true,

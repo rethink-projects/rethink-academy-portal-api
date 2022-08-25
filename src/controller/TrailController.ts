@@ -2,11 +2,12 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-  const { name, description } = request.body;
+  const { name, description, weight } = request.body;
   try {
     const trail = await prismaInstance.trail.create({
       data: {
         name,
+        weight,
         description,
       },
     });
@@ -22,13 +23,12 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const trail = await prismaInstance.trail.findMany(
-      {
-        orderBy: {
-          weight: "asc"
-        }
-      }
-    );
+    const trail = await prismaInstance.$queryRaw`
+    select * from "Trail"
+    order by 
+      (substring("weight", '^[0-9]+'))::int, 
+      substring("weight", '[^0-9_].*$')
+    `;
 
     return response.status(200).json({ trail });
   } catch (error) {

@@ -1,355 +1,227 @@
-import { Levels, PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { PrismaClient, Roles, Levels } from "@prisma/client";
 
-// const embassadors = [
-//   {
-//     name: "Filipe",
-//     surname: "Prado",
-//     email: "filipe.prado@rethink.dev",
-//   },
-//   {
-//     name: "Leticia",
-//     surname: "Lange",
-//     email: "leticia.lange@rethink.dev",
-//   },
-//   {
-//     name: "Priscila",
-//     surname: "Ritschel",
-//     email: "priscila.ritschel@rethink.dev",
-//   },
-// ];
-
-const students = [
+const users = [
   {
-    id: "1",
+    name: "Filipe",
+    surname: "Prado",
+    email: "filipe.prado@rethink.dev",
+    role: "EMBASSADOR",
+  },
+  {
+    name: "Leticia",
+    surname: "Lange",
+    email: "leticia.lange@rethink.dev",
+    role: "EMBASSADOR",
+  },
+  {
+    name: "Priscila",
+    surname: "Ritschel",
+    email: "priscila.ritschel@rethink.dev",
+    role: "EMBASSADOR",
+  },
+  {
     name: "Amanda",
     surname: "Duarte",
     email: "amanda.duarte@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
+    role: "STUDENT",
   },
   {
-    id: "2",
     name: "Gabriel",
     surname: "Melo",
     email: "gabriel.melo@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
+    role: "STUDENT",
   },
   {
-    id: "3",
     name: "Ana",
     surname: "Ramos",
     email: "ana.ramos@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
+    role: "STUDENT",
   },
   {
-    id: "4",
     name: "Felipe",
     surname: "Reggiane",
     email: "felipe.reggiane@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-
+    role: "STUDENT",
   },
   {
-    id: "5",
     name: "Fernando",
     surname: "Henrique",
     email: "fernando.henrique@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
+    role: "STUDENT",
   },
   {
-    id: "6",
     name: "Fabiana",
     surname: "Kamo",
     email: "fabiana.kamo@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
+    role: "STUDENT",
   },
   {
-    id: "7",
     name: "Carolina",
     surname: "Valeriano ",
     email: "carolina.valeriano@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-
+    role: "STUDENT",
   },
   {
-    id: "8",
     name: "Lucas",
     surname: "Araujo",
     email: "lucas.paula@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-
+    role: "STUDENT",
   },
   {
-    id: "9",
     name: "Sthéphany",
     surname: "Tezza",
     email: "sthephany.tezza@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
+    role: "STUDENT",
   },
 ];
-
-const Teachers = [
-  {
-    id: "10",
-    name: "Filipe",
-    surname: "Prado",
-    email: "filipe@mail.com"
-  },
-  {
-    id: "11",
-    name: "Gabriel",
-    surname: "Gomes",
-    email: "gabriel@mail.com"
-  },
-  {
-    id: "12",
-    name: "Arthur",
-    surname: "Vargas",
-    email: "arthur@mail.com"
-  },
-]
-
-const profiles = [
-  {
-    id: "1",
-    bio: "Dev Sênior",
-    avatar: "#",
-    social: {},
-    userId: "10",
-  },
-  {
-    id: "2",
-    bio: "Estágiario de Engenharia",
-    avatar: "#",
-    social: {},
-    userId: "5",
-  }
-]
-
 const trails = [
   {
-    id: "1",
-    name: "Academy",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    id: "idDoAcademy",
+    name: "academy",
+    description: "Trilha que contém conteúdos gerais",
+    weight: 0,
+  },
+  {
+    id: "idDaEngenharia",
+    name: "engenharia",
+    description: "Trilha que contém conteúdos de engenharia",
     weight: 1,
   },
   {
-    id: "2",
-    name: "Produto",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    id: "idDeProduto",
+    name: "produto",
+    description: "Trilha que contém conteúdos de produto",
     weight: 2,
   },
   {
-    id: "3",
-    name: "Design",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    id: "idDeDesign",
+    name: "design",
+    description: "Trilha que contém conteúdos de design",
     weight: 3,
   },
-  {
-    id: "4",
-    name: "Engenharia",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    weight: 4,
-  },
-]
-
-const courses = [
-  {
-    id: "1",
-    name: "Curso Engenharia",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    level: Levels.HIGH,
-    workload: 500,
-    teacherId: "10",
-    learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    trailId: "4",
-  },
-  {
-    id: "2",
-    name: "Curso Academy",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    level: Levels.HIGH,
-    workload: 500,
-    teacherId: "10",
-    learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    trailId: "1",
-  },
-  {
-    id: "3",
-    name: "Curso Produto",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    level: Levels.HIGH,
-    workload: 500,
-    teacherId: "10",
-    learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    trailId: "2",
-  },
-  {
-    id: "4",
-    name: "Curso Design",
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    level: Levels.HIGH,
-    workload: 500,
-    teacherId: "10",
-    learning: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    skills: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-    trailId: "3",
-  },
-]
+];
 
 const modules = [
   {
-    id: "1",
-    name: "Intodução",
-    courseId: "1",
-  }
-]
-
+    id: "iudhfiodjasl",
+    name: "Primeiro Módulo",
+    courseId: "asjkdhasjkdh",
+  },
+];
 const lessons = [
   {
-    id: "1",
-    name: "Introdução 1",
-    url: "#",
+    id: "jasdhgkljsahd",
+    name: "Primeira Aula de JavaScript",
+    embedURL: "asdas",
+    moduleId: "iudhfiodjasl",
     order: 1,
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    moduleId: "1",
+    description: "Aqui está a descrição da primeira aula, que é de JavaScript",
   },
+];
+const courses = [
   {
-    id: "2",
-    name: "Introdução 2",
-    url: "#",
-    order: 2,
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    moduleId: "1",
+    id: "asjkdhasjkdh",
+    name: "JavaScript",
+    description: "Curso completo de JavaScript",
+    workload: 100,
+    learning: "Um montão de coisas",
+    skills: "um montão de de habilidades",
+    trailId: "idDoAcademy",
+    teacherId: "idDoPrimeiroTeacher",
+    level: "HIGH",
   },
-  {
-    id: "3",
-    name: "Introdução 3",
-    url: "#",
-    order: 3,
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    moduleId: "1",
-  },
-  {
-    id: "4",
-    name: "Introdução 4",
-    url: "#",
-    order: 4,
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    moduleId: "1",
-  },
-  {
-    id: "5",
-    name: "Introdução 5",
-    url: "#",
-    order: 5,
-    description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
-    moduleId: "1",
-  },
-]
+];
 
-
-async function main() {
-  // students.forEach(async (student) => {
-  //   await prisma.user.create({
-  //     data: {
-  //       id: student.id,
-  //       name: student.name,
-  //       surname: student.surname,
-  //       role: "STUDENT",
-  //       email: student.email,
-  //       main: student.main,
-  //       watched: student.watched,
-  //     },
-  //   });
-  // });
-  // Teachers.forEach(async (teacher) => {
-  //   await prisma.user.create({
-  //     data: {
-  //       id: teacher.id,
-  //       name: teacher.name,
-  //       surname: teacher.surname,
-  //       role: "RETHINKER",
-  //       email: teacher.email,
-  //     },
-  //   });
-  // });
-  // profiles.forEach(async (profile) => {
-  //   await prisma.profile.create({
-  //     data: {
-  //       id: profile.id,
-  //       bio: profile.bio,
-  //       avatar: profile.avatar,
-  //       social: profile.social,
-  //       userId: profile.userId,
-  //     },
-  //   });
-  // });
-  // trails.forEach(async (trail) => {
-  //   await prisma.trail.create({
-  //     data: {
-  //       id: trail.id,
-  //       name: trail.name,
-  //       description: trail.description,
-  //       weight: trail.weight
-  //     },
-  //   });
-  // });
-  // courses.forEach(async (course) => {
-  //   await prisma.course.create({
-  //     data: {
-  //       id: course.id,
-  //       name: course.name,
-  //       description: course.description,
-  //       level: course.level,
-  //       workload: course.workload,
-  //       teacherId: course.teacherId,
-  //       learning: course.learning,
-  //       skills: course.skills,
-  //       trailId: course.trailId,
-  //     },
-  //   });
-  // });
-  // modules.forEach(async (module) => {
-  //   await prisma.module.create({
-  //     data: {
-  //       id: module.id,
-  //       name: module.name,
-  //       courseId: module.courseId,
-  //     },
-  //   });
-  // });
-  // lessons.forEach(async (lesson) => {
-  //   await prisma.lesson.create({
-  //     data: {
-  //       id: lesson.id,
-  //       name: lesson.name,
-  //       embedUrl: lesson.description,
-  //       order: lesson.order,
-  //       description: lesson.description,
-  //       moduleId: lesson.moduleId,
-  //     },
-  //   });
-  // });
+async function userSeeder(prisma: PrismaClient): Promise<void> {
+  for (const user of users) {
+    await prisma.user.create({
+      data: {
+        name: user.name,
+        role: user.role as Roles,
+        surname: user.surname,
+        email: user.email,
+      },
+    });
+  }
+}
+async function trailSeeder(prisma: PrismaClient): Promise<void> {
+  for (const trail of trails) {
+    await prisma.trail.create({
+      data: {
+        id: trail.id,
+        name: trail.name,
+        weight: trail.weight,
+        description: trail.description,
+      },
+    });
+  }
+}
+async function moduleSeeder(prisma: PrismaClient): Promise<void> {
+  for (const module of modules) {
+    await prisma.module.create({
+      data: {
+        id: module.id,
+        name: module.name,
+        courseId: module.courseId,
+      },
+    });
+  }
+}
+async function lessonSeeder(prisma: PrismaClient): Promise<void> {
+  for (const lesson of lessons) {
+    await prisma.lesson.create({
+      data: {
+        id: lesson.id,
+        name: lesson.name,
+        description: lesson.description,
+        moduleId: lesson.moduleId,
+        embedUrl: lesson.embedURL,
+        order: lesson.order,
+      },
+    });
+  }
+}
+async function courseSeeder(prisma: PrismaClient): Promise<void> {
+  for (const course of courses) {
+    await prisma.course.create({
+      data: {
+        id: course.id,
+        name: course.name,
+        description: course.description,
+        workload: course.workload,
+        learning: course.learning,
+        skills: course.skills,
+        level: course.level as Levels,
+        trailId: course.trailId,
+        teacherId: course.teacherId,
+      },
+    });
+  }
 }
 
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+async function main() {
+  console.time();
+  const prisma = new PrismaClient();
+
+  // todo not trigger
+  try {
+    await prisma.$connect();
+  } catch (error) {
+    throw error;
+  }
+
+  // static data
+  await Promise.all([
+    userSeeder(prisma),
+    trailSeeder(prisma),
+    // courseSeeder(prisma),
+    // moduleSeeder(prisma),
+    // lessonSeeder(prisma),
+  ]).catch(console.error);
+
+  await prisma.$disconnect();
+  console.log("Seeders generated");
+  console.timeEnd();
+}
+
+main();
