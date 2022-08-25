@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import ContractInfoController from "./controller/ContractInfoController";
 import NoteController from "./controller/NoteController";
 import UserController from "./controller/UserController";
 
@@ -13,5 +14,9 @@ router.get("/note/:email", NoteController.getNotesByUser);
 router.post("/note", NoteController.create);
 router.post("/note/:id", NoteController.update);
 router.delete("/note/:id", NoteController.remove);
+
+router.post("/info", ContractInfoController.create);
+router.get("/info/:email", ContractInfoController.getInfoByUser);
+router.post("/info/:email", ContractInfoController.updateInfo);
 
 export { router };
