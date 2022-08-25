@@ -62,6 +62,7 @@ model Trail {
   id      String   @id
   name    String   @unique
   description String
+  weight Int
   course Course[]
   
   @@map("trail")

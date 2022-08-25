@@ -22,7 +22,13 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const trail = await prismaInstance.trail.findMany();
+    const trail = await prismaInstance.trail.findMany(
+      {
+        orderBy: {
+          weight: "asc"
+        }
+      }
+    );
 
     return response.status(200).json({ trail });
   } catch (error) {

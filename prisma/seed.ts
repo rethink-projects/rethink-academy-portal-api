@@ -140,21 +140,25 @@ const trails = [
     id: "1",
     name: "Academy",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    weight: 1,
   },
   {
     id: "2",
     name: "Produto",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    weight: 2,
   },
   {
     id: "3",
     name: "Design",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    weight: 3,
   },
   {
     id: "4",
     name: "Engenharia",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
+    weight: 4,
   },
 ]
 
@@ -258,86 +262,87 @@ const lessons = [
 
 
 async function main() {
-  students.forEach(async (student) => {
-    await prisma.user.create({
-      data: {
-        id: student.id,
-        name: student.name,
-        surname: student.surname,
-        role: "STUDENT",
-        email: student.email,
-        main: student.main,
-        watched: student.watched,
-      },
-    });
-  });
-  Teachers.forEach(async (teacher) => {
-    await prisma.user.create({
-      data: {
-        id: teacher.id,
-        name: teacher.name,
-        surname: teacher.surname,
-        role: "RETHINKER",
-        email: teacher.email,
-      },
-    });
-  });
-  profiles.forEach(async (profile) => {
-    await prisma.profile.create({
-      data: {
-        id: profile.id,
-        bio: profile.bio,
-        avatar: profile.avatar,
-        social: profile.social,
-        userId: profile.userId,
-      },
-    });
-  });
-  trails.forEach(async (trail) => {
-    await prisma.trail.create({
-      data: {
-        id: trail.id,
-        name: trail.name,
-        description: trail.description
-      },
-    });
-  });
-  courses.forEach(async (course) => {
-    await prisma.course.create({
-      data: {
-        id: course.id,
-        name: course.name,
-        description: course.description,
-        level: course.level,
-        workload: course.workload,
-        teacherId: course.teacherId,
-        learning: course.learning,
-        skills: course.skills,
-        trailId: course.trailId,
-      },
-    });
-  });
-  modules.forEach(async (module) => {
-    await prisma.module.create({
-      data: {
-        id: module.id,
-        name: module.name,
-        courseId: module.courseId,
-      },
-    });
-  });
-  lessons.forEach(async (lesson) => {
-    await prisma.lesson.create({
-      data: {
-        id: lesson.id,
-        name: lesson.name,
-        embedUrl: lesson.description,
-        order: lesson.order,
-        description: lesson.description,
-        moduleId: lesson.moduleId,
-      },
-    });
-  });
+  // students.forEach(async (student) => {
+  //   await prisma.user.create({
+  //     data: {
+  //       id: student.id,
+  //       name: student.name,
+  //       surname: student.surname,
+  //       role: "STUDENT",
+  //       email: student.email,
+  //       main: student.main,
+  //       watched: student.watched,
+  //     },
+  //   });
+  // });
+  // Teachers.forEach(async (teacher) => {
+  //   await prisma.user.create({
+  //     data: {
+  //       id: teacher.id,
+  //       name: teacher.name,
+  //       surname: teacher.surname,
+  //       role: "RETHINKER",
+  //       email: teacher.email,
+  //     },
+  //   });
+  // });
+  // profiles.forEach(async (profile) => {
+  //   await prisma.profile.create({
+  //     data: {
+  //       id: profile.id,
+  //       bio: profile.bio,
+  //       avatar: profile.avatar,
+  //       social: profile.social,
+  //       userId: profile.userId,
+  //     },
+  //   });
+  // });
+  // trails.forEach(async (trail) => {
+  //   await prisma.trail.create({
+  //     data: {
+  //       id: trail.id,
+  //       name: trail.name,
+  //       description: trail.description,
+  //       weight: trail.weight
+  //     },
+  //   });
+  // });
+  // courses.forEach(async (course) => {
+  //   await prisma.course.create({
+  //     data: {
+  //       id: course.id,
+  //       name: course.name,
+  //       description: course.description,
+  //       level: course.level,
+  //       workload: course.workload,
+  //       teacherId: course.teacherId,
+  //       learning: course.learning,
+  //       skills: course.skills,
+  //       trailId: course.trailId,
+  //     },
+  //   });
+  // });
+  // modules.forEach(async (module) => {
+  //   await prisma.module.create({
+  //     data: {
+  //       id: module.id,
+  //       name: module.name,
+  //       courseId: module.courseId,
+  //     },
+  //   });
+  // });
+  // lessons.forEach(async (lesson) => {
+  //   await prisma.lesson.create({
+  //     data: {
+  //       id: lesson.id,
+  //       name: lesson.name,
+  //       embedUrl: lesson.description,
+  //       order: lesson.order,
+  //       description: lesson.description,
+  //       moduleId: lesson.moduleId,
+  //     },
+  //   });
+  // });
 }
 
 main()
