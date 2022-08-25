@@ -14,12 +14,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Titles {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
+
 model User {
   id      String   @id @default(uuid())
   email   String   @unique
   name    String?
   surname String?
-  title   String?
+  title   Titles?  @default(ENGINEERING)
   role    Roles?   @default(STUDENT)
   profile Profile?
 

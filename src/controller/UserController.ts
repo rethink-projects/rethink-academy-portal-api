@@ -60,8 +60,16 @@ const profile = async (request: Request, response: Response) => {
 };
 const getAll = async (request: Request, response: Response) => {
   try {
-    const user = await prismaInstance.user.findMany();
-    return response.status(200).json(user);
+    const { title }: { title?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
+      request.query;
+
+    const users = await prismaInstance.user.findMany({
+      where: { title: title },
+      include: {
+        profile: true,
+      },
+    });
+    return response.status(200).json(users);
   } catch (error) {
     return response
       .status(400)
@@ -87,21 +95,4 @@ const getUserByEmail = async (request: Request, response: Response) => {
   }
 };
 
-const getUsersByTitle = async (request: Request, response: Response) => {
-  const  title  = request.query;
-  try {
-  const users = await prismaInstance.user.findMany({
-      where:  title,
-      include: {
-        profile: true,
-      },
-    });
-    return response.status(200).json({ users });
-  } catch (error) {
-    return response
-      .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
-  }
-}
-
-export default { create, profile, getUserByEmail, getAll, getUsersByTitle };
+export default { create, profile, getUserByEmail, getAll };
