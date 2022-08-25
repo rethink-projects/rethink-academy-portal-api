@@ -26,9 +26,12 @@ const create = async (request: Request, response: Response) => {
     }
 };
 
-const getAll = async (request: Request, response: Response) => {
+const getAllByCourseId = async (request: Request, response: Response) => {
+    const { trailId } = request.params;
     try {
-        const course = await prismaInstance.course.findMany();
+        const course = await prismaInstance.course.findMany({
+            where: { trailId },
+        });
 
         return response.status(200).json({ course });
     } catch (error) {
@@ -100,4 +103,4 @@ const deleteById = async (request: Request, response: Response) => {
             .json({ message: "Algo de errado aconteceu.", error });
     }
 };
-export default { create, getAll, update, deleteById, getById };
+export default { create, getAllByCourseId, update, deleteById, getById };
