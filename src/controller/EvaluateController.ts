@@ -1,20 +1,29 @@
 import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
+import { skillLibrary, skillLibraryType } from "../Helper/skillLibrary";
 
 const create = async (request: Request, response: Response) => {
   console.log("entrou");
   const {
     month,
     userEmail,
-    skill,
-    title,
-    value,
+    skillType,
+    skill1,
+    skill2,
+    skill3,
+    skill4,
+    skill5,
+    skill6,
   }: {
     month: string;
     userEmail: string;
-    skill: boolean;
-    title: string;
-    value: number;
+    skillType: boolean;
+    skill1: number;
+    skill2: number;
+    skill3: number;
+    skill4: number;
+    skill5: number;
+    skill6: number;
   } = request.body;
   try {
     const userByEmail = await prismaInstance.user.findFirst({
@@ -25,40 +34,23 @@ const create = async (request: Request, response: Response) => {
 
     if (!userByEmail) throw new Error("Usuário não encontrado");
 
-    const monthEvaluate = await prismaInstance.monthEvaluate.findFirst({
-      where: { month },
-    });
-
-    console.log({ monthEvaluate });
-
-    let newMonthEvaluate;
-    if (!monthEvaluate) {
-      newMonthEvaluate = await prismaInstance.monthEvaluate.create({
-        data: { month },
-      });
-      console.log({ newMonthEvaluate });
-    }
-    // monthEvaluateId = newMonthEvaluate.id;
-    let monthEvaluateId = monthEvaluate
-      ? monthEvaluate.id
-      : newMonthEvaluate.id;
-    console.log({ monthEvaluateId });
-
-    const evaluate = await prismaInstance.evaluate.create({
+    const monthEvaluate = await prismaInstance.monthEvaluate.create({
       data: {
-        monthEvaluateId,
+        month,
         userId: userByEmail.id,
-        skill,
-        title,
-        value,
+        skillType,
+        skill1,
+        skill2,
+        skill3,
+        skill4,
+        skill5,
+        skill6,
       },
     });
 
-    console.log(evaluate);
-
     return response
       .status(200)
-      .json({ evaluate, message: "Nota criada com sucesso." });
+      .json({ monthEvaluate, message: "Nota criada com sucesso." });
   } catch (error) {
     return response
       .status(400)
@@ -70,45 +62,43 @@ const getEvaluates = async (request: Request, response: Response) => {
   try {
     const { month } = request.params;
 
-    const monthEvaluate = await prismaInstance.monthEvaluate.findFirst({
-      where: { month },
-      include: {
-        evaluate: { include: { user: true } },
-      },
+    const users = await prismaInstance.user.findMany({
+      where: { role: "STUDENT" },
     });
 
-    let filteredDataObj = {};
-    monthEvaluate!.evaluate.map((evaluate) => {
-      if (!filteredDataObj[evaluate.user.id]) {
-        filteredDataObj[evaluate.user.id] = {};
-        filteredDataObj[
-          evaluate.user.id
-        ].user = `${evaluate.user.name} ${evaluate.user.surname}`;
-        filteredDataObj[evaluate.user.id].trail = evaluate.user.trail;
-        filteredDataObj[evaluate.user.id].hardSkills = [];
-        filteredDataObj[evaluate.user.id].softSkills = [];
+    console.log({ users });
+
+    const usersMap = users.map(async (user) => {
+      const evaluate = await prismaInstance.monthEvaluate.findFirst({
+        where: { userId: user.id, month },
+      });
+      if (!evaluate) {
+        return {
+          month,
+          userId: user.id,
+          skillType: true,
+          skill1: 0,
+          skill2: 0,
+          skill3: 0,
+          skill4: 0,
+          skill5: 0,
+          skill6: 0,
+          main: user.main,
+          name: `${user.name} ${user.surname}`,
+        };
       }
-      if (evaluate.skill) {
-        filteredDataObj[evaluate.user.id].hardSkills.push({
-          title: evaluate.title,
-          value: evaluate.value,
-        });
-      } else {
-        filteredDataObj[evaluate.user.id].softSkills.push({
-          title: evaluate.title,
-          value: evaluate.value,
-        });
-      }
-      return;
+      console.log({ evaluate });
+      return {
+        ...evaluate,
+        main: user.main,
+        name: `${user.name} ${user.surname}`,
+      };
+      // return { name: `teste`, ...evaluate };
     });
 
-    let filteredData: any[] = [];
-    for (const key in filteredDataObj) {
-      // console.log({[key]: filteredDataObj[key]})
-      filteredData.push(filteredDataObj[key]);
-    }
+    console.log({ usersMap });
 
-    return response.status(200).json(filteredData);
+    return response.status(200).json(await Promise.all(usersMap));
   } catch (error) {
     return response
       .status(400)
@@ -119,11 +109,27 @@ const getEvaluates = async (request: Request, response: Response) => {
 const update = async (request: Request, response: Response) => {
   try {
     const { id } = request.params;
-    const { value } = request.body;
+    const {
+      value,
+      main,
+      userId,
+      skill,
+      month,
+      skillType,
+    }: {
+      value: string;
+      main: string;
+      userId?: string;
+      skill: string;
+      month?: string;
+      skillType?: boolean;
+    } = request.body;
 
-    const evaluateUpdated = await prismaInstance.evaluate.update({
+    let helper = skillLibrary[main][skill];
+
+    const evaluateUpdated = await prismaInstance.monthEvaluate.update({
       where: { id },
-      data: { value },
+      data: { [helper]: value },
     });
 
     return response
@@ -140,7 +146,7 @@ const remove = async (request: Request, response: Response) => {
   const { id } = request.params;
   console.log({ id });
   try {
-    await prismaInstance.evaluate.delete({
+    await prismaInstance.monthEvaluate.delete({
       where: { id },
     });
 
