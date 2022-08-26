@@ -80,9 +80,9 @@ const getUserByEmail = async (request: Request, response: Response) => {
 const createWatched = async (request: Request, response: Response) => {
   const { email } = request.params;
   const { watchedId } = request.body;
-  try {
 
-    const user = await prismaInstance.user.findFirst({
+  try {
+    const user = await prismaInstance.user.findUnique({
       where: { email },
       select: {
         watched: true,
@@ -109,28 +109,28 @@ const createWatched = async (request: Request, response: Response) => {
 const getWatched = async (request: Request, response: Response) => {
   const { email } = request.params;
   try {
-
     const user = await prismaInstance.user.findFirst({
       where: { email },
     });
 
-    const { trailId } = request.query;
-    console.log(trailId)
+    const trailId = request.query.trailId?.toString();
+
     const courses = await prismaInstance.course.findMany({
-      where: trailId ? { trailId } : {},
+      where: { trailId },
       include: {
         trail: true,
         modules: {
           include: {
-            lessons: true
-          }
-        }
-      }
+            lessons: true,
+          },
+        },
+      },
     });
 
     const maxLessons = courses.map((course) => {
-      let lessonsLength: any = [];
-      let userLessonsLength: any = [];
+      const lessonsLength: any = [];
+      const userLessonsLength: any = [];
+
       course.modules.map((module) => {
         module.lessons.map((lesson) => {
           if (user?.watched.includes(lesson.id)) {
@@ -141,12 +141,22 @@ const getWatched = async (request: Request, response: Response) => {
       });
 
       let completed: boolean = false;
-      if (lessonsLength.length !== 0 && lessonsLength.length == userLessonsLength.length) {
+      if (
+        lessonsLength.length !== 0 &&
+        lessonsLength.length == userLessonsLength.length
+      ) {
         completed = true;
       }
 
-      return { lessonsLength: lessonsLength.length, userLessonsLength: userLessonsLength.length, completed, name: course.name, id: course.id, trail: course.trail };
-    })
+      return {
+        lessonsLength: lessonsLength.length,
+        userLessonsLength: userLessonsLength.length,
+        completed,
+        name: course.name,
+        id: course.id,
+        trail: course.trail,
+      };
+    });
 
     return response.status(200).json({ maxLessons, user });
   } catch (error) {

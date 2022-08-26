@@ -13,6 +13,7 @@ router.post("/user-profile", UserController.profile);
 router.get("/user/:email", UserController.getUserByEmail);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
+// http://localhost:5432/api/user/watched/lucas.paula@rethink.dev?trailId="idDoAcademy"
 
 router.post("/trail", TrailController.create);
 router.get("/trail", TrailController.getAll);

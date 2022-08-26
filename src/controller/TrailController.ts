@@ -9,7 +9,6 @@ const create = async (request: Request, response: Response) => {
         name,
         weight,
         description,
-        
       },
     });
     return response
@@ -24,11 +23,11 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const trail = await prismaInstance.$queryRaw`
-    select * from "Trail"
-    order by 
-      (substring("weight", '^[0-9]+'))::int, 
-      substring("weight", '[^0-9_].*$')
+    // Reference: https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access
+    const trail = await prismaInstance.$queryRaw` 
+    SELECT * FROM Trail
+    ORDER BY 
+      ${"asc"}
     `;
 
     return response.status(200).json({ trail });
@@ -40,7 +39,7 @@ const getAll = async (request: Request, response: Response) => {
 };
 
 const update = async (request: Request, response: Response) => {
-  const { name, description } = request.body;
+  const { name, description, weight } = request.body;
   const { id } = request.params;
   try {
     const trail = await prismaInstance.trail.update({
@@ -48,6 +47,7 @@ const update = async (request: Request, response: Response) => {
       data: {
         name,
         description,
+        weight,
       },
     });
 

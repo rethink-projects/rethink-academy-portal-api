@@ -2,6 +2,14 @@ import { PrismaClient, Roles, Levels } from "@prisma/client";
 
 const users = [
   {
+    id: "idDaMonteiro",
+    name: "Marcela",
+    surname: "Monteiro",
+    email: "marcela.monteiro@rethink.dev",
+    role: "TEACHER",
+  },
+  {
+    id: "idDoPrado",
     name: "Filipe",
     surname: "Prado",
     email: "filipe.prado@rethink.dev",
@@ -100,7 +108,19 @@ const trails = [
     weight: 3,
   },
 ];
-
+const courses = [
+  {
+    id: "asjkdhasjkdh",
+    name: "JavaScript",
+    description: "Curso completo de JavaScript",
+    workload: 100,
+    learning: "Um montão de coisas",
+    skills: "um montão de de habilidades",
+    trailId: "idDoAcademy",
+    teacherId: "idDoPrado",
+    level: "HIGH",
+  },
+];
 const modules = [
   {
     id: "iudhfiodjasl",
@@ -118,24 +138,12 @@ const lessons = [
     description: "Aqui está a descrição da primeira aula, que é de JavaScript",
   },
 ];
-const courses = [
-  {
-    id: "asjkdhasjkdh",
-    name: "JavaScript",
-    description: "Curso completo de JavaScript",
-    workload: 100,
-    learning: "Um montão de coisas",
-    skills: "um montão de de habilidades",
-    trailId: "idDoAcademy",
-    teacherId: "idDoPrimeiroTeacher",
-    level: "HIGH",
-  },
-];
 
 async function userSeeder(prisma: PrismaClient): Promise<void> {
   for (const user of users) {
     await prisma.user.create({
       data: {
+        id: user.id,
         name: user.name,
         role: user.role as Roles,
         surname: user.surname,
