@@ -25,7 +25,7 @@ model User {
   email   String   @unique
   name    String?
   surname String?
-  title   Titles?  @default(ENGINEERING)
+  main    Titles?  @default(ENGINEERING)
   role    Roles?   @default(STUDENT)
   profile Profile?
 

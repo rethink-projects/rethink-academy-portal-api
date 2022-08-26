@@ -80,16 +80,19 @@ const getAll = async (request: Request, response: Response) => {
 
 const getUserByEmail = async (request: Request, response: Response) => {
   const { email } = request.params;
-  console.log({ params: request.params });
 
   try {
-    const user = await prismaInstance.user.findUnique({
-      where: { email },
+    console.log({ email });
+    const user = await prismaInstance.user.findFirst({
+      where: { email: "gabriel.gomes@rethink.dev" },
       include: {
         profile: true,
       },
     });
-    return response.status(200).json({ user });
+    console.log("{ user }");
+    console.log({ user });
+
+    return response.status(200).json(user);
   } catch (error) {
     return response
       .status(400)
