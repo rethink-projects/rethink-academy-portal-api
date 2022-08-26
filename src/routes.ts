@@ -4,11 +4,12 @@ import NoteController from "./controller/NoteController";
 import UserController from "./controller/UserController";
 
 const router = Router();
+router.get("/user/:email", UserController.getUserByEmail);
 
+router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user-profile", UserController.profile);
-
-router.get("/user/:id", UserController.getUserById);
+router.get("/users", UserController.getUsersByTitle);
 
 router.get("/note/:email", NoteController.getNotesByUser);
 router.post("/note", NoteController.create);
