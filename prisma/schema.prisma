@@ -63,6 +63,7 @@ model Trail {
   name    String   @unique
   description String
   weight Int
+  imageUrl String
   course Course[]
   
   @@map("trail")

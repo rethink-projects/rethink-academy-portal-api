@@ -9,13 +9,14 @@ type TrailType = {
 }
 
 const create = async (request: Request, response: Response) => {
-  const { name, description, weight }: TrailType = request.body;
+  const { name, description, weight, imageUrl }: TrailType = request.body;
   try {
     const trail = await prismaInstance.trail.create({
       data: {
         name,
         weight,
         description,
+        imageUrl,
       },
     });
     return response
@@ -47,7 +48,7 @@ const getAll = async (request: Request, response: Response) => {
 };
 
 const update = async (request: Request, response: Response) => {
-  const { name, description } = request.body;
+  const { name, description, imageUrl } = request.body;
   const { id } = request.params;
   try {
     const trail = await prismaInstance.trail.update({
@@ -55,6 +56,7 @@ const update = async (request: Request, response: Response) => {
       data: {
         name,
         description,
+        imageUrl,
       },
     });
 
