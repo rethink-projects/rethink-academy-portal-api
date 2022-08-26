@@ -165,5 +165,29 @@ const getWatched = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+const getWatchedList = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  try {
+    const watchedList = await prismaInstance.user.findUnique({
+      where: { email },
+      select: {
+        watched: true,
+      },
+    });
 
-export default { create, profile, getUserByEmail, createWatched, getWatched };
+    return response.status(200).json(watchedList);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default {
+  create,
+  profile,
+  getUserByEmail,
+  createWatched,
+  getWatched,
+  getWatchedList,
+};

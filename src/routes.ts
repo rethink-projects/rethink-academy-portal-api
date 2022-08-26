@@ -13,6 +13,7 @@ router.post("/user-profile", UserController.profile);
 router.get("/user/:email", UserController.getUserByEmail);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
+router.get("/user/watched/list/:email", UserController.getWatchedList);
 // http://localhost:5432/api/user/watched/lucas.paula@rethink.dev?trailId="idDoAcademy"
 
 router.post("/trail", TrailController.create);
@@ -22,20 +23,21 @@ router.delete("/trail/:id", TrailController.deleteById);
 
 router.get("/course", CourseController.getAll);
 router.get("/course/:id", CourseController.getById);
+router.get("/course/:id/modules", CourseController.getCourseModules);
 router.post("/course", CourseController.create);
 router.delete("/course/:id", CourseController.deleteById);
 router.put("/course/:id", CourseController.update);
-
-router.get("/lesson", LessonController.getAll);
-router.get("/lesson/:id", LessonController.getById);
-router.post("/lesson", LessonController.create);
-router.delete("/lesson/:id", LessonController.deleteById);
-router.put("/lesson/:id", LessonController.update);
 
 router.post("/module", ModuleController.create);
 router.get("/module", ModuleController.getAll);
 router.get("/module/:id", ModuleController.getById);
 router.put("/module/:id", ModuleController.update);
 router.delete("/module/:id", ModuleController.deleteById);
+
+router.get("/lesson", LessonController.getAll);
+router.get("/lesson/:id", LessonController.getById);
+router.post("/lesson", LessonController.create);
+router.delete("/lesson/:id", LessonController.deleteById);
+router.put("/lesson/:id", LessonController.update);
 
 export { router };

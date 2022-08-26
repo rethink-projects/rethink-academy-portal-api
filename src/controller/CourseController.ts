@@ -23,7 +23,6 @@ const create = async (request: Request, response: Response) => {
         skills,
         trailId,
         teacherId,
-
       },
     });
     return response
@@ -56,6 +55,29 @@ const getById = async (request: Request, response: Response) => {
     });
 
     return response.status(200).json({ course });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+const getCourseModules = async (request: Request, response: Response) => {
+  const { id } = request.params;
+  try {
+    const modules = await prismaInstance.module.findMany({
+      where: {
+        courseId: {
+          equals: id,
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        lessons: true,
+      },
+    });
+
+    return response.status(200).json({ modules });
   } catch (error) {
     return response
       .status(400)
@@ -115,4 +137,11 @@ const deleteById = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
-export default { create, getAll, update, deleteById, getById };
+export default {
+  create,
+  getAll,
+  update,
+  deleteById,
+  getById,
+  getCourseModules,
+};
