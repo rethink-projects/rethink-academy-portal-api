@@ -11,6 +11,7 @@ type StickerNotesProps = {
 const getStickerNotesByUserEmail = async (request: Request, response: Response) => {
   try {
     const { email }: { email?: string } = request.params;
+    console.log(email)
 
     const user = await prismaInstance.user.findFirst({
       where: { email },
@@ -36,11 +37,9 @@ const createstickerNotes = async (request: Request, response: Response) => {
   try {
     const {
       description,
-      data,
-      priority,
       email,
     }: StickerNotesProps = request.body;
-    console.log(request.body)
+
     if (!email) throw new Error("Email obrigatório");
 
     const user = await prismaInstance.user.findFirst({
@@ -51,8 +50,8 @@ const createstickerNotes = async (request: Request, response: Response) => {
     const stickerNotes = await prismaInstance.stickerNotes.create({
       data: {
         description,
-        data,
-        priority,
+        data: new Date(),
+        priority: 3,
         userId: user.id,
       },
     });
@@ -89,26 +88,17 @@ const updateStickerNotes = async (request: Request, response: Response) => {
   const { id } = request.params;
   const {
     description,
-    data,
     priority,
-    email,
-  }: StickerNotesProps = request.body;
+  }: StickerNotesProps = request.body;  
 
-  if (!email) throw new Error("Email obrigatório");
-
-  const user = await prismaInstance.user.findFirst({
-    where: { email },
-  });
-  if (!user) throw new Error("Usuário não encontrado");
+  console.log(request.body)
 
   try {
     const stickerNotes = await prismaInstance.stickerNotes.update({
       where: {id},
       data: {
         description,
-        data,
         priority,
-        userId: user.id,
       },
     });
 
@@ -122,4 +112,20 @@ const updateStickerNotes = async (request: Request, response: Response) => {
   }
 };
 
-export default { getStickerNotesByUserEmail, createstickerNotes, removeStickerNotes, updateStickerNotes };
+const getStickerNotesById = async (request: Request, response: Response) => {
+  try {
+    const { id }: { id?: string } = request.params;
+
+    const stickerNotes = await prismaInstance.stickerNotes.findFirst({
+      where: { id },
+    });
+
+    return response.status(200).json({ stickerNotes });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default { getStickerNotesByUserEmail, createstickerNotes, removeStickerNotes, updateStickerNotes, getStickerNotesById };
