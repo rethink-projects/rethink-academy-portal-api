@@ -20,6 +20,14 @@ const getStickerNotesByUserEmail = async (request: Request, response: Response) 
     if (!user) throw new Error("Usuário não encontrado");
 
     const stickerNotes = await prismaInstance.stickerNotes.findMany({
+      orderBy: [
+        {
+          priority: 'asc',
+        },
+        {
+          description: 'asc',
+        },
+      ],
       where: {
         userId: user.id,
       },
