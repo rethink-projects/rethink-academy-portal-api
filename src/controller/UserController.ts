@@ -60,10 +60,31 @@ const profile = async (request: Request, response: Response) => {
   }
 };
 
+const getAll = async (request: Request, response: Response) => {
+  try {
+    const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
+      request.query;
+
+    const users = await prismaInstance.user.findMany({
+      where: { main: main },
+      include: {
+        profile: true,
+      },
+    });
+    return response.status(200).json(users);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
 const getUserByEmail = async (request: Request, response: Response) => {
   const { email } = request.params;
+  console.log({ params: request.params });
+
   try {
-    const user = await prismaInstance.user.findFirst({
+    const user = await prismaInstance.user.findUnique({
       where: { email },
       include: {
         profile: true,
@@ -155,4 +176,4 @@ const getWatched = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserByEmail, createWatched, getWatched };
+export default { create, profile, getAll, getUserByEmail, createWatched, getWatched };

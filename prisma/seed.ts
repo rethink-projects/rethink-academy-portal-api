@@ -1,122 +1,105 @@
 import { Levels, PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-// const embassadors = [
-//   {
-//     name: "Filipe",
-//     surname: "Prado",
-//     email: "filipe.prado@rethink.dev",
-//   },
-//   {
-//     name: "Leticia",
-//     surname: "Lange",
-//     email: "leticia.lange@rethink.dev",
-//   },
-//   {
-//     name: "Priscila",
-//     surname: "Ritschel",
-//     email: "priscila.ritschel@rethink.dev",
-//   },
-// ];
+const embassadors: {
+  name: string;
+  surname: string;
+  email: string;
+  title: "ENGINEERING" | "DESIGN" | "PRODUCT";
+}[] = [
+    {
+      name: "Filipe",
+      surname: "Prado",
+      email: "filipe.prado@rethink.dev",
+      main: "ENGINEERING",
+      role: "RETHINKER"
+    },
+    {
+      name: "Leticia",
+      surname: "Lange",
+      email: "leticia.lange@rethink.dev",
+      main: "DESIGN",
+      role: "RETHINKER"
+    },
+    {
+      name: "Priscila",
+      surname: "Ritschel",
+      email: "priscila.ritschel@rethink.dev",
+      main: "PRODUCT",
+      role: "RETHINKER"
+    },
+  ];
 
-const students = [
-  {
-    id: "1",
-    name: "Amanda",
-    surname: "Duarte",
-    email: "amanda.duarte@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-  },
-  {
-    id: "2",
-    name: "Gabriel",
-    surname: "Melo",
-    email: "gabriel.melo@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-  },
-  {
-    id: "3",
-    name: "Ana",
-    surname: "Ramos",
-    email: "ana.ramos@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-  },
-  {
-    id: "4",
-    name: "Felipe",
-    surname: "Reggiane",
-    email: "felipe.reggiane@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-
-  },
-  {
-    id: "5",
-    name: "Fernando",
-    surname: "Henrique",
-    email: "fernando.henrique@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-  },
-  {
-    id: "6",
-    name: "Fabiana",
-    surname: "Kamo",
-    email: "fabiana.kamo@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-  },
-  {
-    id: "7",
-    name: "Carolina",
-    surname: "Valeriano ",
-    email: "carolina.valeriano@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-
-  },
-  {
-    id: "8",
-    name: "Lucas",
-    surname: "Araujo",
-    email: "lucas.paula@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-
-  },
-  {
-    id: "9",
-    name: "Sthéphany",
-    surname: "Tezza",
-    email: "sthephany.tezza@rethink.dev",
-    main: "Engenharia",
-    watched: ["1", "2", "3", "4", "5"],
-  },
-];
-
-const Teachers = [
-  {
-    id: "10",
-    name: "Filipe",
-    surname: "Prado",
-    email: "filipe@mail.com"
-  },
-  {
-    id: "11",
-    name: "Gabriel",
-    surname: "Gomes",
-    email: "gabriel@mail.com"
-  },
-  {
-    id: "12",
-    name: "Arthur",
-    surname: "Vargas",
-    email: "arthur@mail.com"
-  },
-]
+const students: {
+  name: string;
+  surname: string;
+  email: string;
+  title: "ENGINEERING" | "DESIGN" | "PRODUCT";
+}[] = [
+    {
+      name: "Amanda",
+      surname: "Duarte",
+      email: "amanda.duarte@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Gabriel",
+      surname: "Melo",
+      email: "gabriel.melo@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Ana",
+      surname: "Ramos",
+      email: "ana.ramos@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Felipe",
+      surname: "Reggiane",
+      email: "felipe.reggiane@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Fernando",
+      surname: "Henrique",
+      email: "fernando.henrique@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Fabiana",
+      surname: "Kamo",
+      email: "fabiana.kamo@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Carolina",
+      surname: "Valeriano ",
+      email: "carolina.valeriano@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Lucas",
+      surname: "Araujo",
+      email: "lucas.paula@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+    {
+      name: "Sthéphany",
+      surname: "Tezza",
+      email: "sthephany.tezza@rethink.dev",
+      main: "ENGINEERING",
+      watched: ["1", "2", "3", "4", "5"],
+    },
+  ];
 
 const profiles = [
   {

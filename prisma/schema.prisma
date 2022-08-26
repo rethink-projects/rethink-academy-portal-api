@@ -27,12 +27,18 @@ enum Levels {
   HIGH
 }
 
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
+
 model User {
   id      String   @id @default(uuid())
   email   String   @unique
   name    String?
   surname String?
-  main String?
+  main   Main?  @default(ENGINEERING)
   watched String[]
   role    Roles @default(STUDENT)
   profile Profile?

@@ -7,6 +7,7 @@ import ModuleController from "./controller/ModuleController";
 
 const router = Router();
 
+router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user-profile", UserController.profile);
 
