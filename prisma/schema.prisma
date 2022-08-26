@@ -15,12 +15,6 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-// datasource db {
-//   provider = "sqlite"
-//   url      = "file:./dev.db"
-// }
-
-
 enum Roles {
   STUDENT
   EMBASSADOR
@@ -59,7 +53,7 @@ model Profile {
 }
 
 model Trail {
-  id      String   @id
+  id      String    @id @default(uuid())
   name    String   @unique
   description String
   weight Int
@@ -69,7 +63,7 @@ model Trail {
 }
 
 model Course {
-  id String @id
+  id String    @id @default(uuid())
   name String
   description String
   level Levels
@@ -86,7 +80,7 @@ model Course {
 }
 
 model Lesson {
-  id String @id
+  id String    @id @default(uuid())
   name String
   embedUrl String
   order Int
@@ -106,22 +100,3 @@ model Module {
 
   @@map("module")
 }
-
-// model Whatched {
-//   id String @id
-//   user User @relation(fields: [userId], references: [id])
-//   userId String @unique
-
-//   @@map("whatched")
-
-// }
-
-// model Teacher {
-//   id String @id
-//   name String
-//   office String
-//   avatar String
-//   course Course[]
-
-//   @@map("teacher")
-// }

@@ -114,10 +114,9 @@ const getWatched = async (request: Request, response: Response) => {
       where: { email },
     });
 
-    const { trailId } = request.query;
-    console.log(trailId)
+    const { trailId }: { trailId?: string } = request.query;
     const courses = await prismaInstance.course.findMany({
-      where: trailId ? { trailId } : {},
+      where: { trailId },
       include: {
         trail: true,
         modules: {

@@ -1,8 +1,15 @@
 import { Request, Response } from "express";
+import internal from "stream";
 import { prismaInstance } from "../../database/prismaClient";
 
+type TrailType = {
+  name: string;
+  description: string;
+  weight: number;
+}
+
 const create = async (request: Request, response: Response) => {
-  const { name, description, weight } = request.body;
+  const { name, description, weight }: TrailType = request.body;
   try {
     const trail = await prismaInstance.trail.create({
       data: {
