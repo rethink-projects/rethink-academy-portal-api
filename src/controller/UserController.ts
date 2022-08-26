@@ -58,13 +58,14 @@ const profile = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+
 const getAll = async (request: Request, response: Response) => {
   try {
     const { title }: { title?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
       request.query;
 
     const users = await prismaInstance.user.findMany({
-      where: { title: title },
+      where: { title },
       include: {
         profile: true,
       },
@@ -76,6 +77,7 @@ const getAll = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+
 const getUserByEmail = async (request: Request, response: Response) => {
   const { email } = request.params;
   console.log({ params: request.params });
@@ -95,4 +97,38 @@ const getUserByEmail = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserByEmail, getAll };
+const update = async (request: Request, response: Response) => {
+  try {
+    const {
+      role,
+      name,
+      surname,
+      title,
+    }: {
+      email: string;
+      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      name?: string;
+      surname?: string;
+      title?: "ENGINEERING" | "DESIGN" | "PRODUCT";
+    } = request.body;
+    const email: string = request.params.email;
+    const updatedUser = await prismaInstance.user.update({
+      where: {
+        email,
+      },
+      data: {
+        role,
+        name,
+        surname,
+        title,
+      },
+    });
+    return response.status(200).json({ updatedUser });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default { create, profile, getUserByEmail, getAll, update };
