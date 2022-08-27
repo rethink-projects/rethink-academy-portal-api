@@ -89,7 +89,7 @@ model Lesson {
   id          String @id @default(uuid())
   name        String
   embedUrl    String
-  order       Int
+  order       Int 
   description String
   module      Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId    String

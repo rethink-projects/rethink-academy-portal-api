@@ -11,6 +11,7 @@ router.post("/user", UserController.create);
 router.post("/user-profile", UserController.profile);
 
 router.get("/user/:email", UserController.getUserByEmail);
+router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
 router.get("/user/watched/list/:email", UserController.getWatchedList);

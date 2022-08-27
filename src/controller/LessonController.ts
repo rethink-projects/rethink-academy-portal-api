@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-  const { name, description, embedUrl, order, module } = request.body;
+  const { name, description, embedUrl, order, moduleId } = request.body;
   try {
     const lesson = await prismaInstance.lesson.create({
       data: {
@@ -10,7 +10,7 @@ const create = async (request: Request, response: Response) => {
         embedUrl,
         order,
         description,
-        module,
+        moduleId,
       },
     });
     return response
