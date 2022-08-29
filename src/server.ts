@@ -8,9 +8,9 @@ import { router } from "./routes";
 
 dotenv.config();
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(cors());
 app.use(expressStatusMonitor());
 app.use("/api", router);
 

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-  const { email, role, name, surname } = request.body;
+  const { email, role, name, surname, main } = request.body;
   try {
     if (!email) {
       return response
@@ -14,6 +14,7 @@ const create = async (request: Request, response: Response) => {
         name,
         surname,
         email,
+        main,
         role,
       },
     });
@@ -58,13 +59,14 @@ const profile = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+
 const getAll = async (request: Request, response: Response) => {
   try {
     const { title }: { title?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
       request.query;
 
     const users = await prismaInstance.user.findMany({
-      where: { title: title },
+      // where: { title: title },
       include: {
         profile: true,
       },
@@ -76,6 +78,7 @@ const getAll = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+
 const getUserByEmail = async (request: Request, response: Response) => {
   const { email } = request.params;
   console.log({ params: request.params });
@@ -85,6 +88,7 @@ const getUserByEmail = async (request: Request, response: Response) => {
       where: { email },
       include: {
         profile: true,
+        course: true,
       },
     });
     return response.status(200).json({ user });
@@ -95,4 +99,66 @@ const getUserByEmail = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserByEmail, getAll };
+const getWatched = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  try {
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+    });
+
+    const { trailId }: { trailId?: string } = request.query;
+    const courses = await prismaInstance.course.findMany({
+      where: { trailId },
+      // select: {
+      //   type: true,
+      // },
+      include: {
+        trail: true,
+        modules: {
+          include: {
+            lessons: true,
+          },
+        },
+      },
+    });
+
+    const maxLessons = courses.map((course) => {
+      let lessonsLength: any = [];
+      let userLessonsLength: any = [];
+      course.modules.map((module) => {
+        module.lessons.map((lesson) => {
+          if (user?.watched.includes(lesson.id)) {
+            userLessonsLength.push(lesson.id);
+          }
+          lessonsLength.push(lesson.id);
+        });
+      });
+
+      let completed: boolean = false;
+      if (
+        lessonsLength.length !== 0 &&
+        lessonsLength.length == userLessonsLength.length
+      ) {
+        completed = true;
+      }
+
+      return {
+        lessonsLength: lessonsLength.length,
+        userLessonsLength: userLessonsLength.length,
+        completed,
+        name: course.name,
+        id: course.id,
+        trail: course.trail,
+        type: course.type,
+      };
+    });
+
+    return response.status(200).json({ maxLessons, user });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default { create, profile, getUserByEmail, getAll, getWatched };
