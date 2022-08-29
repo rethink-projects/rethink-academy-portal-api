@@ -11,12 +11,12 @@ CREATE TABLE "user" (
 CREATE TABLE "tasks" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "name" TEXT NOT NULL,
-    "data" DATETIME NOT NULL,
+    "taskDate" DATETIME NOT NULL,
     "startTime" TEXT NOT NULL,
     "endTime" TEXT NOT NULL,
-    "Tags" TEXT NOT NULL,
-    "Status" TEXT NOT NULL,
-    "Description" TEXT NOT NULL,
+    "tags" TEXT NOT NULL DEFAULT 'tags',
+    "status" TEXT NOT NULL DEFAULT 'status',
+    "description" TEXT NOT NULL DEFAULT 'description',
     "userId" TEXT NOT NULL,
     CONSTRAINT "tasks_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

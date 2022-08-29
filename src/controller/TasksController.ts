@@ -3,36 +3,66 @@ import { prismaInstance } from "../../database/prismaClient";
 
 type TasksProps = {
   name: string;
-  data: string;
+  description: string;
+  taskDate: string;
   startTime: string;
   endTime: string;
   tags: string;
   status: string;
-  description: string;
-  email: string;
+  userEmail: string;
+};
+
+type TasksPropsUpdate = {
+  name?: string;
+  description?: string;
+  taskDate?: string;
+  startTime?: string;
+  endTime?: string;
+  tags?: string;
+  status?: string;
 };
 
 const getTaskByUserEmail = async (request: Request, response: Response) => {
   try {
-    const { email }: { email?: string } = request.params;
+    const { email } = request.params;
+    const {
+      startDate,
+      endDate,
+    }: { email?: string; startDate?: Date; endDate?: string } = request.query;
 
     const user = await prismaInstance.user.findFirst({
       where: { email },
     });
+    // console.log({ startDate });
+    // console.log({ endDate });
 
-    if (!user) throw new Error("Usuário não encontrado");
+    //   lte: new Date(2022, 7, 29).toISOString(),
+    //   gte: new Date(2022, 7, 23).toISOString(),
 
-    const tasks = await prismaInstance.tasks.findMany({
+    let msg: any = "Sem parâmetros starDate endDate";
+
+    let AND: any = [];
+    if (email) {
+      AND.push({ userId: user!.id });
+    }
+
+    if (startDate && endDate) {
+      AND.push({ taskDate: { gte: new Date(startDate) } });
+      AND.push({ taskDate: { lte: new Date(endDate) } });
+      msg = { startDate, endDate };
+    }
+
+    const studentTasks = await prismaInstance.tasks.findMany({
       where: {
-        userId: user.id,
+        AND,
       },
     });
 
-    return response.status(200).json({ tasks });
+    return response.status(200).json({ msg, studentTasks });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -40,25 +70,25 @@ const createTask = async (request: Request, response: Response) => {
   try {
     const {
       name,
-      data,
+      taskDate,
       startTime,
       endTime,
       tags,
       status,
       description,
-      email,
+      userEmail,
     }: TasksProps = request.body;
-    if (!email) throw new Error("Email obrigatório");
+    if (!userEmail) throw new Error("Email obrigatório");
 
     const user = await prismaInstance.user.findFirst({
-      where: { email },
+      where: { email: userEmail },
     });
     if (!user) throw new Error("Usuário não encontrado");
 
     const task = await prismaInstance.tasks.create({
       data: {
         name,
-        data,
+        taskDate,
         startTime,
         endTime,
         tags,
@@ -73,9 +103,10 @@ const createTask = async (request: Request, response: Response) => {
       message: `Task criado com sucesso para o user: ${user.id}`,
     });
   } catch (error) {
+    console.log({ error });
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -83,16 +114,14 @@ const removeTask = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {
     await prismaInstance.tasks.delete({
-      where: {id},
+      where: { id },
     });
 
-    return response
-      .status(200)
-      .json({ message: "Task deletada com sucesso." });
+    return response.status(200).json({ message: "Task deletada com sucesso." });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -100,34 +129,25 @@ const updateTask = async (request: Request, response: Response) => {
   const { id } = request.params;
   const {
     name,
-    data,
+    taskDate,
     startTime,
     endTime,
     tags,
     status,
     description,
-    email,
-  }: TasksProps = request.body;
-
-  if (!email) throw new Error("Email obrigatório");
-
-  const user = await prismaInstance.user.findFirst({
-    where: { email },
-  });
-  if (!user) throw new Error("Usuário não encontrado");
+  }: TasksPropsUpdate = request.body;
 
   try {
     const task = await prismaInstance.tasks.update({
-      where: {id},
+      where: { id },
       data: {
         name,
-        data,
+        taskDate,
         startTime,
         endTime,
         tags,
         status,
         description,
-        userId: user.id,
       },
     });
 
@@ -137,7 +157,7 @@ const updateTask = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
