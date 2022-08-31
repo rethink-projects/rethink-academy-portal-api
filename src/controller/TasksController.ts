@@ -11,6 +11,8 @@ type TasksProps = {
   tags: string;
   status: string;
   userEmail: string;
+  duration: string;
+  time: string;
 };
 
 type TasksPropsUpdate = {
@@ -21,6 +23,33 @@ type TasksPropsUpdate = {
   endTime?: string;
   tags?: string;
   status?: string;
+};
+
+const timeKeeper = (time: string) => {
+  const interval = time.split(":");
+  const realTime = parseInt(interval[0]) * 60 + parseInt(interval[1]);
+  return realTime;
+};
+
+const convertTime = (time: number) => {
+  let hours = time / 60;
+  let minutes = time % 60;
+
+  const timeConvert = {
+    hours: Math.trunc(hours),
+    minutes: minutes,
+  };
+
+  return timeConvert;
+};
+
+const timeToString = (time: number) => {
+  let hours = Math.trunc(time / 60);
+  let minutes = time % 60;
+
+  return `${hours < 10 ? "0" + hours : hours}:${
+    minutes < 10 ? "0" + minutes : minutes
+  }`;
 };
 
 const getTaskByUserEmail = async (request: Request, response: Response) => {
@@ -53,13 +82,30 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
       msg = { startDate, endDate };
     }
 
-    const studentTasks = await prismaInstance.tasks.findMany({
+    const tasks = await prismaInstance.tasks.findMany({
       where: {
         AND,
       },
     });
 
-    return response.status(200).json({ msg, studentTasks });
+    const studentTasks = tasks.map((task) => ({
+      ...task,
+      duration: timeToString(
+        timeKeeper(task.endTime) - timeKeeper(task.startTime)
+      ),
+    }));
+
+    const arrayHelper: any[] = [];
+
+    // for (const key in helper) {
+    //   arrayHelper.push({
+    //     title: key,
+    //     realTime: helper[key].realTime,
+    //     ...convertTime(helper[key].realTime),
+    //   });
+    // }
+
+    return response.status(200).json({ msg, studentTasks, arrayHelper });
   } catch (error) {
     return response
       .status(400)
@@ -160,24 +206,6 @@ const updateTask = async (request: Request, response: Response) => {
       .status(400)
       .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
-};
-
-const timeKeeper = (time: string) => {
-  const interval = time.split(":");
-  const realTime = parseInt(interval[0]) * 60 + parseInt(interval[1]);
-  return realTime;
-};
-
-const convertTime = (time: number) => {
-  let hours = time / 60;
-  let minutes = time % 60;
-
-  const timeConvert = {
-    hours: Math.trunc(hours),
-    minutes: minutes,
-  };
-
-  return timeConvert;
 };
 
 const getGroupTaskByTag = async (request: Request, response: Response) => {
