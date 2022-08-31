@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import BucketController from "./controller/BucketController";
 import EvaluateController from "./controller/EvaluateController";
 import ContractInfoController from "./controller/ContractInfoController";
 import NoteController from "./controller/NoteController";
@@ -11,6 +12,9 @@ router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 router.post("/user-profile", UserController.profile);
+
+router.get("/bucket", BucketController.getBucket);
+router.post("/bucket", BucketController.upsert);
 
 router.get("/note/:email", NoteController.getNotesByUser);
 router.post("/note", NoteController.create);

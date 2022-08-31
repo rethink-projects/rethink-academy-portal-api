@@ -48,6 +48,7 @@ model User {
   // main     Titles?    @default(ENGINEERING)
   profile       Profile?
   monthEvaluate MonthEvaluate[]
+  bucket        Bucket[]
 
   @@map("user")
 }
@@ -106,4 +107,12 @@ model MonthEvaluate {
   skill6    Float
 
   @@map("monthEvaluate")
+}
+
+model Bucket {
+  id     String @id @default(uuid())
+  title  String
+  url    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
