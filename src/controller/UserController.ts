@@ -102,7 +102,6 @@ const createWatched = async (request: Request, response: Response) => {
   const { email } = request.params;
   const { watchedId } = request.body;
   try {
-
     const user = await prismaInstance.user.findFirst({
       where: { email },
       select: {
@@ -130,7 +129,6 @@ const createWatched = async (request: Request, response: Response) => {
 const getWatched = async (request: Request, response: Response) => {
   const { email } = request.params;
   try {
-
     const user = await prismaInstance.user.findFirst({
       where: { email },
     });
@@ -142,10 +140,11 @@ const getWatched = async (request: Request, response: Response) => {
         trail: true,
         modules: {
           include: {
-            lessons: true
-          }
-        }
-      }
+            course: true,
+            lessons: true,
+          },
+        },
+      },
     });
 
     const maxLessons = courses.map((course) => {
@@ -161,12 +160,23 @@ const getWatched = async (request: Request, response: Response) => {
       });
 
       let completed: boolean = false;
-      if (lessonsLength.length !== 0 && lessonsLength.length == userLessonsLength.length) {
+      if (
+        lessonsLength.length !== 0 &&
+        lessonsLength.length == userLessonsLength.length
+      ) {
         completed = true;
       }
 
-      return { lessonsLength: lessonsLength.length, userLessonsLength: userLessonsLength.length, completed, name: course.name, id: course.id, trail: course.trail };
-    })
+      return {
+        lessonsLength: lessonsLength.length,
+        userLessonsLength: userLessonsLength.length,
+        completed,
+        name: course.name,
+        id: course.id,
+        trail: course.trail,
+        type: course.type,
+      };
+    });
 
     return response.status(200).json({ maxLessons, user });
   } catch (error) {
@@ -176,4 +186,11 @@ const getWatched = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getAll, getUserByEmail, createWatched, getWatched };
+export default {
+  create,
+  profile,
+  getAll,
+  getUserByEmail,
+  createWatched,
+  getWatched,
+};

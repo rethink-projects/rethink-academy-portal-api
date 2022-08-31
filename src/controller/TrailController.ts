@@ -6,7 +6,8 @@ type TrailType = {
   name: string;
   description: string;
   weight: number;
-}
+  imageUrl: string;
+};
 
 const create = async (request: Request, response: Response) => {
   const { name, description, weight, imageUrl }: TrailType = request.body;
@@ -31,13 +32,11 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const trail = await prismaInstance.trail.findMany(
-      {
-        orderBy: {
-          weight: "asc"
-        }
-      }
-    );
+    const trail = await prismaInstance.trail.findMany({
+      orderBy: {
+        weight: "asc",
+      },
+    });
 
     return response.status(200).json({ trail });
   } catch (error) {
@@ -46,6 +45,47 @@ const getAll = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+
+const getTrailById = async (request: Request, response: Response) => {
+  try {
+    const { id } = request.params;
+    const trail = await prismaInstance.trail.findUnique({
+      where: {
+        id,
+      },
+      // include: {
+      //   course: {
+      //     include: {
+      //       trail: true,
+      //     },
+      //   },
+      // },
+      // include: {
+      // teacher: true,
+      // trail: true,
+      // },
+    });
+
+    return response.json({ trail });
+  } catch (error) {
+    return response.json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+//   try {
+//     const user = await prismaInstance.user.findUnique({
+//       where: { email },
+//       include: {
+//         profile: true,
+//       },
+//     });
+//     return response.status(200).json({ user });
+//   } catch (error) {
+//     return response
+//       .status(400)
+//       .json({ message: "Algo de errado aconteceu.", error });
+//   }
+// };
 
 const update = async (request: Request, response: Response) => {
   const { name, description, imageUrl } = request.body;
@@ -86,4 +126,4 @@ const deleteById = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
-export default { create, getAll, update, deleteById };
+export default { create, getAll, update, deleteById, getTrailById };

@@ -49,7 +49,7 @@ model User {
   watched String[]
   role    Roles @default(STUDENT)
   profile Profile?
-  course Course[]
+  // course  Course[]
 
   @@map("user")
 }
@@ -86,10 +86,14 @@ model Course {
   skills String
   trail   Trail    @relation(fields: [trailId], references: [id])
   trailId String
-  teacher User @relation(fields: [teacherId], references: [id])
-  teacherId String
   modules Module[]
-  type Types?
+  type Types
+  // teacher User @relation(fields: [teacherId], references: [id])
+  // teacherId String
+
+  teacherName String
+  teacherDescription String
+  imageTeacher String
 
   @@map("course")
 }

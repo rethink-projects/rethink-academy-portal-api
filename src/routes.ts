@@ -17,6 +17,8 @@ router.get("/user/watched/:email", UserController.getWatched);
 
 router.post("/trail", TrailController.create);
 router.get("/trail", TrailController.getAll);
+// router.get("/trail/:id", TrailController.getTrailById);
+router.get("/trail/:id", TrailController.getTrailById);
 router.put("/trail/:id", TrailController.update);
 router.delete("/trail/:id", TrailController.deleteById);
 
