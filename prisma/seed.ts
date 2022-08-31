@@ -1,184 +1,170 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const embassadors: {
+const students: {
   name: string;
   surname: string;
   email: string;
-  title: "ENGINEERING" | "DESIGN" | "PRODUCT";
+  main: "ENGINEERING" | "DESIGN" | "PRODUCT";
+  role?: "EMBASSADOR";
 }[] = [
+  {
+    name: "Gabriel",
+    surname: "Gomes",
+    email: "gabriel.gomes@rethink.dev",
+    main: "ENGINEERING",
+    role: "EMBASSADOR",
+  },
   {
     name: "Filipe",
     surname: "Prado",
     email: "filipe.prado@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
+    role: "EMBASSADOR",
   },
   {
     name: "Leticia",
     surname: "Lange",
     email: "leticia.lange@rethink.dev",
-    title: "DESIGN",
+    main: "DESIGN",
+    role: "EMBASSADOR",
   },
   {
     name: "Priscila",
     surname: "Ritschel",
     email: "priscila.ritschel@rethink.dev",
-    title: "PRODUCT",
+    main: "PRODUCT",
+    role: "EMBASSADOR",
   },
-];
-
-const students: {
-  name: string;
-  surname: string;
-  email: string;
-  title: "ENGINEERING" | "DESIGN" | "PRODUCT";
-}[] = [
   {
     name: "Marcela",
     surname: "Monteiro",
     email: "marcela.monteiro@rethink.dev",
-    title: "PRODUCT",
+    main: "PRODUCT",
+    role: "EMBASSADOR",
   },
   {
     name: "Michelli",
     surname: "Araujo",
     email: "michelli.arujo@rethink.dev",
-    title: "PRODUCT",
+    main: "PRODUCT",
   },
   {
     name: "hugo",
     surname: "carvalho",
     email: "hugo.carvalho@rethink.dev",
-    title: "PRODUCT",
+    main: "PRODUCT",
   },
   {
     name: "Bernado",
     surname: "Carvalho",
     email: "bernado.carvalho@rethink.dev",
-    title: "DESIGN",
+    main: "DESIGN",
   },
   {
     name: "Gustavo ",
     surname: "Fernando",
     email: "gustavo.silva@rethink.dev",
-    title: "DESIGN",
+    main: "DESIGN",
   },
   {
     name: "Luiza",
     surname: "Queiroz",
     email: "luiza.queiroz@rethink.dev",
-    title: "DESIGN",
+    main: "DESIGN",
   },
   {
     name: "Pedro",
     surname: "Silva",
     email: "pedro.lucas@rethink.dev",
-    title: "DESIGN",
+    main: "DESIGN",
   },
   {
     name: "Raiane",
     surname: "Bispo",
     email: "raiane.miguel@rethink.dev",
-    title: "DESIGN",
+    main: "DESIGN",
   },
   {
     name: "Igor",
     surname: "Ricardo",
     email: "igor.ricardo@rethink.dev",
-    title: "DESIGN",
+    main: "DESIGN",
   },
   {
     name: "Amanda",
     surname: "Duarte",
     email: "amanda.duarte@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
   {
     name: "Gabriel",
     surname: "Melo",
     email: "gabriel.melo@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
   {
     name: "Ana",
     surname: "Ramos",
     email: "ana.ramos@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
   {
     name: "Felipe",
     surname: "Reggiane",
     email: "felipe.reggiane@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
   {
     name: "Fernando",
     surname: "Henrique",
     email: "fernando.henrique@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
   {
     name: "Fabiana",
     surname: "Kamo",
     email: "fabiana.kamo@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
   {
     name: "Carolina",
     surname: "Valeriano ",
     email: "carolina.valeriano@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
   {
     name: "Lucas",
     surname: "Araujo",
     email: "lucas.paula@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
 
   {
     name: "Sthéphany",
     surname: "Tezza",
     email: "sthephany.tezza@rethink.dev",
-    title: "ENGINEERING",
+    main: "ENGINEERING",
   },
 ];
 async function main() {
-  students.forEach(async (student) => {
+  students.forEach(async ({ email, name, surname, main, role }) => {
     await prisma.user.upsert({
       where: {
-        email: student.email,
+        email: email,
       },
       update: {
-        name: student.name,
-        surname: student.surname,
-        title: student.title,
+        name: name,
+        surname: surname,
+        main: main,
+        role: role ?? "STUDENT",
       },
       create: {
-        name: student.name,
-        surname: student.surname,
-        email: student.email,
-        title: student.title,
-      },
-    });
-  });
-  embassadors.forEach(async (embassador) => {
-    await prisma.user.upsert({
-      where: {
-        email: embassador.email,
-      },
-      update: {
-        name: embassador.name,
-        surname: embassador.surname,
-        title: embassador.title,
-        role: "EMBASSADOR",
-      },
-      create: {
-        name: embassador.name,
-        surname: embassador.surname,
-        email: embassador.email,
-        title: embassador.title,
-        role: "EMBASSADOR",
+        name: name,
+        surname: surname,
+        email: email,
+        main: main,
+        role: role ?? "STUDENT",
       },
     });
   });

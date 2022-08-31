@@ -1,4 +1,5 @@
 import { Router } from "express";
+import BucketController from "./controller/BucketController";
 import UserController from "./controller/UserController";
 
 const router = Router();
@@ -8,5 +9,8 @@ router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 router.post("/user-profile", UserController.profile);
+
+router.get("/bucket", BucketController.getBucket);
+router.post("/bucket", BucketController.upsert);
 
 export { router };

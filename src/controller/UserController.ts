@@ -23,7 +23,7 @@ const create = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -55,17 +55,17 @@ const profile = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const { title }: { title?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
+    const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
       request.query;
 
     const users = await prismaInstance.user.findMany({
-      where: { title },
+      where: { main },
       include: {
         profile: true,
       },
@@ -74,7 +74,7 @@ const getAll = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -96,7 +96,7 @@ const getUserByEmail = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -106,13 +106,13 @@ const update = async (request: Request, response: Response) => {
       role,
       name,
       surname,
-      title,
+      main,
     }: {
       email: string;
       role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
       name?: string;
       surname?: string;
-      title?: "ENGINEERING" | "DESIGN" | "PRODUCT";
+      main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
     } = request.body;
     const email: string = request.params.email;
     const updatedUser = await prismaInstance.user.update({
@@ -123,14 +123,14 @@ const update = async (request: Request, response: Response) => {
         role,
         name,
         surname,
-        title,
+        main,
       },
     });
     return response.status(200).json({ updatedUser });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 

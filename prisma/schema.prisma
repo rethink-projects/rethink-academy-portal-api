@@ -28,6 +28,7 @@ model User {
   main    Titles?  @default(ENGINEERING)
   role    Roles?   @default(STUDENT)
   profile Profile?
+  bucket  Bucket[]
 
   @@map("user")
 }
@@ -47,4 +48,12 @@ model Profile {
   userId String  @unique
 
   @@map("profile")
+}
+
+model Bucket {
+  id     String @id @default(uuid())
+  title  String
+  url    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
 }
