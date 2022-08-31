@@ -88,7 +88,6 @@ const getUserByEmail = async (request: Request, response: Response) => {
       where: { email },
       include: {
         profile: true,
-        course: true,
       },
     });
     return response.status(200).json({ user });
