@@ -1,5 +1,5 @@
 export const skillLibrary = {
-  engineering: {
+  ENGINEERING: {
     BackEnd: "skill1",
     FrontEnd: "skill2",
     ["HTML e CSS"]: "skill3",
@@ -7,7 +7,7 @@ export const skillLibrary = {
     JavaScript: "skill5",
     TypeScript: "skill6",
   },
-  design: {
+  DESIGN: {
     Pesquisas: "skill1",
     ["Facilitação de Workshop"]: "skill2",
     ["Wireframe e Fluxo"]: "skill3",
@@ -15,7 +15,7 @@ export const skillLibrary = {
     ["Product Design"]: "skill5",
     ["Padronização e "]: "skill6",
   },
-  product: {
+  PRODUCT: {
     Produto: "skill1",
     Pessoas: "skill2",
     Processos: "skill3",
@@ -23,11 +23,19 @@ export const skillLibrary = {
     Performance: "skill5",
     Evolução: "skill6",
   },
+  SOFT: {
+    Empatia: "skill1",
+    ["Resolução de Problemas"]: "skill2",
+    Comunicação: "skill3",
+    ["Inteligencia emocial"]: "skill4",
+    Autoconfiança: "skill5",
+    ["Gestão de tempo"]: "skill6",
+  },
 };
 
 export type skillLibraryType = {
   value: number;
-  main: "engineering" | "design" | "product";
+  main: "ENGINEERING" | "DESIGN" | "PRODUCT" | "SOFT";
   userId: string;
   skill: string;
 };

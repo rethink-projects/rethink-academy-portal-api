@@ -58,9 +58,41 @@ const profile = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+
 const getAll = async (request: Request, response: Response) => {
   try {
-    const user = await prismaInstance.user.findMany();
+    const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
+      request.query;
+
+    const users = await prismaInstance.user.findMany({
+      where: { main },
+      include: {
+        profile: true,
+      },
+    });
+    return response.status(200).json(users);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+const getUserByEmail = async (request: Request, response: Response) => {
+  const { email } = request.params;
+
+  try {
+    console.log({ email });
+    const user = await prismaInstance.user.findFirst({
+      where: { email: "gabriel.gomes@rethink.dev" },
+      include: {
+        profile: true,
+        note: true,
+      },
+    });
+    console.log("{ user }");
+    console.log({ user });
+
     return response.status(200).json(user);
   } catch (error) {
     return response
@@ -68,29 +100,34 @@ const getAll = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
-const getUserByEmail = async (request: Request, response: Response) => {
-  const { email } = request.params;
-  console.log({ params: request.params });
 
+const update = async (request: Request, response: Response) => {
   try {
-    const user = await prismaInstance.user.findUnique({
-      where: { email },
-      include: {
-        profile: true,
-        note: true,
+    const {
+      role,
+      name,
+      surname,
+      main,
+    }: {
+      email: string;
+      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      name?: string;
+      surname?: string;
+      main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
+    } = request.body;
+    const email: string = request.params.email;
+    const updatedUser = await prismaInstance.user.update({
+      where: {
+        email,
+      },
+      data: {
+        role,
+        name,
+        surname,
+        main,
       },
     });
-    const userByEmail = await prismaInstance.user.findFirst({
-      where: { email: id },
-      include: {
-        profile: true,
-      },
-    });
-    if (userByEmail) {
-      return response.status(200).json({ user: userByEmail });
-    }
-
-    return response.status(200).json({ user });
+    return response.status(200).json({ updatedUser });
   } catch (error) {
     return response
       .status(400)
@@ -98,21 +135,4 @@ const getUserByEmail = async (request: Request, response: Response) => {
   }
 };
 
-const getUsersByTitle = async (request: Request, response: Response) => {
-  const  title  = request.query;
-  try {
-  const users = await prismaInstance.user.findMany({
-      where:  title,
-      include: {
-        profile: true,
-      },
-    });
-    return response.status(200).json({ users });
-  } catch (error) {
-    return response
-      .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
-  }
-}
-
-export default { create, profile, getUserByEmail, getAll, getUsersByTitle };
+export default { create, profile, getUserByEmail, getAll, update };

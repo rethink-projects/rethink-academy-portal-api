@@ -19,6 +19,7 @@ datasource db {
   provider = "sqlite"
   url      = "file:./dev.db"
 }
+
 // comente também o enum Roles completo 
 // comente a linha socials Json?  dentro model Profile
 
@@ -28,19 +29,25 @@ datasource db {
 //   RETHINKER
 // }
 
+// enum Titles {
+//   ENGINEERING
+//   DESIGN
+//   PRODUCT
+// }
 
 model User {
-  id       String     @id @default(uuid())
-  email    String     @unique
-  name     String?
-  surname  String?
+  id            String          @id @default(uuid())
+  email         String          @unique
+  name          String?
+  surname       String?
   // role    Roles?   @default(STUDENT)
-  role     String?    @default("STUDENT")
-  title    String?
-  profile  Profile?
-  note     Note[]
-  evaluate Evaluate[]
-  info    Info?
+  role          String?         @default("STUDENT")
+  note          Note[]
+  info          Info?
+  main          String?         @default("ENGINEERING")
+  // main     Titles?    @default(ENGINEERING)
+  profile       Profile?
+  monthEvaluate MonthEvaluate[]
 
   @@map("user")
 }
@@ -60,15 +67,15 @@ model Note {
 }
 
 model Info {
-  id     String  @id @default(uuid())
-  college  String?
-  semester  String?
-  workTime  String?
+  id                    String  @id @default(uuid())
+  college               String?
+  semester              String?
+  workTime              String?
   transportationVoucher String?
-  providedEquipment String?
-  status String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId String  @unique
+  providedEquipment     String?
+  status                String?
+  user                  User    @relation(fields: [userId], references: [id])
+  userId                String  @unique
 
   @@map("info")
 }
@@ -86,22 +93,17 @@ model Profile {
 }
 
 model MonthEvaluate {
-  id       String     @id @default(uuid())
-  month    String
-  evaluate Evaluate[]
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id])
+  skillType Boolean @default(true)
+  userId    String
+  month     String
+  skill1    Float
+  skill2    Float
+  skill3    Float
+  skill4    Float
+  skill5    Float
+  skill6    Float
 
   @@map("monthEvaluate")
-}
-
-model Evaluate {
-  id              String        @id @default(uuid())
-  user            User          @relation(fields: [userId], references: [id])
-  userId          String
-  monthEvaluate   MonthEvaluate @relation(fields: [monthEvaluateId], references: [id])
-  monthEvaluateId String
-  skill           Boolean       @default(true)
-  title           String
-  value           Float
-
-  @@map("evaluate")
 }

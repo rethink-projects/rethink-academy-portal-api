@@ -3,7 +3,6 @@ import { prismaInstance } from "../../database/prismaClient";
 import { skillLibrary, skillLibraryType } from "../Helper/skillLibrary";
 
 const create = async (request: Request, response: Response) => {
-  console.log("entrou");
   const {
     month,
     userEmail,
@@ -29,8 +28,6 @@ const create = async (request: Request, response: Response) => {
     const userByEmail = await prismaInstance.user.findFirst({
       where: { email: userEmail },
     });
-
-    console.log({ userByEmail });
 
     if (!userByEmail) throw new Error("Usuário não encontrado");
 
@@ -61,22 +58,24 @@ const create = async (request: Request, response: Response) => {
 const getEvaluates = async (request: Request, response: Response) => {
   try {
     const { month } = request.params;
+    const { skillType }: { skillType?: string | boolean } = request.query;
+    let skillTypeBoolean = true;
+
+    if (skillType === "false") skillTypeBoolean = false;
 
     const users = await prismaInstance.user.findMany({
       where: { role: "STUDENT" },
     });
 
-    console.log({ users });
-
     const usersMap = users.map(async (user) => {
       const evaluate = await prismaInstance.monthEvaluate.findFirst({
-        where: { userId: user.id, month },
+        where: { userId: user.id, month, skillType: skillTypeBoolean },
       });
       if (!evaluate) {
         return {
           month,
           userId: user.id,
-          skillType: true,
+          skillType: skillTypeBoolean,
           skill1: 0,
           skill2: 0,
           skill3: 0,
@@ -87,7 +86,6 @@ const getEvaluates = async (request: Request, response: Response) => {
           name: `${user.name} ${user.surname}`,
         };
       }
-      console.log({ evaluate });
       return {
         ...evaluate,
         main: user.main,
@@ -95,8 +93,6 @@ const getEvaluates = async (request: Request, response: Response) => {
       };
       // return { name: `teste`, ...evaluate };
     });
-
-    console.log({ usersMap });
 
     return response.status(200).json(await Promise.all(usersMap));
   } catch (error) {
@@ -112,24 +108,23 @@ const update = async (request: Request, response: Response) => {
     const {
       value,
       main,
-      userId,
       skill,
-      month,
       skillType,
     }: {
       value: string;
       main: string;
-      userId?: string;
       skill: string;
-      month?: string;
-      skillType?: boolean;
+      skillType: boolean;
     } = request.body;
 
+    console.log("UPDATE ENTROU");
     let helper = skillLibrary[main][skill];
+    if (skillType === false) helper = skillLibrary.SOFT[skill];
+    console.log({ value, main, skill, skillType, helper, id });
 
     const evaluateUpdated = await prismaInstance.monthEvaluate.update({
       where: { id },
-      data: { [helper]: value },
+      data: { [helper]: parseInt(value) },
     });
 
     return response
@@ -144,7 +139,6 @@ const update = async (request: Request, response: Response) => {
 
 const remove = async (request: Request, response: Response) => {
   const { id } = request.params;
-  console.log({ id });
   try {
     await prismaInstance.monthEvaluate.delete({
       where: { id },
