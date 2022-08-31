@@ -152,13 +152,13 @@ async function main() {
       update: {
         name: student.name,
         surname: student.surname,
-        title: student.title,
+        // title: student.title,
       },
       create: {
         name: student.name,
         surname: student.surname,
         email: student.email,
-        title: student.title,
+        // title: student.title,
       },
     });
   });
@@ -170,14 +170,14 @@ async function main() {
       update: {
         name: embassador.name,
         surname: embassador.surname,
-        title: embassador.title,
+        // title: embassador.title,
         role: "EMBASSADOR",
       },
       create: {
         name: embassador.name,
         surname: embassador.surname,
         email: embassador.email,
-        title: embassador.title,
+        // title: embassador.title,
         role: "EMBASSADOR",
       },
     });

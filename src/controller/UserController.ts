@@ -62,11 +62,11 @@ const profile = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const { title }: { title?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
+    const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
       request.query;
 
     const users = await prismaInstance.user.findMany({
-      // where: { title: title },
+      where: { main: main },
       include: {
         profile: true,
       },
@@ -99,6 +99,34 @@ const getUserByEmail = async (request: Request, response: Response) => {
   }
 };
 
+const createWatched = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  const { watchedId } = request.body;
+  try {
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+      select: {
+        watched: true,
+      },
+    });
+
+    user?.watched.push(watchedId);
+
+    const userUpdated = await prismaInstance.user.update({
+      where: { email },
+      data: {
+        watched: user?.watched,
+      },
+    });
+
+    return response.status(200).json(userUpdated);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
 const getWatched = async (request: Request, response: Response) => {
   const { email } = request.params;
   try {
@@ -109,13 +137,11 @@ const getWatched = async (request: Request, response: Response) => {
     const { trailId }: { trailId?: string } = request.query;
     const courses = await prismaInstance.course.findMany({
       where: { trailId },
-      // select: {
-      //   type: true,
-      // },
       include: {
         trail: true,
         modules: {
           include: {
+            course: true,
             lessons: true,
           },
         },
@@ -161,4 +187,11 @@ const getWatched = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserByEmail, getAll, getWatched };
+export default {
+  create,
+  profile,
+  getAll,
+  getUserByEmail,
+  createWatched,
+  getWatched,
+};
