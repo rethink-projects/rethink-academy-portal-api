@@ -132,6 +132,7 @@ const getWatched = async (request: Request, response: Response) => {
     const user = await prismaInstance.user.findFirst({
       where: { email },
     });
+    let moduleCompleted = true;
 
     const { trailId }: { trailId?: string } = request.query;
     const courses = await prismaInstance.course.findMany({
@@ -154,9 +155,12 @@ const getWatched = async (request: Request, response: Response) => {
         module.lessons.map((lesson) => {
           if (user?.watched.includes(lesson.id)) {
             userLessonsLength.push(lesson.id);
+          } else {
+            moduleCompleted = false;
           }
           lessonsLength.push(lesson.id);
         });
+        // return {  };
       });
 
       let completed: boolean = false;

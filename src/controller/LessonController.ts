@@ -99,4 +99,69 @@ const deleteById = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
-export default { create, getAll, getById, update, deleteById };
+
+const getLessonsWatched = async (request: Request, response: Response) => {
+  try {
+    const { email } = request.params;
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+    });
+
+    const { courseId }: { courseId?: string } = request.query;
+
+    const course = await prismaInstance.course.findFirst({
+      where: {
+        id: courseId,
+      },
+      select: {
+        modules: {
+          include: {
+            lessons: true,
+          },
+        },
+      },
+    });
+
+    const modules = course?.modules.map((module) => {
+      let moduleCompleted = true;
+      let lessonCompleted = true;
+      const lessons = module.lessons.map((lesson) => {
+        if (!user?.watched.includes(lesson.id)) {
+          moduleCompleted = false;
+          lessonCompleted = false;
+        }
+        return {
+          id: lesson.id,
+          name: lesson.name,
+          embedUrl: lesson.embedUrl,
+          completed: lessonCompleted,
+          description: lesson.description,
+          order: lesson.order,
+        };
+      });
+
+      return {
+        moduleId: module.id,
+        moduleName: module.name,
+        moduleCompleted: moduleCompleted,
+        lessons,
+      };
+    });
+
+    return response.status(200).json({ modules });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default {
+  create,
+  getAll,
+  getById,
+  update,
+  deleteById,
+  getLessonsWatched,
+};

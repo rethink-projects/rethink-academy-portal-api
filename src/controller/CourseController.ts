@@ -44,6 +44,9 @@ const create = async (request: Request, response: Response) => {
 const getAllByCourseId = async (request: Request, response: Response) => {
   try {
     const course = await prismaInstance.course.findMany({
+      // orderBy:{
+
+      // }
       select: {
         id: true,
         name: true,
@@ -54,6 +57,15 @@ const getAllByCourseId = async (request: Request, response: Response) => {
         skills: true,
         trailId: true,
         modules: true,
+        // modules: {
+        //   include:{
+        //     lessons:{
+        //       where:{
+
+        //       }
+        //     }
+        //   }
+        // },
         // teacherId: true,
         type: true,
         // teacher: true,
@@ -153,4 +165,10 @@ const deleteById = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
-export default { create, getAllByCourseId, update, deleteById, getById };
+export default {
+  create,
+  getAllByCourseId,
+  update,
+  deleteById,
+  getById,
+};

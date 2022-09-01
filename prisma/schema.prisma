@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,7 +9,85 @@ generator erd {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id      String   @id @default(uuid())
+  email   String   @unique
+  name    String?
+  surname String?
+  main    Main?    @default(ENGINEERING)
+  watched String[]
+  role    Roles    @default(STUDENT)
+  profile Profile?
+
+  @@map("user")
+}
+
+model Profile {
+  id     String  @id @default(uuid())
+  bio    String?
+  avatar String?
+  social Json?
+  userId String  @unique
+  user   User    @relation(fields: [userId], references: [id])
+
+  @@map("profile")
+}
+
+model Trail {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String
+  weight      Int
+  imageUrl    String
+  course      Course[]
+
+  @@map("trail")
+}
+
+model Course {
+  id                 String   @id @default(uuid())
+  name               String
+  description        String
+  level              Levels
+  workload           Int
+  learning           String
+  skills             String
+  trailId            String
+  type               Types
+  imageTeacher       String
+  teacherDescription String
+  teacherName        String
+  trail              Trail    @relation(fields: [trailId], references: [id])
+  modules            Module[]
+  cratedAt DateTime @default(now())
+
+  @@map("course")
+}
+
+model Lesson {
+  id          String @id @default(uuid())
+  name        String
+  embedUrl    String
+  description String
+  moduleId    String
+  module      Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  cratedAt DateTime @default(now())
+
+  @@map("lesson")
+}
+
+model Module {
+  id       String   @id @default(uuid())
+  name     String
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id])
+  lessons  Lesson[]
+  cratedAt DateTime @default(now())
+
+
+  @@map("module")
 }
 
 enum Roles {
@@ -38,85 +113,4 @@ enum Types {
   WORKSHOP
   TRAINING
   LECTURE
-}
-
-model User {
-  id      String   @id @default(uuid())
-  email   String   @unique
-  name    String?
-  surname String?
-  main   Main?  @default(ENGINEERING)
-  watched String[]
-  role    Roles @default(STUDENT)
-  profile Profile?
-  // course  Course[]
-
-  @@map("user")
-}
-
-model Profile {
-  id     String  @id @default(uuid())
-  bio    String?
-  avatar String?
-  social Json?
-  user   User    @relation(fields: [userId], references: [id])
-  userId String  @unique
-
-  @@map("profile")
-}
-
-model Trail {
-  id      String    @id @default(uuid())
-  name    String   @unique
-  description String
-  weight Int
-  imageUrl String
-  course Course[]
-  
-  @@map("trail")
-}
-
-model Course {
-  id String    @id @default(uuid())
-  name String
-  description String
-  level Levels
-  workload Int
-  learning String
-  skills String
-  trail   Trail    @relation(fields: [trailId], references: [id])
-  trailId String
-  modules Module[]
-  type Types
-  // teacher User @relation(fields: [teacherId], references: [id])
-  // teacherId String
-
-  teacherName String
-  teacherDescription String
-  imageTeacher String
-
-  @@map("course")
-}
-
-model Lesson {
-  id String    @id @default(uuid())
-  name String
-  embedUrl String
-  order Int
-  description String
-  module     Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)  
-  moduleId String
-
-  @@map("lesson")
-}
-
-model Module {
-  id          String    @id @default(uuid())
-  name        String
-  course      Course   @relation(fields: [courseId], references: [id])
-  courseId    String
-  order       Int
-  lessons Lesson[]
-
-  @@map("module")
 }

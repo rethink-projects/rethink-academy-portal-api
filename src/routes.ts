@@ -28,6 +28,7 @@ router.post("/course", CourseController.create);
 router.delete("/course/:id", CourseController.deleteById);
 router.put("/course/:id", CourseController.update);
 
+router.get("/lesson/watched/:email", LessonController.getLessonsWatched);
 router.get("/lesson", LessonController.getAll);
 router.get("/lesson/:id", LessonController.getById);
 router.post("/lesson", LessonController.create);
