@@ -44,9 +44,9 @@ const create = async (request: Request, response: Response) => {
 const getAllByCourseId = async (request: Request, response: Response) => {
   try {
     const course = await prismaInstance.course.findMany({
-      // orderBy:{
-
-      // }
+      orderBy: {
+        cratedAt: "desc",
+      },
       select: {
         id: true,
         name: true,
@@ -57,22 +57,10 @@ const getAllByCourseId = async (request: Request, response: Response) => {
         skills: true,
         trailId: true,
         modules: true,
-        // modules: {
-        //   include:{
-        //     lessons:{
-        //       where:{
-
-        //       }
-        //     }
-        //   }
-        // },
-        // teacherId: true,
         type: true,
-        // teacher: true,
         teacherName: true,
         teacherDescription: true,
         imageTeacher: true,
-        // trail: true,
       },
     });
 
@@ -84,6 +72,36 @@ const getAllByCourseId = async (request: Request, response: Response) => {
   }
 };
 
+// const getById = async (request: Request, response: Response) => {
+//   const { id } = request.params;
+
+//   // const { moduleId }: { moduleId?: string } = request.query;
+//   // const { moduleId }: { moduleId?: string } = request.query;
+
+//   try {
+//     const course = await prismaInstance.course.findFirst({
+//       where: { id },
+//       select: {
+//         name: true,
+//         modules: {
+//           select: {
+//             lessons: true,
+//           },
+//         },
+//       },
+//     });
+
+//     // course?.modules.map((module) => {
+
+//     // })
+
+//     return response.status(200).json({ course });
+//   } catch (error) {
+//     return response
+//       .status(400)
+//       .json({ message: "Algo de errado aconteceu.", error });
+//   }
+// };
 const getById = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {

@@ -2,13 +2,12 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-  const { name, description, embedUrl, order, module } = request.body;
+  const { name, description, embedUrl, module } = request.body;
   try {
     const lesson = await prismaInstance.lesson.create({
       data: {
         name,
         embedUrl,
-        order,
         description,
         module,
       },
@@ -38,16 +37,15 @@ const getAll = async (request: Request, response: Response) => {
 const getById = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {
+    let idCourse = "";
     const lesson = await prismaInstance.lesson.findFirst({
       where: {
         id,
       },
-      include: {
-        module: {
-          select: {
-            order: true,
-          },
-        },
+      select: {
+        name: true,
+        description: true,
+        embedUrl: true,
       },
     });
 
@@ -60,7 +58,7 @@ const getById = async (request: Request, response: Response) => {
 };
 
 const update = async (request: Request, response: Response) => {
-  const { name, description, embedUrl, order, module } = request.body;
+  const { name, description, embedUrl, module } = request.body;
   const { id } = request.params;
   try {
     const lesson = await prismaInstance.lesson.update({
@@ -68,7 +66,6 @@ const update = async (request: Request, response: Response) => {
       data: {
         name,
         embedUrl,
-        order,
         description,
         module,
       },
@@ -102,19 +99,20 @@ const deleteById = async (request: Request, response: Response) => {
 
 const getLessonsWatched = async (request: Request, response: Response) => {
   try {
-    const { email } = request.params;
-
+    const { email, idLesson } = request.params;
     const user = await prismaInstance.user.findFirst({
       where: { email },
     });
 
     const { courseId }: { courseId?: string } = request.query;
+    // const { lessonId }: { lessonId?: string } = request.query;
 
     const course = await prismaInstance.course.findFirst({
       where: {
         id: courseId,
       },
       select: {
+        name: true,
         modules: {
           include: {
             lessons: true,
@@ -123,10 +121,20 @@ const getLessonsWatched = async (request: Request, response: Response) => {
       },
     });
 
-    const modules = course?.modules.map((module) => {
+    const nameCourse = course?.name;
+    let moduleOrder = 0;
+    let lessonOrder = 0;
+    let ready = false;
+
+    const modules = course?.modules.map((module, index) => {
       let moduleCompleted = true;
       let lessonCompleted = true;
-      const lessons = module.lessons.map((lesson) => {
+      const lessons = module.lessons.map((lesson, index) => {
+        if (lesson.id === idLesson) {
+          lessonOrder = index + 1;
+          ready = true;
+        }
+
         if (!user?.watched.includes(lesson.id)) {
           moduleCompleted = false;
           lessonCompleted = false;
@@ -137,9 +145,12 @@ const getLessonsWatched = async (request: Request, response: Response) => {
           embedUrl: lesson.embedUrl,
           completed: lessonCompleted,
           description: lesson.description,
-          order: lesson.order,
         };
       });
+      if (ready) {
+        ready = false;
+        moduleOrder = index + 1;
+      }
 
       return {
         moduleId: module.id,
@@ -149,7 +160,9 @@ const getLessonsWatched = async (request: Request, response: Response) => {
       };
     });
 
-    return response.status(200).json({ modules });
+    return response
+      .status(200)
+      .json({ modules, nameCourse, moduleOrder, lessonOrder });
   } catch (error) {
     return response
       .status(400)
