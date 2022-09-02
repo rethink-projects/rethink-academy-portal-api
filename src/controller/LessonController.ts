@@ -105,7 +105,6 @@ const getLessonsWatched = async (request: Request, response: Response) => {
     });
 
     const { courseId }: { courseId?: string } = request.query;
-    // const { lessonId }: { lessonId?: string } = request.query;
 
     const course = await prismaInstance.course.findFirst({
       where: {
@@ -114,8 +113,17 @@ const getLessonsWatched = async (request: Request, response: Response) => {
       select: {
         name: true,
         modules: {
-          include: {
-            lessons: true,
+          orderBy: {
+            cratedAt: "asc",
+          },
+          select: {
+            lessons: {
+              orderBy: {
+                cratedAt: "asc",
+              },
+            },
+            name: true,
+            id: true,
           },
         },
       },
@@ -126,9 +134,11 @@ const getLessonsWatched = async (request: Request, response: Response) => {
     let lessonOrder = 0;
     let ready = false;
 
+    let moduleBlocked = false;
+    let lastModuleCompleted = true;
+    let moduleCompleted = true;
+    let lessonCompleted = true;
     const modules = course?.modules.map((module, index) => {
-      let moduleCompleted = true;
-      let lessonCompleted = true;
       const lessons = module.lessons.map((lesson, index) => {
         if (lesson.id === idLesson) {
           lessonOrder = index + 1;
@@ -147,16 +157,24 @@ const getLessonsWatched = async (request: Request, response: Response) => {
           description: lesson.description,
         };
       });
+
       if (ready) {
         ready = false;
         moduleOrder = index + 1;
       }
+
+      if (index != 0) {
+        if (lastModuleCompleted) moduleBlocked = false;
+        else moduleBlocked = true;
+      }
+      lastModuleCompleted = moduleCompleted;
 
       return {
         moduleId: module.id,
         moduleName: module.name,
         moduleCompleted: moduleCompleted,
         lessons,
+        moduleBlocked: moduleBlocked,
       };
     });
 
