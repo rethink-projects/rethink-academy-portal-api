@@ -45,7 +45,7 @@ const getAllByCourseId = async (request: Request, response: Response) => {
   try {
     const course = await prismaInstance.course.findMany({
       orderBy: {
-        cratedAt: "desc",
+        cratedAt: "asc",
       },
       select: {
         id: true,
