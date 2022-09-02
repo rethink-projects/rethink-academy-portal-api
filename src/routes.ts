@@ -4,6 +4,8 @@ import EvaluateController from "./controller/EvaluateController";
 import ContractInfoController from "./controller/ContractInfoController";
 import NoteController from "./controller/NoteController";
 import UserController from "./controller/UserController";
+import GoalListController from "./controller/GoalListController";
+import GoalController from "./controller/GoalController";
 
 const router = Router();
 router.get("/user/:email", UserController.getUserByEmail);
@@ -29,5 +31,15 @@ router.delete("/evaluate/:id", EvaluateController.remove);
 router.post("/info", ContractInfoController.create);
 router.get("/info/:email", ContractInfoController.getInfoByUser);
 router.post("/info/:email", ContractInfoController.updateInfo);
+
+router.get("/goalList", GoalListController.getAll);
+router.get("/goalList/:email", GoalListController.getByUserEmail);
+router.post("/goalList/:email", GoalListController.create);
+router.patch("/goalList/:id", GoalListController.update);
+router.delete("/goalList/:id", GoalListController.remove);
+
+router.post("/goal/:goalListId", GoalController.create);
+router.patch("/goal/:id", GoalController.update);
+router.delete("/goal/:id", GoalController.remove);
 
 export { router };

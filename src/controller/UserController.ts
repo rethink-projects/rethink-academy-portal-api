@@ -1,5 +1,24 @@
 import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
+import { differenceInDays } from "date-fns";
+
+const levelMaker = () => {
+  let level = 0;
+  let startLevel = new Date(2022, 2, 7);
+  let endLevel = new Date(2022, 8, 22);
+  const between = differenceInDays(new Date(2022, 7, 31), startLevel);
+  let timeNow = new Date().getHours();
+  let rex: number = between * 24 + timeNow;
+  level = Math.trunc(rex / 48);
+  let exp = rex % 48;
+  if (endLevel < new Date()) {
+    level = 100;
+  }
+  return {
+    level,
+    exp,
+  };
+};
 
 const create = async (request: Request, response: Response) => {
   const { email, role, name, surname } = request.body;
@@ -70,7 +89,13 @@ const getAll = async (request: Request, response: Response) => {
         profile: true,
       },
     });
-    return response.status(200).json(users);
+    const userWithLevel = users.map((item) => {
+      return {
+        ...item,
+        ...levelMaker(),
+      };
+    });
+    return response.status(200).json(userWithLevel);
   } catch (error) {
     return response
       .status(400)
@@ -82,18 +107,17 @@ const getUserByEmail = async (request: Request, response: Response) => {
   const { email } = request.params;
 
   try {
-    console.log({ email });
     const user = await prismaInstance.user.findFirst({
-      where: { email: "gabriel.gomes@rethink.dev" },
+      where: { email },
       include: {
         profile: true,
         note: true,
       },
     });
-    console.log("{ user }");
-    console.log({ user });
 
-    return response.status(200).json(user);
+    const userWithLevel = { ...user, ...levelMaker() };
+
+    return response.status(200).json(userWithLevel);
   } catch (error) {
     return response
       .status(400)
@@ -135,4 +159,4 @@ const update = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserByEmail, getAll, update };
+export default { create, profile, getUserByEmail, getAll, update, levelMaker };
