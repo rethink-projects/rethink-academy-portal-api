@@ -198,9 +198,15 @@ const updateTask = async (request: Request, response: Response) => {
   }
 };
 
+const composeDate = (day: string, month: string, year: string) => {
+  return new Date(`${year}-${month}-${day}`);
+} 
+
 const getGroupTaskByTag = async (request: Request, response: Response) => {
   try {
     const { email }: { email?: string } = request.params;
+
+    const {currentDate} : {currentDate : Date}  = request.body;
 
     if (!email) throw new Error("Email obrigatório");
 
@@ -209,7 +215,30 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
     });
     if (!user) throw new Error("Usuário não encontrado");
 
-    const groupTasks = await prismaInstance.tasks.findMany();
+    let msg: any = "Sem parâmetros starDate endDate";
+
+    let AND: any = [];
+    if (email) {
+      AND.push({ userId: user!.id });
+    }
+
+    const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
+    const currentYear = (new Date(currentDate).getFullYear()).toString();
+
+    const startDate = composeDate("01", currentMonth, currentYear);
+    const lastDay = ((new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0) ).getDate()).toString();
+
+    const endDate = composeDate(lastDay, currentMonth, currentYear);
+
+    AND.push({ taskDate: { gte: new Date(startDate) } });
+    AND.push({ taskDate: { lte: new Date(endDate) } });
+    msg = { startDate, endDate };
+
+    const groupTasks = await prismaInstance.tasks.findMany({
+      where: {
+        AND,
+      },
+    });
 
     let helper = {};
     groupTasks.forEach((item) => {
