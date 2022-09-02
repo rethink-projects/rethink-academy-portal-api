@@ -6,6 +6,8 @@ type TasksProps = {
   name: string;
   description: string;
   taskDate: string;
+  startDate: string;
+  endDate: string;
   startTime: string;
   endTime: string;
   tags: string;
@@ -47,9 +49,7 @@ const timeToString = (time: number) => {
   let hours = Math.trunc(time / 60);
   let minutes = time % 60;
 
-  return `${hours < 10 ? "0" + hours : hours}:${
-    minutes < 10 ? "0" + minutes : minutes
-  }`;
+  return `${hours}h${minutes < 10 ? "0" + minutes : minutes}`;
 };
 
 const getTaskByUserEmail = async (request: Request, response: Response) => {
@@ -95,17 +95,7 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
       ),
     }));
 
-    const arrayHelper: any[] = [];
-
-    // for (const key in helper) {
-    //   arrayHelper.push({
-    //     title: key,
-    //     realTime: helper[key].realTime,
-    //     ...convertTime(helper[key].realTime),
-    //   });
-    // }
-
-    return response.status(200).json({ msg, studentTasks, arrayHelper });
+    return response.status(200).json({ msg, studentTasks });
   } catch (error) {
     return response
       .status(400)
