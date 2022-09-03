@@ -1,4 +1,3 @@
-import { time } from "console";
 import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
@@ -6,15 +5,15 @@ type TasksProps = {
   name: string;
   description: string;
   taskDate: string;
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   startTime: string;
   endTime: string;
   tags: string;
   status: string;
   userEmail: string;
-  duration: string;
-  time: string;
+  duration?: string;
+  time?: string;
 };
 
 type TasksPropsUpdate = {
@@ -52,24 +51,55 @@ const timeToString = (time: number) => {
   return `${hours}h${minutes < 10 ? "0" + minutes : minutes}`;
 };
 
+const addDayToEndDate = (transform: Date) => {
+  let data = new Date(transform);
+  data.setDate(data.getDate() + 1);
+  // console.log(data);
+  return data;
+};
+
+// const monthLibrary = [
+//   "Janeiro",
+//   "Fevereiro",
+//   "Março",
+//   "Abril",
+//   "Maio",
+//   "Junho",
+//   "Julho",
+//   "Agosto",
+//   "Setembro",
+//   "Outubro",
+//   "Novembro",
+//   "Dezembro",
+// ];
+
+// const convertMonth = (date: string) => {
+//   let helper = date.split("T");
+//   let date2 = helper[0].split("-");
+
+//   let day = date2[2];
+//   let month = monthLibrary[date2[1]];
+//   let year = date2[0];
+
+//   console.log(helper);
+//   return `${day} de ${month} de ${year}`;
+// };
+
 const getTaskByUserEmail = async (request: Request, response: Response) => {
   try {
     const { email } = request.params;
-    const {
-      startDate,
-      endDate,
-    }: { email?: string; startDate?: Date; endDate?: string } = request.query;
+    const { startDate, endDate }: { startDate?: Date; endDate?: Date } =
+      request.body;
 
     const user = await prismaInstance.user.findFirst({
       where: { email },
     });
+    // console.log({ email });
     // console.log({ startDate });
     // console.log({ endDate });
-
+    // addDayToEndDate(endDate!);
     //   lte: new Date(2022, 7, 29).toISOString(),
     //   gte: new Date(2022, 7, 23).toISOString(),
-
-    let msg: any = "Sem parâmetros starDate endDate";
 
     let AND: any = [];
     if (email) {
@@ -78,25 +108,29 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
 
     if (startDate && endDate) {
       AND.push({ taskDate: { gte: new Date(startDate) } });
-      AND.push({ taskDate: { lte: new Date(endDate) } });
-      msg = { startDate, endDate };
+      AND.push({ taskDate: { lte: addDayToEndDate(endDate) } });
     }
 
     const tasks = await prismaInstance.tasks.findMany({
+      orderBy: { taskDate: "asc" },
       where: {
         AND,
       },
     });
 
-    const studentTasks = tasks.map((task) => ({
-      ...task,
-      duration: timeToString(
-        timeKeeper(task.endTime) - timeKeeper(task.startTime)
-      ),
-    }));
+    const studentTasks = tasks.map((task) => {
+      return {
+        ...task,
+        duration: timeToString(
+          timeKeeper(task.endTime) - timeKeeper(task.startTime)
+        ),
+        // taskDate: convertMonth(task.taskDate.toISOString()),
+      };
+    });
 
-    return response.status(200).json({ msg, studentTasks });
+    return response.status(200).json(studentTasks);
   } catch (error) {
+    console.log(error);
     return response
       .status(400)
       .json({ message: "Algo de errado aconteceu.", error: error.message });
