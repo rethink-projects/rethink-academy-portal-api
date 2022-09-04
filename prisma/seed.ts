@@ -1,105 +1,107 @@
-import { Levels, PrismaClient } from "@prisma/client";
+import { Levels, PrismaClient, Main } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const embassadors: {
-  name: string;
-  surname: string;
-  email: string;
-  title: "ENGINEERING" | "DESIGN" | "PRODUCT";
-}[] = [
-    {
-      name: "Filipe",
-      surname: "Prado",
-      email: "filipe.prado@rethink.dev",
-      main: "ENGINEERING",
-      role: "RETHINKER"
-    },
-    {
-      name: "Leticia",
-      surname: "Lange",
-      email: "leticia.lange@rethink.dev",
-      main: "DESIGN",
-      role: "RETHINKER"
-    },
-    {
-      name: "Priscila",
-      surname: "Ritschel",
-      email: "priscila.ritschel@rethink.dev",
-      main: "PRODUCT",
-      role: "RETHINKER"
-    },
-  ];
+const embassadors = [
+  {
+    id: "1",
+    name: "Filipe",
+    surname: "Prado",
+    email: "filipe.prado@rethink.dev",
+    main: Main.ENGINEERING,
+    role: "RETHINKER"
+  },
+  {
+    id: "2",
+    name: "Leticia",
+    surname: "Lange",
+    email: "leticia.lange@rethink.dev",
+    main: Main.DESIGN,
+    role: "RETHINKER"
+  },
+  {
+    id: "3",
+    name: "Priscila",
+    surname: "Ritschel",
+    email: "priscila.ritschel@rethink.dev",
+    main: Main.PRODUCT,
+    role: "RETHINKER"
+  },
+];
 
-const students: {
-  name: string;
-  surname: string;
-  email: string;
-  title: "ENGINEERING" | "DESIGN" | "PRODUCT";
-}[] = [
-    {
-      name: "Amanda",
-      surname: "Duarte",
-      email: "amanda.duarte@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Gabriel",
-      surname: "Melo",
-      email: "gabriel.melo@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Ana",
-      surname: "Ramos",
-      email: "ana.ramos@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Felipe",
-      surname: "Reggiane",
-      email: "felipe.reggiane@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Fernando",
-      surname: "Henrique",
-      email: "fernando.henrique@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Fabiana",
-      surname: "Kamo",
-      email: "fabiana.kamo@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Carolina",
-      surname: "Valeriano ",
-      email: "carolina.valeriano@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Lucas",
-      surname: "Araujo",
-      email: "lucas.paula@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-    {
-      name: "Sthéphany",
-      surname: "Tezza",
-      email: "sthephany.tezza@rethink.dev",
-      main: "ENGINEERING",
-      watched: ["1", "2", "3", "4", "5"],
-    },
-  ];
+const students = [
+  {
+    id: "4",
+    name: "Amanda",
+    surname: "Duarte",
+    email: "amanda.duarte@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "5",
+    name: "Gabriel",
+    surname: "Melo",
+    email: "gabriel.melo@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "6",
+    name: "Ana",
+    surname: "Ramos",
+    email: "ana.ramos@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "7",
+    name: "Felipe",
+    surname: "Reggiane",
+    email: "felipe.reggiane@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "8",
+    name: "Fernando",
+    surname: "Henrique",
+    email: "fernando.henrique@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "9",
+    name: "Fabiana",
+    surname: "Kamo",
+    email: "fabiana.kamo@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "10",
+    name: "Carolina",
+    surname: "Valeriano ",
+    email: "carolina.valeriano@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "11",
+    name: "Lucas",
+    surname: "Araujo",
+    email: "lucas.paula@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+  {
+    id: "12",
+    name: "Sthéphany",
+    surname: "Tezza",
+    email: "sthephany.tezza@rethink.dev",
+    main: Main.ENGINEERING,
+    watched: ["1", "2", "3", "4", "5"],
+  },
+];
 
 const profiles = [
   {
@@ -124,24 +126,28 @@ const trails = [
     name: "Academy",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     weight: 1,
+    imageUrl: "#",
   },
   {
     id: "2",
     name: "Produto",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     weight: 2,
+    imageUrl: "#",
   },
   {
     id: "3",
     name: "Design",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     weight: 3,
+    imageUrl: "#",
   },
   {
     id: "4",
     name: "Engenharia",
     description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum",
     weight: 4,
+    imageUrl: "#",
   },
 ]
 
@@ -258,7 +264,7 @@ async function main() {
   //     },
   //   });
   // });
-  // Teachers.forEach(async (teacher) => {
+  // embassadors.forEach(async (teacher) => {
   //   await prisma.user.create({
   //     data: {
   //       id: teacher.id,
@@ -286,7 +292,8 @@ async function main() {
   //       id: trail.id,
   //       name: trail.name,
   //       description: trail.description,
-  //       weight: trail.weight
+  //       weight: trail.weight,
+  //       imageUrl: trail.imageUrl,
   //     },
   //   });
   // });

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import internal from "stream";
 import { prismaInstance } from "../../database/prismaClient";
 
 type TrailType = {
   name: string;
   description: string;
   weight: number;
+  imageUrl: string;
 }
 
 const create = async (request: Request, response: Response) => {

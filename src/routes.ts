@@ -4,6 +4,7 @@ import TrailController from "./controller/TrailController";
 import UserController from "./controller/UserController";
 import LessonController from "./controller/LessonController";
 import ModuleController from "./controller/ModuleController";
+import CourseTimelineController from "./controller/CourseTimelineController";
 
 const router = Router();
 
@@ -37,5 +38,10 @@ router.get("/module", ModuleController.getAll);
 router.get("/module/:id", ModuleController.getById);
 router.put("/module/:id", ModuleController.update);
 router.delete("/module/:id", ModuleController.deleteById);
+
+// router.post("/stage", CourseTimelineController.create);
+router.get("/stage/:trailId", CourseTimelineController.getByTrailId);
+router.post("/stage/:id", CourseTimelineController.upsert);
+router.delete("/stage/:id", CourseTimelineController.deleteById);
 
 export { router };
