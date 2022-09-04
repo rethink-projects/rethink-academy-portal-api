@@ -1,14 +1,14 @@
 -- CreateEnum
+CREATE TYPE "Main" AS ENUM ('ENGINEERING', 'DESIGN', 'PRODUCT');
+
+-- CreateEnum
+CREATE TYPE "CourseStyle" AS ENUM ('COURSE', 'WORKSHOP', 'TRAINING', 'LECTURE');
+
+-- CreateEnum
 CREATE TYPE "Roles" AS ENUM ('STUDENT', 'EMBASSADOR', 'RETHINKER');
 
 -- CreateEnum
 CREATE TYPE "Levels" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
-
--- CreateEnum
-CREATE TYPE "Main" AS ENUM ('ENGINEERING', 'DESIGN', 'PRODUCT');
-
--- CreateEnum
-CREATE TYPE "Types" AS ENUM ('COURSE', 'WORKSHOP', 'TRAINING', 'LECTURE');
 
 -- CreateTable
 CREATE TABLE "user" (
@@ -16,7 +16,7 @@ CREATE TABLE "user" (
     "email" TEXT NOT NULL,
     "name" TEXT,
     "surname" TEXT,
-    "main" "Main" DEFAULT 'ENGINEERING',
+    "main" "Main",
     "watched" TEXT[],
     "role" "Roles" NOT NULL DEFAULT 'STUDENT',
 
@@ -41,6 +41,7 @@ CREATE TABLE "trail" (
     "description" TEXT NOT NULL,
     "weight" INTEGER NOT NULL,
     "imageUrl" TEXT NOT NULL,
+    "main" "Main" DEFAULT 'ENGINEERING',
 
     CONSTRAINT "trail_pkey" PRIMARY KEY ("id")
 );
@@ -54,12 +55,8 @@ CREATE TABLE "course" (
     "workload" INTEGER NOT NULL,
     "learning" TEXT NOT NULL,
     "skills" TEXT NOT NULL,
+    "teacherId" TEXT NOT NULL,
     "trailId" TEXT NOT NULL,
-    "type" "Types" NOT NULL,
-    "imageTeacher" TEXT NOT NULL,
-    "teacherDescription" TEXT NOT NULL,
-    "teacherName" TEXT NOT NULL,
-    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "course_pkey" PRIMARY KEY ("id")
 );
@@ -69,9 +66,9 @@ CREATE TABLE "lesson" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "embedUrl" TEXT NOT NULL,
+    "order" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "moduleId" TEXT NOT NULL,
-    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "lesson_pkey" PRIMARY KEY ("id")
 );
@@ -97,6 +94,9 @@ CREATE UNIQUE INDEX "trail_name_key" ON "trail"("name");
 
 -- AddForeignKey
 ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "course" ADD CONSTRAINT "course_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "course" ADD CONSTRAINT "course_trailId_fkey" FOREIGN KEY ("trailId") REFERENCES "trail"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

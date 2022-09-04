@@ -20,6 +20,19 @@ datasource db {
 //   url      = "file:./dev.db"
 // }
 
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
+
+enum CourseStyle {
+  COURSE
+  WORKSHOP
+  TRAINING
+  LECTURE
+}
+
 enum Roles {
   STUDENT
   EMBASSADOR
@@ -37,7 +50,7 @@ model User {
   email   String   @unique
   name    String?
   surname String?
-  main    String?
+  main    Main?
   watched String[]
   role    Roles    @default(STUDENT)
   profile Profile?
@@ -63,27 +76,29 @@ model Trail {
   description String
   weight      Int
   course      Course[]
-  main        Main?    @default(ENGINEERING)
+  imageUrl    String
+
+  main Main? @default(ENGINEERING)
 
   @@map("trail")
 }
 
 model Course {
-  id          String   @id @default(uuid())
+  id          String @id @default(uuid())
   name        String
   description String
   level       Levels
   workload    Int
   learning    String
   skills      String
-  
-  teacherId   String
-  teacher     User     @relation(fields: [teacherId], references: [id])
 
-  trailId     String
-  trail       Trail    @relation(fields: [trailId], references: [id])
-  
-  modules     Module[]
+  teacherId String
+  teacher   User   @relation(fields: [teacherId], references: [id])
+
+  trailId String
+  trail   Trail  @relation(fields: [trailId], references: [id])
+
+  modules Module[]
 
   @@map("course")
 }
@@ -92,7 +107,7 @@ model Lesson {
   id          String @id @default(uuid())
   name        String
   embedUrl    String
-  order       Int 
+  order       Int
   description String
   module      Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId    String
@@ -109,17 +124,4 @@ model Module {
   cratedAt DateTime @default(now())
 
   @@map("module")
-}
-
-enum Main {
-  ENGINEERING
-  DESIGN
-  PRODUCT
-}
-
-enum CourseStyle {
-  COURSE
-  WORKSHOP
-  TRAINING
-  LECTURE
 }

@@ -6,82 +6,84 @@ const users = [
     name: "Marcela",
     surname: "Monteiro",
     email: "marcela.monteiro@rethink.dev",
-    role: "TEACHER",
+    role: "EMBASSADOR" as Roles,
   },
+
   {
     id: "idDoPrado",
     name: "Filipe",
     surname: "Prado",
     email: "filipe.prado@rethink.dev",
-    role: "EMBASSADOR",
+    role: "EMBASSADOR" as Roles,
   },
   {
     name: "Leticia",
     surname: "Lange",
     email: "leticia.lange@rethink.dev",
-    role: "EMBASSADOR",
+    role: "EMBASSADOR" as Roles,
   },
   {
     name: "Priscila",
     surname: "Ritschel",
     email: "priscila.ritschel@rethink.dev",
-    role: "EMBASSADOR",
+    role: "EMBASSADOR" as Roles,
   },
   {
     name: "Amanda",
     surname: "Duarte",
     email: "amanda.duarte@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Gabriel",
     surname: "Melo",
     email: "gabriel.melo@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Ana",
     surname: "Ramos",
     email: "ana.ramos@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Felipe",
     surname: "Reggiane",
     email: "felipe.reggiane@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Fernando",
     surname: "Henrique",
     email: "fernando.henrique@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Fabiana",
     surname: "Kamo",
     email: "fabiana.kamo@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Carolina",
     surname: "Valeriano ",
     email: "carolina.valeriano@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Lucas",
     surname: "Araujo",
     email: "lucas.paula@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
   {
     name: "Sthéphany",
     surname: "Tezza",
     email: "sthephany.tezza@rethink.dev",
-    role: "STUDENT",
+    role: "STUDENT" as Roles,
   },
 ];
+
 const trails = [
   {
     id: "idDoAcademy",
@@ -116,6 +118,7 @@ const trails = [
       "https://img.freepik.com/photos-premium/conception-mot-ecrit-au-dessus-formes-3d-geometriques-colorees_2227-1663.jpg",
   },
 ];
+
 const courses = [
   {
     id: "asjkdhasjkdh",
@@ -129,6 +132,7 @@ const courses = [
     level: "HIGH",
   },
 ];
+
 const modules = [
   {
     id: "iudhfiodjasl",
@@ -136,6 +140,7 @@ const modules = [
     courseId: "asjkdhasjkdh",
   },
 ];
+
 const lessons = [
   {
     id: "jasdhgkljsahd",
@@ -229,11 +234,11 @@ async function main() {
 
   // static data
   await Promise.all([
-    userSeeder(prisma),
-    trailSeeder(prisma),
+    // userSeeder(prisma),
+    // trailSeeder(prisma),
     // courseSeeder(prisma),
     // moduleSeeder(prisma),
-    // lessonSeeder(prisma),
+    lessonSeeder(prisma),
   ]).catch(console.error);
 
   await prisma.$disconnect();
