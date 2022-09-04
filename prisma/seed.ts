@@ -234,11 +234,11 @@ async function main() {
 
   // static data
   await Promise.all([
-    // userSeeder(prisma),
-    // trailSeeder(prisma),
+    userSeeder(prisma),
+    trailSeeder(prisma),
     // courseSeeder(prisma),
     // moduleSeeder(prisma),
-    lessonSeeder(prisma),
+    // lessonSeeder(prisma),
   ]).catch(console.error);
 
   await prisma.$disconnect();

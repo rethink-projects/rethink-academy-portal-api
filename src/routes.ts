@@ -4,6 +4,7 @@ import TrailController from "./controller/TrailController";
 import UserController from "./controller/UserController";
 import LessonController from "./controller/LessonController";
 import ModuleController from "./controller/ModuleController";
+import AdminController from "./controller/AdminController";
 
 const router = Router();
 
@@ -40,5 +41,7 @@ router.get("/lesson/:id", LessonController.getById);
 router.post("/lesson", LessonController.create);
 router.delete("/lesson/:id", LessonController.deleteById);
 router.put("/lesson/:id", LessonController.update);
+
+router.get("/progress/:id", AdminController.getProgress);
 
 export { router };
