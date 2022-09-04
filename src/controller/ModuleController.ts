@@ -77,11 +77,6 @@ const update = async (request: Request, response: Response) => {
 const deleteById = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
-        // const deleteLessons = prismaInstance.lesson.deleteMany({
-        //     where: {
-        //         moduleId: id,
-        //     },
-        // })
 
         const module = await prismaInstance.module.delete({
             where: { id },

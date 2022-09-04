@@ -88,24 +88,32 @@ const trails = [
     name: "academy",
     description: "Trilha que contém conteúdos gerais",
     weight: 0,
+    imageUrl:
+      "https://thumbs.dreamstime.com/b/elemento-de-logotipo-acad%C3%AAmico-desenho-decorativo-ilustra%C3%A7%C3%A3o-vetorial-191487693.jpg",
   },
   {
     id: "idDaEngenharia",
     name: "engenharia",
     description: "Trilha que contém conteúdos de engenharia",
     weight: 1,
+    imageUrl:
+      "https://guiadoestudante.abril.com.br/wp-content/uploads/sites/4/2016/12/engenharia-civil-obras-1024x683.jpg",
   },
   {
     id: "idDeProduto",
     name: "produto",
     description: "Trilha que contém conteúdos de produto",
     weight: 2,
+    imageUrl:
+      "https://cdn.shopify.com/s/files/1/0070/7032/files/how-to-price-a-product.jpg",
   },
   {
     id: "idDeDesign",
     name: "design",
     description: "Trilha que contém conteúdos de design",
     weight: 3,
+    imageUrl:
+      "https://img.freepik.com/photos-premium/conception-mot-ecrit-au-dessus-formes-3d-geometriques-colorees_2227-1663.jpg",
   },
 ];
 const courses = [
@@ -160,6 +168,7 @@ async function trailSeeder(prisma: PrismaClient): Promise<void> {
         name: trail.name,
         weight: trail.weight,
         description: trail.description,
+        imageUrl: trail.imageUrl,
       },
     });
   }

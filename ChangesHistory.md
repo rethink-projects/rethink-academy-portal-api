@@ -10,5 +10,9 @@
   para
   courseStyle     CourseStyle
 
-  
+# Exportação dos ENUMS no PrismaClient para que consigamos receber apenas esse determinado tipo de entrada
+
+# Criação no Front da pasta Types
+
+
 

@@ -77,10 +77,12 @@ model Course {
   learning    String
   skills      String
   
-  trailId     String
-  trail       Trail    @relation(fields: [trailId], references: [id])
   teacherId   String
   teacher     User     @relation(fields: [teacherId], references: [id])
+
+  trailId     String
+  trail       Trail    @relation(fields: [trailId], references: [id])
+  
   modules     Module[]
 
   @@map("course")
