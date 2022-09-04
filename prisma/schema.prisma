@@ -63,6 +63,7 @@ model Trail {
   description String
   weight      Int
   course      Course[]
+  main        Main?    @default(ENGINEERING)
 
   @@map("trail")
 }
@@ -103,25 +104,20 @@ model Module {
   course   Course   @relation(fields: [courseId], references: [id])
   courseId String
   lessons  Lesson[]
+  cratedAt DateTime @default(now())
 
   @@map("module")
 }
 
-// model Whatched {
-//   id String @id
-//   user User @relation(fields: [userId], references: [id])
-//   userId String @unique
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
 
-//   @@map("whatched")
-
-// }
-
-// model Teacher {
-//   id String @id
-//   name String
-//   office String
-//   avatar String
-//   course Course[]
-
-//   @@map("teacher")
-// }
+enum CourseStyle {
+  COURSE
+  WORKSHOP
+  TRAINING
+  LECTURE
+}
