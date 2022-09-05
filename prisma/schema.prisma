@@ -12,27 +12,34 @@ datasource db {
 }
 
 model User {
-  id      String   @id @default(uuid())
-  email   String   @unique
+  id      String  @id @default(uuid())
+  email   String  @unique
   name    String?
   surname String?
-  role    Roles?   @default(STUDENT)
-  main    Titles?  @default(ENGINEERING)
-  profile Profile?
+  role    Roles?  @default(STUDENT)
+  main    Titles? @default(ENGINEERING)
+  avatar  String
   bucket  Bucket?
+  badges  Badges?
 
   @@map("user")
 }
 
-model Profile {
-  id     String  @id @default(uuid())
-  bio    String?
-  avatar String?
-  social Json?
-  userId String  @unique
-  user   User    @relation(fields: [userId], references: [id])
+model Badges {
+  id          String @id @default(uuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id])
+  product     Int    @default(0)
+  engineering Int    @default(0)
+  academy     Int    @default(0)
+  design      Int    @default(0)
+  welcome     Int    @default(0)
+  studies     Int    @default(0)
+  timeRecord  Int    @default(0)
+  troll       Int    @default(0)
+  goals       Int    @default(0)
 
-  @@map("profile")
+  @@map("badges")
 }
 
 model Bucket {
