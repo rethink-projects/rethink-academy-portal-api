@@ -54,36 +54,33 @@ const timeToString = (time: number) => {
 const addDayToEndDate = (transform: Date) => {
   let data = new Date(transform);
   data.setDate(data.getDate() + 1);
-  // console.log(data);
   return data;
 };
 
-// const monthLibrary = [
-//   "Janeiro",
-//   "Fevereiro",
-//   "Março",
-//   "Abril",
-//   "Maio",
-//   "Junho",
-//   "Julho",
-//   "Agosto",
-//   "Setembro",
-//   "Outubro",
-//   "Novembro",
-//   "Dezembro",
-// ];
+const monthLibrary = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
 
-// const convertMonth = (date: string) => {
-//   let helper = date.split("T");
-//   let date2 = helper[0].split("-");
+const convertMonth = (date: string) => {
+  let helper = date.split("T");
+  let date2 = helper[0].split("-");
 
-//   let day = date2[2];
-//   let month = monthLibrary[date2[1]];
-//   let year = date2[0];
+  let day = date2[2];
+  let month = monthLibrary[Number(date2[1]) - 1];
 
-//   console.log(helper);
-//   return `${day} de ${month} de ${year}`;
-// };
+  return `${day} de ${month}`;
+};
 
 const getTaskByUserEmail = async (request: Request, response: Response) => {
   try {
@@ -118,15 +115,25 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
       },
     });
 
-    const studentTasks = tasks.map((task) => {
-      return {
+    let helper = {};
+    tasks.map((task) => {
+      if (!helper[task.taskDate.toLocaleDateString()]) {
+        helper[task.taskDate.toLocaleDateString()] = [];
+      }
+
+      helper[task.taskDate.toLocaleDateString()].push({
         ...task,
         duration: timeToString(
           timeKeeper(task.endTime) - timeKeeper(task.startTime)
         ),
-        // taskDate: convertMonth(task.taskDate.toISOString()),
-      };
+        taskDate: convertMonth(task.taskDate.toISOString()),
+      });
     });
+
+    const studentTasks: any = [];
+    for (const key in helper) {
+      studentTasks.push(helper[key]);
+    }
 
     return response.status(200).json(studentTasks);
   } catch (error) {
@@ -234,13 +241,13 @@ const updateTask = async (request: Request, response: Response) => {
 
 const composeDate = (day: string, month: string, year: string) => {
   return new Date(`${year}-${month}-${day}`);
-} 
+};
 
 const getGroupTaskByTag = async (request: Request, response: Response) => {
   try {
     const { email }: { email?: string } = request.params;
 
-    const {currentDate} : {currentDate : Date}  = request.body;
+    const { currentDate }: { currentDate: Date } = request.body;
 
     if (!email) throw new Error("Email obrigatório");
 
@@ -257,10 +264,16 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
     }
 
     const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
-    const currentYear = (new Date(currentDate).getFullYear()).toString();
+    const currentYear = new Date(currentDate).getFullYear().toString();
 
     const startDate = composeDate("01", currentMonth, currentYear);
-    const lastDay = ((new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0) ).getDate()).toString();
+    const lastDay = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth() + 1,
+      0
+    )
+      .getDate()
+      .toString();
 
     const endDate = composeDate(lastDay, currentMonth, currentYear);
 
