@@ -36,16 +36,19 @@ const getProgress = async (request: Request, response: Response) => {
         },
       },
     });
+    
     let modulesQnt = 0;
     courses.map((course) => {
       modulesQnt += course.modules.length;
     });
     // console.log(courses);
     const users = await prismaInstance.user.findMany({
+      where: { role: "STUDENT" },
       select: {
         name: true,
         surname: true,
         watched: true,
+        role: true,
         profile: {
           select: {
             avatar: true,
@@ -55,12 +58,7 @@ const getProgress = async (request: Request, response: Response) => {
     });
 
     const usersProgress = users.map((user) => {
-      let userName;
-      let userImg;
-      let courseName;
-      let modulesQnt;
-      let modulesDone;
-      let completedModules: Array<string> = [];
+      let completedModules: string[] = [];
       let moduleCompleted;
 
       courses.map((course) => {
@@ -76,7 +74,7 @@ const getProgress = async (request: Request, response: Response) => {
           });
 
           moduleCompleted && completedModules.push(module.id);
-          console.log(module.id);
+          // console.log(module.id);
         });
       });
 
