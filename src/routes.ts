@@ -9,7 +9,8 @@ router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 
-router.get("/bucket", BucketController.getBucket);
+router.get("/bucket", BucketController.getUserBucket);
+router.get("/bucket/:title", BucketController.getOneBucket);
 router.post("/bucket", BucketController.upsert);
 
 export { router };
