@@ -154,4 +154,23 @@ const remove = async (request: Request, response: Response) => {
   }
 };
 
-export default { getEvaluates, create, update, remove };
+const getEvaluateChartData = async (request: Request, response: Response) => {
+  try {
+    const { skill }: { skill?: string } = request.query;
+    const evaluation = await prismaInstance.monthEvaluate.findMany({
+      where: { userId: "f0411e1f-9f93-4526-ac63-385a7dccd5f3" },
+    });
+    const chartData = evaluation.map((item) => ({
+      name: item.month,
+      skill: item[skill!],
+      pv: item[skill!] === 0 ? 0 : 1,
+    }));
+    return response.status(200).json({ chartData });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default { getEvaluates, create, update, remove, getEvaluateChartData };

@@ -23,6 +23,7 @@ router.post("/note", NoteController.create);
 router.post("/note/:id", NoteController.update);
 router.delete("/note/:id", NoteController.remove);
 
+router.get("/evaluate/chartData", EvaluateController.getEvaluateChartData)
 router.get("/evaluate/:month", EvaluateController.getEvaluates);
 router.post("/evaluate", EvaluateController.create);
 router.post("/evaluate/:id", EvaluateController.update);
