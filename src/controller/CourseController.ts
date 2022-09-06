@@ -73,6 +73,18 @@ const getById = async (request: Request, response: Response) => {
   }
 };
 
+const getAll = async (request: Request, response: Response) => {
+  try {
+    const course = await prismaInstance.course.findMany();
+
+    return response.status(200).json({ course });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
 const getCourseModules = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {
@@ -239,5 +251,6 @@ export default {
   deleteById,
   getById,
   getCourseModules,
-  getProgress
+  getProgress,
+  getAll
 };

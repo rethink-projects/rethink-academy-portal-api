@@ -24,6 +24,7 @@ router.get("/trail", TrailController.getAll);
 router.put("/trail/:id", TrailController.update);
 router.delete("/trail/:id", TrailController.deleteById);
 
+router.get("/course", CourseController.getAll);
 router.get("/trail/course/:trailId", CourseController.getAllByTrailId);
 router.get("/course/:id", CourseController.getById);
 router.get("/course/:id/modules", CourseController.getCourseModules);
