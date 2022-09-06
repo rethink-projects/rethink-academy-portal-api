@@ -54,36 +54,33 @@ const timeToString = (time: number) => {
 const addDayToEndDate = (transform: Date) => {
   let data = new Date(transform);
   data.setDate(data.getDate() + 1);
-  // console.log(data);
   return data;
 };
 
-// const monthLibrary = [
-//   "Janeiro",
-//   "Fevereiro",
-//   "Março",
-//   "Abril",
-//   "Maio",
-//   "Junho",
-//   "Julho",
-//   "Agosto",
-//   "Setembro",
-//   "Outubro",
-//   "Novembro",
-//   "Dezembro",
-// ];
+const monthLibrary = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
 
-// const convertMonth = (date: string) => {
-//   let helper = date.split("T");
-//   let date2 = helper[0].split("-");
+const convertMonth = (date: string) => {
+  let helper = date.split("T");
+  let date2 = helper[0].split("-");
 
-//   let day = date2[2];
-//   let month = monthLibrary[date2[1]];
-//   let year = date2[0];
+  let day = date2[2];
+  let month = monthLibrary[Number(date2[1]) - 1];
 
-//   console.log(helper);
-//   return `${day} de ${month} de ${year}`;
-// };
+  return `${day} de ${month}`;
+};
 
 const getTaskByUserEmail = async (request: Request, response: Response) => {
   try {
@@ -106,6 +103,8 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
       AND.push({ userId: user!.id });
     }
 
+ 
+
     if (startDate && endDate) {
       AND.push({ taskDate: { gte: new Date(startDate) } });
       AND.push({ taskDate: { lte: addDayToEndDate(endDate) } });
@@ -118,15 +117,26 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
       },
     });
 
-    const studentTasks = tasks.map((task) => {
-      return {
+    let helper = {};
+    tasks.map((task) => {
+      
+      if (!helper[task.taskDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})]) {
+        helper[task.taskDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})] = [];
+      }
+
+      helper[task.taskDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})].push({
         ...task,
         duration: timeToString(
           timeKeeper(task.endTime) - timeKeeper(task.startTime)
         ),
-        // taskDate: convertMonth(task.taskDate.toISOString()),
-      };
+        taskDate: convertMonth(task.taskDate.toISOString()),
+      });
     });
+
+    const studentTasks: any = [];
+    for (const key in helper) {
+      studentTasks.push(helper[key]);
+    }
 
     return response.status(200).json(studentTasks);
   } catch (error) {
@@ -234,11 +244,13 @@ const updateTask = async (request: Request, response: Response) => {
 
 const composeDate = (day: string, month: string, year: string) => {
   return new Date(`${year}-${month}-${day}`);
-} 
+};
 
 const getGroupTaskByTag = async (request: Request, response: Response) => {
   try {
     const { email }: { email?: string } = request.params;
+
+    const { currentDate }: { currentDate: Date } = request.body;
 
     if (!email) throw new Error("Email obrigatório");
 
@@ -252,11 +264,17 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
       AND.push({ userId: user!.id });
     }
 
-    const currentMonth = (new Date().getMonth() + 1).toString();
-    const currentYear = (new Date().getFullYear()).toString();
+    const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
+    const currentYear = new Date(currentDate).getFullYear().toString();
 
     const startDate = composeDate("01", currentMonth, currentYear);
-    const lastDay = ((new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0) ).getDate()).toString();
+    const lastDay = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth() + 1,
+      0
+    )
+      .getDate()
+      .toString();
 
     const endDate = composeDate(lastDay, currentMonth, currentYear);
 
@@ -320,22 +338,22 @@ const getRecordOfDay = async (request: Request, response: Response) => {
     date.setHours(-2, 10, 30, 59);
 
     const currentMonth = (date.getMonth() + 1).toString();
-    const currentYear = (date.getFullYear()).toString();
-    const currentDay = (date.getDate()).toString();
+    const currentYear = date.getFullYear().toString();
+    const currentDay = date.getDate().toString();
 
     const startDate = composeDate(currentDay, currentMonth, currentYear);
 
     AND.push({ taskDate: { gte: startDate } });
-    AND.push({ taskDate: { lte: new Date() } });    
+    AND.push({ taskDate: { lte: new Date() } });
 
     const recordsDay = await prismaInstance.tasks.findMany({
       orderBy: [
         {
-          status: 'desc',
+          status: "desc",
         },
       ],
       where: {
-        AND
+        AND,
       },
     });
 
@@ -346,9 +364,14 @@ const getRecordOfDay = async (request: Request, response: Response) => {
         id: recordsDay[key].id,
         name: recordsDay[key].name,
         status: recordsDay[key].status,
-        time: timeKeeper(recordsDay[key].endTime) - timeKeeper(recordsDay[key].startTime),
-        ...convertTime(timeKeeper(recordsDay[key].endTime) - timeKeeper(recordsDay[key].startTime)),
-      })
+        time:
+          timeKeeper(recordsDay[key].endTime) -
+          timeKeeper(recordsDay[key].startTime),
+        ...convertTime(
+          timeKeeper(recordsDay[key].endTime) -
+            timeKeeper(recordsDay[key].startTime)
+        ),
+      });
     }
 
     return response.status(200).json(arrayHelper);
