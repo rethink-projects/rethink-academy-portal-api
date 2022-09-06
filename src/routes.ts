@@ -10,6 +10,7 @@ const router = Router();
 router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user-profile", UserController.profile);
+router.put("/user/:email", UserController.updateLessonsWatched);
 
 router.get("/user/:email", UserController.getUserByEmail);
 router.post("/user/watched/:email", UserController.createWatched);

@@ -28,6 +28,27 @@ const create = async (request: Request, response: Response) => {
   }
 };
 
+const updateLessonsWatched = async (request: Request, response: Response) => {
+  const { watched } = request.body;
+
+  const { email } = request.params;
+  try {
+    const user = await prismaInstance.user.update({
+      where: { email },
+      data: {
+        watched,
+      },
+    });
+    return response
+      .status(200)
+      .json({ user, message: "Lições completadas pelo usuário!" });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
 const profile = async (request: Request, response: Response) => {
   const { userId, social, bio, avatar } = request.body;
   try {
@@ -197,4 +218,5 @@ export default {
   getUserByEmail,
   createWatched,
   getWatched,
+  updateLessonsWatched,
 };
