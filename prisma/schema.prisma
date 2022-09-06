@@ -10,9 +10,22 @@ generator erd {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
+
+enum CourseStyle {
+  COURSE
+  WORKSHOP
+  TRAINING
+  LECTURE
 }
 
 enum Roles {
@@ -27,12 +40,6 @@ enum Levels {
   HIGH
 }
 
-enum Main {
-  ENGINEERING
-  DESIGN
-  PRODUCT
-}
-
 model User {
   id      String   @id @default(uuid())
   email   String   @unique
@@ -40,9 +47,9 @@ model User {
   surname String?
   main   Main?  @default(ENGINEERING)
   watched String[]
-  role    Roles @default(STUDENT)
+  role    Roles    @default(STUDENT)
   profile Profile?
-  course Course[]
+  course  Course[]
 
   @@map("user")
 }
@@ -66,45 +73,50 @@ model Trail {
   imageUrl String
   course Course[]
   courseTimeline CourseTimeline[]
+  main Main @default(ENGINEERING)
   
   @@map("trail")
 }
 
 model Course {
-  id String    @id @default(uuid())
-  name String
+  id          String      @id @default(uuid())
+  name        String
   description String
-  level Levels
-  workload Int
-  learning String
-  skills String
-  trail   Trail    @relation(fields: [trailId], references: [id])
+  level       Levels
+  workload    Int
+  learning    String
+  skills      String
+  courseStyle CourseStyle @default(COURSE)
+  teacherId   String
+  teacher     User        @relation(fields: [teacherId], references: [id])
+
   trailId String
-  teacher User @relation(fields: [teacherId], references: [id])
-  teacherId String
+  trail   Trail  @relation(fields: [trailId], references: [id])
+
   modules Module[]
 
   @@map("course")
 }
 
 model Lesson {
-  id String    @id @default(uuid())
-  name String
-  embedUrl String
-  order Int
+  id          String @id @default(uuid())
+  name        String
+  embedUrl    String
+  order       Int
   description String
-  module     Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)  
-  moduleId String
+  module      Module @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId    String
 
   @@map("lesson")
 }
 
 model Module {
-  id          String    @id @default(uuid())
-  name        String
-  course      Course   @relation(fields: [courseId], references: [id])
-  courseId    String  
-  lessons Lesson[]
+  id       String   @id @default(uuid())
+  name     String
+  course   Course   @relation(fields: [courseId], references: [id])
+  courseId String
+  lessons  Lesson[]
+  cratedAt DateTime @default(now())
 
   @@map("module")
 }

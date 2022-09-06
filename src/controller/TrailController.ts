@@ -31,13 +31,12 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const trail = await prismaInstance.trail.findMany(
-      {
-        orderBy: {
-          weight: "asc"
-        }
-      }
-    );
+    // Reference: https://www.prisma.io/docs/concepts/components/prisma-client/raw-database-access
+    const trail = await prismaInstance.$queryRaw` 
+    SELECT * FROM Trail
+    ORDER BY 
+      ${"asc"}
+    `;
 
     return response.status(200).json({ trail });
   } catch (error) {
@@ -48,7 +47,7 @@ const getAll = async (request: Request, response: Response) => {
 };
 
 const update = async (request: Request, response: Response) => {
-  const { name, description, imageUrl } = request.body;
+  const { name, description, weight, imageUrl } = request.body;
   const { id } = request.params;
   try {
     const trail = await prismaInstance.trail.update({
@@ -57,6 +56,7 @@ const update = async (request: Request, response: Response) => {
         name,
         description,
         imageUrl,
+        weight,
       },
     });
 

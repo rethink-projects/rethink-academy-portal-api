@@ -22,7 +22,9 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
     try {
-        const modules = await prismaInstance.module.findMany();
+        const modules = await prismaInstance.module.findMany({
+
+        });
 
         return response.status(200).json({ modules });
     } catch (error) {
@@ -35,7 +37,7 @@ const getAll = async (request: Request, response: Response) => {
 const getById = async (request: Request, response: Response) => {
     const { id } = request.params;
     try {
-        const module = await prismaInstance.module.findFirst(
+        const module = await prismaInstance.module.findUnique(
             {
                 where: {
                     id,
