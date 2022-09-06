@@ -156,16 +156,26 @@ const remove = async (request: Request, response: Response) => {
 
 const getEvaluateChartData = async (request: Request, response: Response) => {
   try {
-    const { skill }: { skill?: string } = request.query;
+    const {
+      skill,
+      header,
+    }: {
+      skill?: string;
+      header?: "ENGINEERING" | "DESIGN" | "PRODUCT" | "SOFT";
+    } = request.query;
+    let skillType = header === "SOFT" ? false : true;
     const evaluation = await prismaInstance.monthEvaluate.findMany({
-      where: { userId: "f0411e1f-9f93-4526-ac63-385a7dccd5f3" },
+      where: { userId: "6b0fee41-02aa-410f-a59a-0503a694aba5", skillType },
     });
     const chartData = evaluation.map((item) => ({
-      name: item.month,
-      skill: item[skill!],
-      pv: item[skill!] === 0 ? 0 : 1,
+      name: item.month.replace(/\s/g, "/"),
+      skill: item[skillLibrary[header!][skill!]],
+      pv: item[skillLibrary[header!][skill!]] === 0 ? 1 : 0,
     }));
-    return response.status(200).json({ chartData });
+
+    console.log(skillLibrary[header!][skill!]);
+
+    return response.status(200).json({ chartData, skill });
   } catch (error) {
     return response
       .status(400)

@@ -81,9 +81,7 @@ CREATE TABLE "goal" (
     "title" TEXT NOT NULL,
     "conclude" BOOLEAN NOT NULL,
     "goalListId" TEXT NOT NULL,
-    "userId" TEXT,
-    CONSTRAINT "goal_goalListId_fkey" FOREIGN KEY ("goalListId") REFERENCES "goalList" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT "goal_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+    CONSTRAINT "goal_goalListId_fkey" FOREIGN KEY ("goalListId") REFERENCES "goalList" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateIndex
@@ -97,6 +95,3 @@ CREATE UNIQUE INDEX "profile_userId_key" ON "profile"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Bucket_userId_key" ON "Bucket"("userId");
-
--- CreateIndex
-CREATE UNIQUE INDEX "goalList_userId_key" ON "goalList"("userId");
