@@ -15,5 +15,6 @@ router.delete("/tasks/:id", TasksController.removeTask);
 router.put("/tasks/:id", TasksController.updateTask);
 router.get("/tasks/tag/:email", TasksController.getGroupTaskByTag);
 router.post("/tasks/:email", TasksController.getTaskByUserEmail);
+router.get("/tasks/day/:email", TasksController.getRecordOfDay);
 
 export { router };
