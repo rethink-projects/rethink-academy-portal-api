@@ -256,8 +256,6 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
     });
     if (!user) throw new Error("Usuário não encontrado");
 
-    let msg: any = "Sem parâmetros starDate endDate";
-
     let AND: any = [];
     if (email) {
       AND.push({ userId: user!.id });
@@ -279,7 +277,6 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
 
     AND.push({ taskDate: { gte: new Date(startDate) } });
     AND.push({ taskDate: { lte: new Date(endDate) } });
-    msg = { startDate, endDate };
 
     const groupTasks = await prismaInstance.tasks.findMany({
       where: {
@@ -318,10 +315,76 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
   }
 };
 
+const getRecordOfDay = async (request: Request, response: Response) => {
+  try {
+    const { email }: { email?: string } = request.params;
+
+    if (!email) throw new Error("Email obrigatório");
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+    });
+    if (!user) throw new Error("Usuário não encontrado");
+
+    let AND: any = [];
+    if (email) {
+      AND.push({ userId: user!.id });
+    }
+
+    const date = new Date();
+    date.setHours(-2, 10, 30, 59);
+
+    const currentMonth = (date.getMonth() + 1).toString();
+    const currentYear = date.getFullYear().toString();
+    const currentDay = date.getDate().toString();
+
+    const startDate = composeDate(currentDay, currentMonth, currentYear);
+
+    AND.push({ taskDate: { gte: startDate } });
+    AND.push({ taskDate: { lte: new Date() } });
+
+    const recordsDay = await prismaInstance.tasks.findMany({
+      orderBy: [
+        {
+          status: "desc",
+        },
+      ],
+      where: {
+        AND,
+      },
+    });
+
+    const arrayHelper: any[] = [];
+
+    for (const key in recordsDay) {
+      arrayHelper.push({
+        id: recordsDay[key].id,
+        name: recordsDay[key].name,
+        status: recordsDay[key].status,
+        time:
+          timeKeeper(recordsDay[key].endTime) -
+          timeKeeper(recordsDay[key].startTime),
+        ...convertTime(
+          timeKeeper(recordsDay[key].endTime) -
+            timeKeeper(recordsDay[key].startTime)
+        ),
+      });
+    }
+
+    return response.status(200).json(arrayHelper);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
 export default {
   getTaskByUserEmail,
   createTask,
   removeTask,
   updateTask,
   getGroupTaskByTag,
+  getRecordOfDay,
 };
