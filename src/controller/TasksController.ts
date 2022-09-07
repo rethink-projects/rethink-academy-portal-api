@@ -335,16 +335,15 @@ const getRecordOfDay = async (request: Request, response: Response) => {
     }
 
     const date = new Date();
-    date.setHours(-2, 10, 30, 59);
+    const modifiedDate = new Date(date.valueOf() - date.getTimezoneOffset() * 60000);
 
-    const currentMonth = (date.getMonth() + 1).toString();
-    const currentYear = date.getFullYear().toString();
-    const currentDay = date.getDate().toString();
+    const separateDate = (modifiedDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})).split("/");
 
-    const startDate = composeDate(currentDay, currentMonth, currentYear);
+    const startDate = composeDate(separateDate[0], separateDate[1], separateDate[2]);
+    const endDate = composeDate((parseInt(separateDate[0]) + 1).toString(), separateDate[1], separateDate[2])
 
     AND.push({ taskDate: { gte: startDate } });
-    AND.push({ taskDate: { lte: new Date() } });
+    AND.push({ taskDate: { lte: endDate } });
 
     const recordsDay = await prismaInstance.tasks.findMany({
       orderBy: [
