@@ -64,9 +64,12 @@ const getById = async (request: Request, response: Response) => {
           include: {
             lessons: true,
           },
-        
         },
-        
+        trail: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 

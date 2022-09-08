@@ -127,9 +127,15 @@ const getLessonsWatched = async (request: Request, response: Response) => {
             id: true,
           },
         },
+        trail: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
+    const nameTrail = course?.trail.name;
     const nameCourse = course?.name;
     let moduleOrder = 0;
     let lessonOrder = 0;
@@ -138,17 +144,18 @@ const getLessonsWatched = async (request: Request, response: Response) => {
     let moduleBlocked = false;
     let lastModuleCompleted = true;
     let moduleCompleted = true;
-    let lessonCompleted = true;
+    let lessonCompleted = false;
     const modules = course?.modules.map((module, index) => {
+      lessonCompleted = false;
       const lessons = module.lessons.map((lesson, index) => {
         if (lesson.id === idLesson) {
           lessonOrder = index + 1;
           ready = true;
         }
-
-        if (!user?.watched.includes(lesson.id)) {
+        if (user?.watched.includes(lesson.id)) {
+          lessonCompleted = true;
+        } else {
           moduleCompleted = false;
-          lessonCompleted = false;
         }
         return {
           id: lesson.id,
@@ -181,7 +188,7 @@ const getLessonsWatched = async (request: Request, response: Response) => {
 
     return response
       .status(200)
-      .json({ modules, nameCourse, moduleOrder, lessonOrder });
+      .json({ modules, nameCourse, nameTrail, moduleOrder, lessonOrder });
   } catch (error) {
     return response
       .status(400)
