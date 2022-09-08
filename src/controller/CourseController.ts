@@ -10,7 +10,9 @@ const create = async (request: Request, response: Response) => {
     learning,
     skills,
     trailId,
-    teacherId,
+    imageTeacher,
+    teacherDescription,
+    teacherName,
   } = request.body;
   try {
     const course = await prismaInstance.course.create({
@@ -22,7 +24,9 @@ const create = async (request: Request, response: Response) => {
         learning,
         skills,
         trailId,
-        teacherId,
+        imageTeacher,
+        teacherDescription,
+        teacherName,
       },
     });
     return response
@@ -59,9 +63,10 @@ const getById = async (request: Request, response: Response) => {
         modules: {
           include: {
             lessons: true,
-          }
+          },
+        
         },
-        teacher: true,
+        
       },
     });
 
@@ -81,7 +86,7 @@ const getAll = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu aqui.", error });
   }
 };
 
@@ -129,7 +134,6 @@ const update = async (request: Request, response: Response) => {
         description,
         level,
         workload,
-        teacher,
         learning,
         skills,
         trailId,
@@ -252,5 +256,5 @@ export default {
   getById,
   getCourseModules,
   getProgress,
-  getAll
+  getAll,
 };
