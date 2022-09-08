@@ -12,6 +12,22 @@ type badgeType =
   | "troll"
   | "goals";
 
+const getUserBadges = async (request: Request, response: Response) => {
+  try {
+    const { email } = request.params;
+    const user = await prismaInstance.user.findFirstOrThrow({
+      where: { email },
+    });
+    if (!user) throw new Error("user not Found");
+    const data = await prismaInstance.badges.findUnique({
+      where: { userId: user.id },
+    });
+    response.status(200).json(data);
+  } catch (error) {
+    return response.status(400).json(error.message);
+  }
+};
+
 const giveBadge = async (request: Request, response: Response) => {
   try {
     const { badge, email }: { badge: badgeType; email: string } = request.body;
@@ -47,4 +63,4 @@ const giveBadge = async (request: Request, response: Response) => {
   }
 };
 
-export default { giveBadge };
+export default { giveBadge, getUserBadges };

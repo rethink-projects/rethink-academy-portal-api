@@ -15,5 +15,6 @@ router.get("/bucket/:title", BucketController.getOneBucket);
 router.post("/bucket", BucketController.upsert);
 
 router.post("/badge", BadgesController.giveBadge);
+router.get("/badge/:email", BadgesController.getUserBadges);
 
 export { router };
