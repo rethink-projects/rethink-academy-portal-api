@@ -1,4 +1,5 @@
 import { Router } from "express";
+import BadgesController from "./controller/BadgesController";
 import BucketController from "./controller/BucketController";
 import UserController from "./controller/UserController";
 
@@ -12,5 +13,7 @@ router.post("/user/:email", UserController.update);
 router.get("/bucket", BucketController.getUserBucket);
 router.get("/bucket/:title", BucketController.getOneBucket);
 router.post("/bucket", BucketController.upsert);
+
+router.post("/badge", BadgesController.giveBadge);
 
 export { router };
