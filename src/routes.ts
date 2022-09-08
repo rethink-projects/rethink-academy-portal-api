@@ -12,6 +12,7 @@ router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user-profile", UserController.profile);
 
+router.put("/user/:email", UserController.updateLessonsWatched);
 router.get("/user/:email", UserController.getUserByEmail);
 router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);
@@ -38,11 +39,14 @@ router.get("/module/:id", ModuleController.getById);
 router.put("/module/:id", ModuleController.update);
 router.delete("/module/:id", ModuleController.deleteById);
 
-// router.post("/stage", CourseTimelineController.create);
 router.get("/stage/:trailId", CourseTimelineController.getByTrailId);
 router.post("/stage/:id", CourseTimelineController.upsert);
 router.delete("/stage/:id", CourseTimelineController.deleteById);
 
+router.get(
+  "/lesson/watched/:email/:idLesson",
+  LessonController.getLessonsWatched
+);
 router.get("/lesson", LessonController.getAll);
 router.get("/lesson/:id", LessonController.getById);
 router.post("/lesson", LessonController.create);

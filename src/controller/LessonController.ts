@@ -42,6 +42,11 @@ const getById = async (request: Request, response: Response) => {
       where: {
         id,
       },
+      select: {
+        name: true,
+        description: true,
+        embedUrl: true,
+      },
     });
 
     return response.status(200).json({ lesson });
@@ -92,4 +97,103 @@ const deleteById = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
-export default { create, getAll, getById, update, deleteById };
+
+const getLessonsWatched = async (request: Request, response: Response) => {
+  try {
+    const { email, idLesson } = request.params;
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+    });
+
+    const { courseId }: { courseId?: string } = request.query;
+
+    const course = await prismaInstance.course.findFirst({
+      where: {
+        id: courseId,
+      },
+      select: {
+        name: true,
+        modules: {
+          orderBy: {
+            cratedAt: "asc",
+          },
+          select: {
+            lessons: {
+              orderBy: {
+                cratedAt: "asc",
+              },
+            },
+            name: true,
+            id: true,
+          },
+        },
+      },
+    });
+
+    const nameCourse = course?.name;
+    let moduleOrder = 0;
+    let lessonOrder = 0;
+    let ready = false;
+
+    let moduleBlocked = false;
+    let lastModuleCompleted = true;
+    let moduleCompleted = true;
+    let lessonCompleted = true;
+    const modules = course?.modules.map((module, index) => {
+      const lessons = module.lessons.map((lesson, index) => {
+        if (lesson.id === idLesson) {
+          lessonOrder = index + 1;
+          ready = true;
+        }
+
+        if (!user?.watched.includes(lesson.id)) {
+          moduleCompleted = false;
+          lessonCompleted = false;
+        }
+        return {
+          id: lesson.id,
+          name: lesson.name,
+          embedUrl: lesson.embedUrl,
+          completed: lessonCompleted,
+          description: lesson.description,
+        };
+      });
+
+      if (ready) {
+        ready = false;
+        moduleOrder = index + 1;
+      }
+
+      if (index != 0) {
+        if (lastModuleCompleted) moduleBlocked = false;
+        else moduleBlocked = true;
+      }
+      lastModuleCompleted = moduleCompleted;
+
+      return {
+        moduleId: module.id,
+        moduleName: module.name,
+        moduleCompleted: moduleCompleted,
+        lessons,
+        moduleBlocked: moduleBlocked,
+      };
+    });
+
+    return response
+      .status(200)
+      .json({ modules, nameCourse, moduleOrder, lessonOrder });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+export default {
+  create,
+  getAll,
+  getById,
+  update,
+  deleteById,
+  getLessonsWatched,
+};
