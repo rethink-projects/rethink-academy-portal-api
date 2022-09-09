@@ -35,9 +35,9 @@ const create = async (request: Request, response: Response) => {
         email,
         main,
         role,
-        // avatar: avatar
-        //   ? avatar
-        //   : `https://ui-avatars.com/api/?name=${name}+${surname}`,
+        avatar: avatar
+          ? avatar
+          : `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
     return response
@@ -46,43 +46,35 @@ const create = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
-  }
-};
-
-const profile = async (request: Request, response: Response) => {
-  const { userId, social, bio, avatar } = request.body;
-  try {
-    await prismaInstance.profile.upsert({
-      where: { userId },
-      create: {
-        userId,
-        bio,
-        avatar,
-        social: {
-          ...social,
-        },
-      },
-      update: {
-        userId,
-        bio,
-        avatar,
-        social: {
-          ...social,
-        },
-      },
-    });
-    return response.status(200).json({
-      message: `Perfil criado com sucesso para o userid: ${userId}`,
-    });
-  } catch (error) {
-    return response
-      .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
 const getAll = async (request: Request, response: Response) => {
+  try {
+    const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
+      request.query;
+
+    const users = await prismaInstance.user.findMany({
+      where: { main },
+    });
+    const userWithLevel = users.map((item) => {
+      return {
+        ...item,
+        ...levelMaker(),
+      };
+    });
+    return response.status(200).json(userWithLevel);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
+  }
+};
+
+const getUserByEmail = async (request: Request, response: Response) => {
+  const { email } = request.params;
+
   try {
     const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
       request.query;
@@ -103,19 +95,37 @@ const getAll = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
-const getUserByEmail = async (request: Request, response: Response) => {
-  const { email } = request.params;
-  console.log({ params: request.params });
-
+const update = async (request: Request, response: Response) => {
   try {
-    const user = await prismaInstance.user.findUnique({
-      where: { email },
-      include: {
-        profile: true,
+    const {
+      role,
+      name,
+      surname,
+      main,
+      avatar,
+    }: {
+      email: string;
+      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      name?: string;
+      surname?: string;
+      avatar?: string;
+      main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
+    } = request.body;
+    const email: string = request.params.email;
+    const updatedUser = await prismaInstance.user.update({
+      where: {
+        email,
+      },
+      data: {
+        role,
+        name,
+        surname,
+        main,
+        avatar,
       },
     });
 
@@ -269,7 +279,7 @@ const updateLessonsWatched = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
