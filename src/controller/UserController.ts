@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { application, Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 // import { differenceInDays } from "date-fns";
 
@@ -35,7 +35,7 @@ const create = async (request: Request, response: Response) => {
         email,
         main,
         role,
-        // avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
+        avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
     return response
@@ -78,6 +78,7 @@ const getUserByEmail = async (request: Request, response: Response) => {
     const user = await prismaInstance.user.findUnique({
       where: { email },
       include: {
+        badges: true,
         profile: true,
       },
     });
@@ -317,6 +318,72 @@ const profile = async (request: Request, response: Response) => {
   }
 };
 
+const getCoursesCompletedUser = async (
+  request: Request,
+  response: Response
+) => {
+  const { email, trailId } = request.body;
+
+  const courses = await prismaInstance.trail.findFirst({
+    where: { id: trailId },
+    select: {
+      course: {
+        include: {
+          modules: {
+            select: {
+              lessons: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const user = await prismaInstance.user.findFirst({
+    where: { email },
+    include: {
+      badges: true,
+      profile: true,
+    },
+  });
+
+  let courseBegining = false;
+  let courseIsCompleted = true;
+  let coursecompleted = 0;
+  let badgeCompleted = true;
+
+  const data = courses?.course.map((course) => {
+    courseBegining = false;
+    courseIsCompleted = true;
+    coursecompleted = 0;
+
+    course.modules.map((module) => {
+      module.lessons.map((lesson) => {
+        if (user?.watched.includes(lesson.id)) {
+          courseBegining = true;
+        } else {
+          courseIsCompleted = false;
+        }
+        // if (!user?.watched.includes(lesson.id)) {
+        //   courseIsCompleted = false;
+        // } else {
+        //   courseBegining = true;
+        // }
+      });
+    });
+    if (courseIsCompleted === true) coursecompleted = 1;
+    else if (courseBegining) coursecompleted = 2;
+    else coursecompleted = 3;
+
+    return { ...course, coursecompleted };
+  });
+  return response.status(200).json({ data, user });
+};
+
 export default {
   create,
   profile,
@@ -329,4 +396,6 @@ export default {
   update,
   levelMaker,
   updateLessonsWatched,
+  // updateLessonsWatched,
+  getCoursesCompletedUser,
 };

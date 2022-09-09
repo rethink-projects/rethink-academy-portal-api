@@ -44,11 +44,18 @@ const create = async (request: Request, response: Response) => {
 const getAllByTrailId = async (request: Request, response: Response) => {
   const { trailId } = request.params;
   try {
+    const trailName = await prismaInstance.trail.findUnique({
+      where: { id: trailId },
+      select: {
+        name: true,
+      },
+    });
+
     const course = await prismaInstance.course.findMany({
       where: { trailId },
     });
 
-    return response.status(200).json({ course });
+    return response.status(200).json({ course, trailName });
   } catch (error) {
     return response
       .status(400)
