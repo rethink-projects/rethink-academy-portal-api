@@ -13,16 +13,18 @@ router.get("/user/:email", UserController.getUserByEmail);
 router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
-router.post("/user-profile", UserController.profile);
 
-router.get("/bucket", BucketController.getBucket);
+router.get("/bucket", BucketController.getUserBucket);
+router.get("/bucket/:title", BucketController.getOneBucket);
 router.post("/bucket", BucketController.upsert);
+router.delete("/bucket/:id", BucketController.deleteFile);
 
 router.get("/note/:email", NoteController.getNotesByUser);
 router.post("/note", NoteController.create);
 router.post("/note/:id", NoteController.update);
 router.delete("/note/:id", NoteController.remove);
 
+router.get("/evaluate/chartData", EvaluateController.getEvaluateChartData);
 router.get("/evaluate/:month", EvaluateController.getEvaluates);
 router.post("/evaluate", EvaluateController.create);
 router.post("/evaluate/:id", EvaluateController.update);
