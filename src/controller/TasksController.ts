@@ -410,20 +410,19 @@ const getHoursLastDay = async (request: Request, response: Response) => {
       date.valueOf() - date.getTimezoneOffset() * 60000
     );
 
-    const separateDate = modifiedDate
-      .toLocaleDateString("pt-BR", { timeZone: "UTC" })
-      .split("/");
+    let month = (modifiedDate.getMonth() + 1).toString();
+    let day = (modifiedDate.getDate() - 1).toString();
+    let year = modifiedDate.getFullYear().toString();
 
-    const startDate = composeDate(
-      (parseInt(separateDate[0]) - 1).toString(),
-      separateDate[1],
-      separateDate[2]
-    );
-    const endDate = composeDate(
-      parseInt(separateDate[0]).toString(),
-      separateDate[1],
-      separateDate[2]
-    );
+    if (parseInt(month, 10) < 10) {
+      month = "0" + month;
+    }
+    if (parseInt(day, 10) < 10) {
+      day = "0" + day;
+    }
+
+    const startDate = [year, month, day].join("-") + "T00:00:00.000Z";
+    const endDate = [year, month, day].join("-") + "T23:59:59.000Z";
 
     AND.push({ taskDate: { gte: startDate } });
     AND.push({ taskDate: { lte: endDate } });
@@ -469,6 +468,80 @@ const getHoursLastDay = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu.", error });
   }
 };
+
+// const getHoursOfMonth = async (request: Request, response: Response) => {
+//   try {
+//     const { email }: { email?: string } = request.params;
+
+//     const currentDate  = new Date();
+
+//     if (!email) throw new Error("Email obrigatório");
+
+//     const user = await prismaInstance.user.findFirst({
+//       where: { email },
+//     });
+//     if (!user) throw new Error("Usuário não encontrado");
+
+//     let AND: any = [];
+//     if (email) {
+//       AND.push({ userId: user!.id });
+//     }
+
+//     const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
+//     const currentYear = new Date(currentDate).getFullYear().toString();
+
+//     const startDate = composeDate("01", currentMonth, currentYear);
+//     const lastDay = new Date(
+//       startDate.getFullYear(),
+//       startDate.getMonth() + 1,
+//       0
+//     )
+//       .getDate()
+//       .toString();
+
+//     const endDate = composeDate(lastDay, currentMonth, currentYear);
+
+//     AND.push({ taskDate: { gte: new Date(startDate) } });
+//     AND.push({ taskDate: { lte: new Date(endDate) } });
+
+//     const recordsMonth = await prismaInstance.tasks.findMany({
+//       where: {
+//         AND,
+//       },
+//     });
+
+//     const arrayHelper: any[] = [];
+
+//     for (const key in recordsMonth) {
+//       arrayHelper.push({
+//         id: recordsMonth[key].id,
+//         name: recordsMonth[key].name,
+//         status: recordsMonth[key].status,
+//         time:
+//           timeKeeper(recordsMonth[key].endTime) -
+//           timeKeeper(recordsMonth[key].startTime),
+//         ...convertTime(
+//           timeKeeper(recordsMonth[key].endTime) -
+//             timeKeeper(recordsMonth[key].startTime)
+//         ),
+//       });
+//     }
+
+//     let hours = 0;
+//     arrayHelper.map((task) =>
+//       hours += task.time
+//     );
+
+//     hours = hours / 60;
+
+//     return response.status(200).json(hours);
+//   } catch (error) {
+//     console.log(error);
+//     return response
+//       .status(400)
+//       .json({ message: "Algo de errado aconteceu.", error });
+//   }
+// };
 
 export default {
   getTaskByUserEmail,
