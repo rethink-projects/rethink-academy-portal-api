@@ -245,7 +245,7 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
   try {
     const { email }: { email?: string } = request.params;
 
-    const { currentDate }: { currentDate: Date } = request.body;
+    const currentDate = new Date();
 
     if (!email) throw new Error("Email obrigatório");
 
