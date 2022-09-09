@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -41,6 +38,30 @@ enum Levels {
   HIGH
 }
 
+model Badges {
+  id          String @id @default(uuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id])
+  product     Int    @default(0)
+  engineering Int    @default(0)
+  academy     Int    @default(0)
+  design      Int    @default(0)
+  welcome     Int    @default(0)
+  studies     Int    @default(0)
+  timeRecord  Int    @default(0)
+  troll       Int    @default(0)
+  goals       Int    @default(0)
+  @@map("badges")
+}
+
+model Bucket {
+  id     String @id @default(uuid())
+  title  String
+  url    String
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
 model User {
   id       String   @id @default(uuid())
   email    String   @unique
@@ -51,6 +72,9 @@ model User {
   role     Roles    @default(STUDENT)
   profile  Profile?
   cratedAt DateTime @default(now())
+  avatar  String
+  bucket  Bucket?
+  badges  Badges?
 
   @@map("user")
 }

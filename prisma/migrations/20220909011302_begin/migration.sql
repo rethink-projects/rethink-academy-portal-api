@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Main" AS ENUM ('ENGINEERING', 'DESIGN', 'PRODUCT');
+CREATE TYPE "Main" AS ENUM ('ENGINEERING', 'DESIGN', 'PRODUCT', 'ALL');
 
 -- CreateEnum
 CREATE TYPE "CourseStyle" AS ENUM ('COURSE', 'WORKSHOP', 'TRAINING', 'LECTURE');
@@ -19,6 +19,7 @@ CREATE TABLE "user" (
     "main" "Main" DEFAULT 'ENGINEERING',
     "watched" TEXT[],
     "role" "Roles" NOT NULL DEFAULT 'STUDENT',
+    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -30,6 +31,7 @@ CREATE TABLE "profile" (
     "avatar" TEXT,
     "social" JSONB,
     "userId" TEXT NOT NULL,
+    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "profile_pkey" PRIMARY KEY ("id")
 );
@@ -42,6 +44,7 @@ CREATE TABLE "trail" (
     "weight" INTEGER NOT NULL,
     "imageUrl" TEXT NOT NULL,
     "main" "Main" NOT NULL DEFAULT 'ENGINEERING',
+    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "trail_pkey" PRIMARY KEY ("id")
 );
@@ -56,8 +59,11 @@ CREATE TABLE "course" (
     "learning" TEXT NOT NULL,
     "skills" TEXT NOT NULL,
     "courseStyle" "CourseStyle" NOT NULL DEFAULT 'COURSE',
-    "teacherId" TEXT NOT NULL,
+    "imageTeacher" TEXT NOT NULL,
+    "teacherDescription" TEXT NOT NULL,
+    "teacherName" TEXT NOT NULL,
     "trailId" TEXT NOT NULL,
+    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "course_pkey" PRIMARY KEY ("id")
 );
@@ -70,6 +76,7 @@ CREATE TABLE "lesson" (
     "order" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "moduleId" TEXT NOT NULL,
+    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "lesson_pkey" PRIMARY KEY ("id")
 );
@@ -92,6 +99,7 @@ CREATE TABLE "timeline" (
     "finish" TIMESTAMP(3) NOT NULL,
     "content" TEXT NOT NULL,
     "trailId" TEXT NOT NULL,
+    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "timeline_pkey" PRIMARY KEY ("id")
 );
@@ -107,9 +115,6 @@ CREATE UNIQUE INDEX "trail_name_key" ON "trail"("name");
 
 -- AddForeignKey
 ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "course" ADD CONSTRAINT "course_teacherId_fkey" FOREIGN KEY ("teacherId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "course" ADD CONSTRAINT "course_trailId_fkey" FOREIGN KEY ("trailId") REFERENCES "trail"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
