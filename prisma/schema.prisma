@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -23,13 +20,47 @@ model User {
   email   String   @unique
   name    String?
   surname String?
-  title   String?
-  // role    Roles?   @default(STUDENT)
+  // role    Roles?  @default(STUDENT)
   role    String?  @default("STUDENT")
-  profile Profile?
+  main    Titles?  @default(ENGINEERING)
+  avatar  String
+  bucket  Bucket?
+  badges  Badges?
   tasks   Tasks[]
+  Profile Profile?
 
   @@map("user")
+}
+
+model Badges {
+  id          String @id @default(uuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id])
+  product     Int    @default(0)
+  engineering Int    @default(0)
+  academy     Int    @default(0)
+  design      Int    @default(0)
+  welcome     Int    @default(0)
+  studies     Int    @default(0)
+  timeRecord  Int    @default(0)
+  troll       Int    @default(0)
+  goals       Int    @default(0)
+
+  @@map("badges")
+}
+
+model Bucket {
+  id     String @id @default(uuid())
+  title  String
+  url    String
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+enum Titles {
+  ENGINEERING
+  DESIGN
+  PRODUCT
 }
 
 model Tasks {
