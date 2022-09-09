@@ -47,6 +47,7 @@ model User {
   monthEvaluate MonthEvaluate[]
   bucket        Bucket[]
   GoalList      GoalList[]
+  Badges        Badges?
 
   @@map("user")
 }
@@ -87,8 +88,23 @@ model Profile {
   social String?
   userId String  @unique
   user   User    @relation(fields: [userId], references: [id])
+}
 
-  @@map("profile")
+model Badges {
+  id          String @id @default(uuid())
+  userId      String @unique
+  user        User   @relation(fields: [userId], references: [id])
+  product     Int    @default(0)
+  engineering Int    @default(0)
+  academy     Int    @default(0)
+  design      Int    @default(0)
+  welcome     Int    @default(0)
+  studies     Int    @default(0)
+  timeRecord  Int    @default(0)
+  troll       Int    @default(0)
+  goals       Int    @default(0)
+
+  @@map("badges")
 }
 
 model MonthEvaluate {

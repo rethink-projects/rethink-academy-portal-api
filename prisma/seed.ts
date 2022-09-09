@@ -149,13 +149,23 @@ const students: {
 ];
 async function main() {
   students.forEach(async ({ email, name, surname, main, role }) => {
-    await prisma.user.create({
-      data: {
+    const newUser = await prisma.user.upsert({
+      where: {
+        email: email,
+      },
+      update: {
         name: name,
         surname: surname,
         main: main,
         email: email,
-        role,
+        main: main,
+        role: role ?? "STUDENT",
+        avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
+      },
+    });
+    await prisma.badges.create({
+      data: {
+        userId: newUser.id,
       },
     });
   });

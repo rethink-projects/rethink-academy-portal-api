@@ -6,8 +6,8 @@ const levelMaker = () => {
   let level = 0;
   let startLevel = new Date(2022, 2, 7);
   let endLevel = new Date(2022, 8, 22);
-  const between = differenceInDays(new Date(2022, 7, 31), startLevel);
-  let timeNow = new Date().getHours();
+  const between = differenceInDays(new Date(), startLevel);
+  let timeNow = new Date(2022, 4, 1).getHours();
   let rex: number = between * 24 + timeNow;
   level = Math.trunc(rex / 48);
   let exp = rex % 48;
@@ -21,7 +21,7 @@ const levelMaker = () => {
 };
 
 const create = async (request: Request, response: Response) => {
-  const { email, role, name, surname } = request.body;
+  const { email, role, name, surname, avatar } = request.body;
   try {
     if (!email) {
       return response
@@ -34,43 +34,14 @@ const create = async (request: Request, response: Response) => {
         surname,
         email,
         role,
+        avatar: avatar
+          ? avatar
+          : `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
     return response
       .status(200)
       .json({ user, message: "Usuário criado com sucesso" });
-  } catch (error) {
-    return response
-      .status(400)
-      .json({ message: "Algo de errado aconteceu.", error: error.message });
-  }
-};
-
-const profile = async (request: Request, response: Response) => {
-  const { userId, social, bio, avatar } = request.body;
-  try {
-    await prismaInstance.profile.upsert({
-      where: { userId },
-      create: {
-        userId,
-        bio,
-        avatar,
-        social: {
-          ...social,
-        },
-      },
-      update: {
-        userId,
-        bio,
-        avatar,
-        social: {
-          ...social,
-        },
-      },
-    });
-    return response.status(200).json({
-      message: `Perfil criado com sucesso para o userid: ${userId}`,
-    });
   } catch (error) {
     return response
       .status(400)
@@ -85,9 +56,6 @@ const getAll = async (request: Request, response: Response) => {
 
     const users = await prismaInstance.user.findMany({
       where: { main },
-      include: {
-        profile: true,
-      },
     });
     const userWithLevel = users.map((item) => {
       return {
@@ -132,11 +100,13 @@ const update = async (request: Request, response: Response) => {
       name,
       surname,
       main,
+      avatar,
     }: {
       email: string;
       role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
       name?: string;
       surname?: string;
+      avatar?: string;
       main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
     } = request.body;
     const email: string = request.params.email;
@@ -149,6 +119,7 @@ const update = async (request: Request, response: Response) => {
         name,
         surname,
         main,
+        avatar,
       },
     });
     return response.status(200).json({ updatedUser });
@@ -159,4 +130,4 @@ const update = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, profile, getUserByEmail, getAll, update, levelMaker };
+export default { create, getUserByEmail, getAll, update, levelMaker };
