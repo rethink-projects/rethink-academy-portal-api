@@ -22,7 +22,8 @@ model User {
   surname String?
   // role    Roles?  @default(STUDENT)
   role    String?  @default("STUDENT")
-  main    Titles?  @default(ENGINEERING)
+  // main    Titles?  @default(ENGINEERING)
+  main    String?  @default("ENGINEERING")
   avatar  String
   bucket  Bucket?
   badges  Badges?
@@ -57,11 +58,11 @@ model Bucket {
   user   User   @relation(fields: [userId], references: [id])
 }
 
-enum Titles {
-  ENGINEERING
-  DESIGN
-  PRODUCT
-}
+// enum Titles {
+//   ENGINEERING
+//   DESIGN
+//   PRODUCT
+// }
 
 model Tasks {
   id          String   @id @default(uuid())

@@ -91,19 +91,10 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
     const user = await prismaInstance.user.findFirst({
       where: { email },
     });
-    // console.log({ email });
-    // console.log({ startDate });
-    // console.log({ endDate });
-    // addDayToEndDate(endDate!);
-    //   lte: new Date(2022, 7, 29).toISOString(),
-    //   gte: new Date(2022, 7, 23).toISOString(),
-
     let AND: any = [];
     if (email) {
       AND.push({ userId: user!.id });
     }
-
- 
 
     if (startDate && endDate) {
       AND.push({ taskDate: { gte: new Date(startDate) } });
@@ -119,12 +110,16 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
 
     let helper = {};
     tasks.map((task) => {
-      
-      if (!helper[task.taskDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})]) {
-        helper[task.taskDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})] = [];
+      if (
+        !helper[task.taskDate.toLocaleDateString("pt-BR", { timeZone: "UTC" })]
+      ) {
+        helper[task.taskDate.toLocaleDateString("pt-BR", { timeZone: "UTC" })] =
+          [];
       }
 
-      helper[task.taskDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})].push({
+      helper[
+        task.taskDate.toLocaleDateString("pt-BR", { timeZone: "UTC" })
+      ].push({
         ...task,
         duration: timeToString(
           timeKeeper(task.endTime) - timeKeeper(task.startTime)
@@ -335,12 +330,24 @@ const getRecordOfDay = async (request: Request, response: Response) => {
     }
 
     const date = new Date();
-    const modifiedDate = new Date(date.valueOf() - date.getTimezoneOffset() * 60000);
+    const modifiedDate = new Date(
+      date.valueOf() - date.getTimezoneOffset() * 60000
+    );
 
-    const separateDate = (modifiedDate.toLocaleDateString('pt-BR', {timeZone: 'UTC'})).split("/");
+    const separateDate = modifiedDate
+      .toLocaleDateString("pt-BR", { timeZone: "UTC" })
+      .split("/");
 
-    const startDate = composeDate(separateDate[0], separateDate[1], separateDate[2]);
-    const endDate = composeDate((parseInt(separateDate[0]) + 1).toString(), separateDate[1], separateDate[2])
+    const startDate = composeDate(
+      separateDate[0],
+      separateDate[1],
+      separateDate[2]
+    );
+    const endDate = composeDate(
+      (parseInt(separateDate[0]) + 1).toString(),
+      separateDate[1],
+      separateDate[2]
+    );
 
     AND.push({ taskDate: { gte: startDate } });
     AND.push({ taskDate: { lte: endDate } });
