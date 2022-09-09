@@ -35,9 +35,7 @@ const create = async (request: Request, response: Response) => {
         email,
         main,
         role,
-        avatar: avatar
-          ? avatar
-          : `https://ui-avatars.com/api/?name=${name}+${surname}`,
+        // avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
     return response
@@ -74,28 +72,23 @@ const getAll = async (request: Request, response: Response) => {
 
 const getUserByEmail = async (request: Request, response: Response) => {
   const { email } = request.params;
+  console.log({ params: request.params });
 
   try {
-    const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
-      request.query;
-
-    const users = await prismaInstance.user.findMany({
-      where: { main: main },
+    const user = await prismaInstance.user.findUnique({
+      where: { email },
       include: {
         profile: true,
       },
     });
-    const userWithLevel = users.map((item) => {
-      return {
-        ...item,
-        ...levelMaker(),
-      };
-    });
-    return response.status(200).json(userWithLevel);
+
+    const userWithLevel = { ...user, ...levelMaker() };
+
+    return response.status(200).json({ userWithLevel });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error: error.message });
+      .json({ message: "Algo de errado aconteceu.", error });
   }
 };
 
@@ -125,13 +118,12 @@ const update = async (request: Request, response: Response) => {
         name,
         surname,
         main,
-        avatar,
+        // avatar,
+        // avatar,
       },
     });
 
-    const userWithLevel = { ...user, ...levelMaker() };
-
-    return response.status(200).json({ userWithLevel });
+    return response.status(200).json({ updatedUser });
   } catch (error) {
     return response
       .status(400)
@@ -178,6 +170,15 @@ const getWatched = async (request: Request, response: Response) => {
     const { trailId }: { trailId?: string } = request.query;
     const courses = await prismaInstance.course.findMany({
       where: { trailId },
+      // select: {
+      //   courseStyle: true,
+      //   trail: true,
+      //   modules: {
+      //     include: {
+      //       lessons: true,
+      //     },
+      //   },
+      // },
       include: {
         trail: true,
         modules: {
@@ -210,6 +211,7 @@ const getWatched = async (request: Request, response: Response) => {
       }
 
       return {
+        courseStyle: course.courseStyle,
         lessonsLength: lessonsLength.length,
         userLessonsLength: userLessonsLength.length,
         completed,
@@ -283,40 +285,35 @@ const updateLessonsWatched = async (request: Request, response: Response) => {
   }
 };
 
-const update = async (request: Request, response: Response) => {
+const profile = async (request: Request, response: Response) => {
+  const { userId, social, bio, avatar } = request.body;
   try {
-    const {
-      role,
-      name,
-      surname,
-      main,
-      avatar,
-    }: {
-      email: string;
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
-      name?: string;
-      surname?: string;
-      avatar?: string;
-      main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
-    } = request.body;
-    const email: string = request.params.email;
-    const updatedUser = await prismaInstance.user.update({
-      where: {
-        email,
+    await prismaInstance.profile.upsert({
+      where: { userId },
+      create: {
+        userId,
+        bio,
+        avatar,
+        social: {
+          ...social,
+        },
       },
-      data: {
-        role,
-        name,
-        surname,
-        main,
-        // avatar,
+      update: {
+        userId,
+        bio,
+        avatar,
+        social: {
+          ...social,
+        },
       },
     });
-    return response.status(200).json({ updatedUser });
+    return response.status(200).json({
+      message: `Perfil criado com sucesso para o userid: ${userId}`,
+    });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error: error.message });
+      .json({ message: "Algo de errado aconteceu.", error });
   }
 };
 
