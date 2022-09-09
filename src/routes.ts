@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import BadgesController from "./controller/BadgesController";
 import BucketController from "./controller/BucketController";
 import EvaluateController from "./controller/EvaluateController";
 import ContractInfoController from "./controller/ContractInfoController";
