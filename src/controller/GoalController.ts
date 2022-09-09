@@ -34,6 +34,7 @@ const update = async (request: Request, response: Response) => {
   const { title, conclude }: { title?: string; conclude?: boolean } =
     request.body;
   const { id } = request.params;
+  console.log({ title, conclude, id });
   try {
     const goal = await prismaInstance.goal.update({
       where: { id: id },
