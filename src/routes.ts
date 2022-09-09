@@ -16,5 +16,6 @@ router.put("/tasks/:id", TasksController.updateTask);
 router.get("/tasks/tag/:email", TasksController.getGroupTaskByTag);
 router.post("/tasks/:email", TasksController.getTaskByUserEmail);
 router.get("/tasks/day/:email", TasksController.getRecordOfDay);
+router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
 
 export { router };
