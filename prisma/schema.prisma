@@ -43,7 +43,6 @@ model User {
   info          Info?
   main          String?         @default("ENGINEERING")
   // main     Titles?    @default(ENGINEERING)
-  profile       Profile?
   monthEvaluate MonthEvaluate[]
   bucket        Bucket[]
   GoalList      GoalList[]
@@ -78,16 +77,6 @@ model Info {
   userId                String  @unique
 
   @@map("info")
-}
-
-model Profile {
-  id     String  @id @default(uuid())
-  bio    String?
-  avatar String?
-  // social Json?
-  social String?
-  userId String  @unique
-  user   User    @relation(fields: [userId], references: [id])
 }
 
 model Badges {
@@ -127,7 +116,7 @@ model Bucket {
   id     String @id @default(uuid())
   title  String
   url    String
-  userId String @unique
+  userId String
   user   User   @relation(fields: [userId], references: [id])
 }
 

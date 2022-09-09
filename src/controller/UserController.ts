@@ -78,7 +78,6 @@ const getUserByEmail = async (request: Request, response: Response) => {
     const user = await prismaInstance.user.findFirst({
       where: { email },
       include: {
-        profile: true,
         note: true,
       },
     });
