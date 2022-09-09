@@ -155,6 +155,7 @@ const getLessonsWatched = async (request: Request, response: Response) => {
         if (user?.watched.includes(lesson.id)) {
           lessonCompleted = true;
         } else {
+          lessonCompleted = false;
           moduleCompleted = false;
         }
         return {
