@@ -58,6 +58,6 @@ enum Titles {
 
 enum Roles {
   STUDENT
-  EMBASSADOR
+  AMBASSADOR
   RETHINKER
 }
