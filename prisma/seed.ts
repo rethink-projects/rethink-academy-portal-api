@@ -174,7 +174,18 @@ async function main() {
         userId: newUser.id,
       },
     });
-    newUserList.push(newUser.id);
+    await prisma.tasks.create({
+      data: {
+        name: "daily",
+        taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+        startTime: "13:00",
+        endTime: "14:00",
+        tags: "1:1",
+        status: "finished",
+        description: "1:1 com o Gabriel",
+        userId: newUser.id,
+      },
+    });
   });
 }
 

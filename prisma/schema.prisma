@@ -16,11 +16,12 @@ model User {
   email   String  @unique
   name    String?
   surname String?
-  role    Roles?  @default(STUDENT)
-  main    Titles? @default(ENGINEERING)
+  role    Roles   @default(STUDENT)
+  main    Main    @default(ENGINEERING)
   avatar  String
   bucket  Bucket?
   badges  Badges?
+  tasks   Tasks[]
 
   @@map("user")
 }
@@ -50,10 +51,25 @@ model Bucket {
   user   User   @relation(fields: [userId], references: [id])
 }
 
-enum Titles {
+enum Main {
   ENGINEERING
   DESIGN
   PRODUCT
+}
+
+model Tasks {
+  id          String   @id @default(uuid())
+  name        String
+  taskDate    DateTime
+  startTime   String
+  endTime     String
+  tags        String   @default("tags")
+  status      String   @default("status")
+  description String   @default("description")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("tasks")
 }
 
 enum Roles {
