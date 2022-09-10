@@ -1,47 +1,47 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const students: {
+const users: {
   name: string;
   surname: string;
   email: string;
   main: "ENGINEERING" | "DESIGN" | "PRODUCT";
-  role?: "EMBASSADOR";
+  role?: "AMBASSADOR";
 }[] = [
   {
     name: "Gabriel",
     surname: "Gomes",
     email: "gabriel.gomes@rethink.dev",
     main: "ENGINEERING",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Filipe",
     surname: "Prado",
     email: "filipe.prado@rethink.dev",
     main: "ENGINEERING",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Leticia",
     surname: "Lange",
     email: "leticia.lange@rethink.dev",
     main: "DESIGN",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Priscila",
     surname: "Ritschel",
     email: "priscila.ritschel@rethink.dev",
     main: "PRODUCT",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Marcela",
     surname: "Monteiro",
     email: "marcela.monteiro@rethink.dev",
     main: "PRODUCT",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Michelli",
@@ -50,8 +50,8 @@ const students: {
     main: "PRODUCT",
   },
   {
-    name: "hugo",
-    surname: "carvalho",
+    name: "Hugo",
+    surname: "Carvalho",
     email: "hugo.carvalho@rethink.dev",
     main: "PRODUCT",
   },
@@ -129,7 +129,7 @@ const students: {
   },
   {
     name: "Carolina",
-    surname: "Valeriano ",
+    surname: "Valeriano",
     email: "carolina.valeriano@rethink.dev",
     main: "ENGINEERING",
   },
@@ -148,7 +148,8 @@ const students: {
   },
 ];
 async function main() {
-  students.forEach(async ({ email, name, surname, main, role }) => {
+  const newUserList: string[] = [];
+  users.forEach(async ({ email, name, surname, main, role }) => {
     const newUser = await prisma.user.upsert({
       where: {
         email: email,
@@ -173,6 +174,7 @@ async function main() {
         userId: newUser.id,
       },
     });
+    newUserList.push(newUser.id);
   });
 }
 

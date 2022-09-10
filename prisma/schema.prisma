@@ -26,18 +26,18 @@ model User {
 }
 
 model Badges {
-  id          String @id @default(uuid())
-  userId      String @unique
-  user        User   @relation(fields: [userId], references: [id])
-  product     Int    @default(0)
-  engineering Int    @default(0)
-  academy     Int    @default(0)
-  design      Int    @default(0)
-  welcome     Int    @default(0)
-  studies     Int    @default(0)
-  timeRecord  Int    @default(0)
-  troll       Int    @default(0)
-  goals       Int    @default(0)
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  product     String[]
+  engineering String[]
+  academy     String[]
+  design      String[]
+  welcome     String[]
+  studies     String[]
+  timeRecord  String[]
+  troll       String[]
+  goals       String[]
 
   @@map("badges")
 }
