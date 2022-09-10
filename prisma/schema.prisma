@@ -6,46 +6,39 @@ generator erd {
   provider = "prisma-erd-generator"
 }
 
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-  id      String   @id @default(uuid())
-  email   String   @unique
+  id      String  @id @default(uuid())
+  email   String  @unique
   name    String?
   surname String?
-  // role    Roles?  @default(STUDENT)
-  role    String?  @default("STUDENT")
-  // main    Titles?  @default(ENGINEERING)
-  main    String?  @default("ENGINEERING")
+  role    Roles   @default(STUDENT)
+  main    Main    @default(ENGINEERING)
   avatar  String
   bucket  Bucket?
   badges  Badges?
   tasks   Tasks[]
-  Profile Profile?
 
   @@map("user")
 }
 
 model Badges {
-  id          String @id @default(uuid())
-  userId      String @unique
-  user        User   @relation(fields: [userId], references: [id])
-  product     Int    @default(0)
-  engineering Int    @default(0)
-  academy     Int    @default(0)
-  design      Int    @default(0)
-  welcome     Int    @default(0)
-  studies     Int    @default(0)
-  timeRecord  Int    @default(0)
-  troll       Int    @default(0)
-  goals       Int    @default(0)
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  product     String[]
+  engineering String[]
+  academy     String[]
+  design      String[]
+  welcome     String[]
+  studies     String[]
+  timeRecord  String[]
+  troll       String[]
+  goals       String[]
 
   @@map("badges")
 }
@@ -58,11 +51,11 @@ model Bucket {
   user   User   @relation(fields: [userId], references: [id])
 }
 
-// enum Titles {
-//   ENGINEERING
-//   DESIGN
-//   PRODUCT
-// }
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
 
 model Tasks {
   id          String   @id @default(uuid())
@@ -79,20 +72,8 @@ model Tasks {
   @@map("tasks")
 }
 
-// enum Roles {
-//   STUDENT
-//   EMBASSADOR
-//   RETHINKER
-// }
-
-model Profile {
-  id     String  @id @default(uuid())
-  bio    String?
-  avatar String?
-  // social Json?
-  social String?
-  user   User    @relation(fields: [userId], references: [id])
-  userId String  @unique
-
-  @@map("profile")
+enum Roles {
+  STUDENT
+  AMBASSADOR
+  RETHINKER
 }
