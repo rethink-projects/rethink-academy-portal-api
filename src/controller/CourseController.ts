@@ -13,6 +13,7 @@ const create = async (request: Request, response: Response) => {
     imageTeacher,
     teacherDescription,
     teacherName,
+    courseStyle,
   } = request.body;
   try {
     const course = await prismaInstance.course.create({
@@ -27,6 +28,7 @@ const create = async (request: Request, response: Response) => {
         imageTeacher,
         teacherDescription,
         teacherName,
+        courseStyle,
       },
     });
     return response
@@ -42,11 +44,18 @@ const create = async (request: Request, response: Response) => {
 const getAllByTrailId = async (request: Request, response: Response) => {
   const { trailId } = request.params;
   try {
+    const trailName = await prismaInstance.trail.findUnique({
+      where: { id: trailId },
+      select: {
+        name: true,
+      },
+    });
+
     const course = await prismaInstance.course.findMany({
       where: { trailId },
     });
 
-    return response.status(200).json({ course });
+    return response.status(200).json({ course, trailName });
   } catch (error) {
     return response
       .status(400)
@@ -64,9 +73,12 @@ const getById = async (request: Request, response: Response) => {
           include: {
             lessons: true,
           },
-        
         },
-        
+        trail: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
@@ -120,10 +132,12 @@ const update = async (request: Request, response: Response) => {
     description,
     level,
     workload,
-    teacher,
     learning,
     skills,
     trailId,
+    imageTeacher,
+    teacherDescription,
+    teacherName,
   } = request.body;
   const { id } = request.params;
   try {
@@ -137,6 +151,9 @@ const update = async (request: Request, response: Response) => {
         learning,
         skills,
         trailId,
+        imageTeacher,
+        teacherDescription,
+        teacherName,
       },
     });
     return response
