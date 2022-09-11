@@ -131,6 +131,7 @@ const getCourse = async (request: Request, response: Response) => {
           select: {
             id: true,
             name: true,
+            embedUrl: true,
           },
         },
       },
@@ -151,17 +152,21 @@ const getCourse = async (request: Request, response: Response) => {
       return response.status(200).json({ course, modules, role: user!.role });
     } else {
       const courseModules = [{}];
+      courseModules.shift();
+
       modules!.map((module, index) => {
+        let blocked = false;
         if (index > 0) {
-          let blocked = false;
-          if (!moduleCompleted(modules[index - 1], user?.watched)) {
+          if (
+            !moduleCompleted(modules[index - 1], user?.watched) &&
+            modules[index - 1].lessons.length !== 0
+          ) {
             blocked = true;
             module.lessons = [];
           }
-          courseModules.push({ ...module!, blocked });
         }
+        courseModules.push({ ...module!, blocked });
       });
-      courseModules.shift();
 
       return response
         .status(200)
