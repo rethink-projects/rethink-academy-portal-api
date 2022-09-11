@@ -156,6 +156,7 @@ const getCourse = async (request: Request, response: Response) => {
 
       modules!.map((module, index) => {
         let blocked = false;
+        const completed = moduleCompleted(module, user?.watched);
         if (index > 0) {
           if (
             !moduleCompleted(modules[index - 1], user?.watched) &&
@@ -165,12 +166,21 @@ const getCourse = async (request: Request, response: Response) => {
             module.lessons = [];
           }
         }
-        courseModules.push({ ...module!, blocked });
+        courseModules.push({
+          ...module!,
+          blocked,
+          completed,
+        });
       });
 
       return response
         .status(200)
-        .json({ course, modules: courseModules, role: user!.role });
+        .json({
+          course,
+          modules: courseModules,
+          role: user!.role,
+          watched: user?.watched,
+        });
     }
   } catch (error) {
     return response
