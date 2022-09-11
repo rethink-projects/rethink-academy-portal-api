@@ -1,5 +1,6 @@
+import { verify } from "crypto";
 import { Request, Response } from "express";
-import { prismaInstance } from "../../database/prismaClient";
+import { prismaInstance, Roles } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
   const {
@@ -101,7 +102,86 @@ const getAll = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu aqui.", error });
   }
 };
+const getCourse = async (request: Request, response: Response) => {
+  const { courseId, email } = request.params;
 
+  try {
+    const course = await prismaInstance.course.findUnique({
+      where: { id: courseId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        level: true,
+        workload: true,
+        learning: true,
+        skills: true,
+        courseStyle: true,
+        imageTeacher: true,
+        teacherDescription: true,
+        teacherName: true,
+      },
+    });
+    const modules = await prismaInstance.module.findMany({
+      where: { courseId },
+      select: {
+        id: true,
+        name: true,
+        lessons: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+      orderBy: {
+        cratedAt: "asc",
+      },
+    });
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+      select: {
+        role: true,
+        watched: true,
+      },
+    });
+
+    if (user!.role === ("EMBASSADOR" as Roles)) {
+      return response.status(200).json({ course, modules, role: user!.role });
+    } else {
+      const courseModules = [{}];
+      modules!.map((module, index) => {
+        if (index > 0) {
+          let blocked = false;
+          if (!moduleCompleted(modules[index - 1], user?.watched)) {
+            blocked = true;
+            module.lessons = [];
+          }
+          courseModules.push({ ...module!, blocked });
+        }
+      });
+      courseModules.shift();
+
+      return response
+        .status(200)
+        .json({ course, modules: courseModules, role: user!.role });
+    }
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+const moduleCompleted = (module, watched) => {
+  let completed = true;
+  module.lessons.forEach((element) => {
+    if (!watched.includes(element.id)) {
+      completed = false;
+    }
+  });
+  return completed;
+};
 const getCourseModules = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {
@@ -226,7 +306,7 @@ const getProgress = async (request: Request, response: Response) => {
 
     const usersProgress = users.map((user) => {
       let completedModules: string[] = [];
-      let moduleCompleted;
+      let moduleCompleted: boolean;
 
       courses.map((course) => {
         course.modules.map((module) => {
@@ -270,4 +350,5 @@ export default {
   getCourseModules,
   getProgress,
   getAll,
+  getCourse,
 };
