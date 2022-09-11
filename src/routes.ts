@@ -22,7 +22,7 @@ router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 router.put("/user/:email", UserController.updateLessonsWatched);
 router.get("/user/:email", UserController.getUserByEmail);
-router.get("/teacher/:id", UserController.getProfileByUserId);
+// router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
 router.get("/user/watched/list/:email", UserController.getWatchedList);

@@ -220,11 +220,7 @@ const getProgress = async (request: Request, response: Response) => {
         surname: true,
         watched: true,
         role: true,
-        profile: {
-          select: {
-            avatar: true,
-          },
-        },
+        avatar: true,
       },
     });
 
@@ -252,7 +248,7 @@ const getProgress = async (request: Request, response: Response) => {
       return {
         userName: user.name + " " + user.surname,
         userImage:
-          user.profile?.avatar ??
+          user.avatar ??
           `https://ui-avatars.com/api/?name=${user.name}+${user.surname}`,
         completedModules,
       };
