@@ -1,4 +1,5 @@
 import { Router } from "express";
+import TasksController from "./controller/TasksController";
 import BadgesController from "./controller/BadgesController";
 import BucketController from "./controller/BucketController";
 import CourseController from "./controller/CourseController";
@@ -17,30 +18,35 @@ router.post("/bucket", BucketController.upsert);
 router.post("/badge", BadgesController.giveBadge);
 router.get("/badge/:email", BadgesController.getUserBadges);
 
+router.get("/tasks/:email", TasksController.getTaskByUserEmail);
+router.post("/tasks", TasksController.createTask);
+router.delete("/tasks/:id", TasksController.removeTask);
+router.put("/tasks/:id", TasksController.updateTask);
+router.get("/tasks/tag/:email", TasksController.getGroupTaskByTag);
+router.post("/tasks/:email", TasksController.getTaskByUserEmail);
+router.get("/tasks/day/:email", TasksController.getRecordOfDay);
+router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
+
 router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 router.put("/user/:email", UserController.updateLessonsWatched);
 router.get("/user/:email", UserController.getUserByEmail);
-router.get("/teacher/:id", UserController.getProfileByUserId);
+// router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
 router.get("/user/watched/list/:email", UserController.getWatchedList);
-router.get(
-  "/user/watched/course/:email/:trailId",
-  UserController.getCoursesCompletedUser
-);
-// http://localhost:5432/api/user/watched/lucas.paula@rethink.dev?trailId="idDoAcademy"
 
 router.post("/trail", TrailController.create);
 router.get("/trail", TrailController.getAll);
 router.put("/trail/:id", TrailController.update);
 router.delete("/trail/:id", TrailController.deleteById);
+router.get("/trail/course/:trailId", CourseController.getCoursesByTrailId);
 
 router.get("/course", CourseController.getAll);
-router.get("/trail/course/:trailId", CourseController.getAllByTrailId);
+router.get("/course/:courseId/:email", CourseController.getCourse);
 router.get("/course/:id", CourseController.getById);
-router.get("/course/:id/modules", CourseController.getCourseModules);
+router.get("/course/modules/:id", CourseController.getCourseModules);
 router.post("/course", CourseController.create);
 router.delete("/course/:id", CourseController.deleteById);
 router.put("/course/:id", CourseController.update);

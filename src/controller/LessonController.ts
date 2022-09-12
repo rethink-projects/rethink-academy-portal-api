@@ -8,7 +8,6 @@ const create = async (request: Request, response: Response) => {
       data: {
         name,
         embedUrl,
-        order,
         description,
         moduleId,
       },
@@ -66,7 +65,6 @@ const update = async (request: Request, response: Response) => {
       data: {
         name,
         embedUrl,
-        order,
         description,
         module,
       },

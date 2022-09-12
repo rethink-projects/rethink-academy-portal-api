@@ -34,7 +34,7 @@ enum Titles {
 
 enum Roles {
   STUDENT
-  EMBASSADOR
+  AMBASSADOR
   RETHINKER
 }
 
@@ -45,18 +45,19 @@ enum Levels {
 }
 
 model Badges {
-  id          String @id @default(uuid())
-  userId      String @unique
-  user        User   @relation(fields: [userId], references: [id])
-  product     Int    @default(0)
-  engineering Int    @default(0)
-  academy     Int    @default(0)
-  design      Int    @default(0)
-  welcome     Int    @default(0)
-  studies     Int    @default(0)
-  timeRecord  Int    @default(0)
-  troll       Int    @default(0)
-  goals       Int    @default(0)
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  product     String[]
+  engineering String[]
+  academy     String[]
+  design      String[]
+  welcome     String[]
+  studies     String[]
+  timeRecord  String[]
+  troll       String[]
+  goals       String[]
+
   @@map("badges")
 }
 
@@ -76,26 +77,15 @@ model User {
   main     Main?    @default(ENGINEERING)
   watched  String[]
   role     Roles    @default(STUDENT)
-  profile  Profile?
   cratedAt DateTime @default(now())
   avatar  String
   bucket  Bucket?
-  badges  Badges?
+  badges  Badges[]
+  tasks   Tasks[]
 
   @@map("user")
 }
 
-model Profile {
-  id       String   @id @default(uuid())
-  bio      String?
-  avatar   String?
-  social   Json?
-  user     User     @relation(fields: [userId], references: [id])
-  userId   String   @unique
-  cratedAt DateTime @default(now())
-
-  @@map("profile")
-}
 
 model Trail {
   id             String           @id @default(uuid())
@@ -135,7 +125,6 @@ model Lesson {
   id          String   @id @default(uuid())
   name        String
   embedUrl    String
-  order       Int
   description String
   module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId    String
@@ -166,4 +155,19 @@ model CourseTimeline {
   cratedAt DateTime @default(now())
 
   @@map("timeline")
+}
+
+model Tasks {
+  id          String   @id @default(uuid())
+  name        String
+  taskDate    DateTime
+  startTime   String
+  endTime     String
+  tags        String   @default("tags")
+  status      String   @default("status")
+  description String   @default("description")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("tasks")
 }

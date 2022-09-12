@@ -1,22 +1,22 @@
 import { application, Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
-// import { differenceInDays } from "date-fns";
+import { differenceInDays } from "date-fns";
 
 const levelMaker = () => {
   let level = 0;
   let startLevel = new Date(2022, 2, 7);
   let endLevel = new Date(2022, 8, 22);
-  // const between = differenceInDays(new Date(), startLevel);
+  const between = differenceInDays(new Date(), startLevel);
   let timeNow = new Date(2022, 4, 1).getHours();
-  // let rex: number = between * 24 + timeNow;
-  // level = Math.trunc(rex / 48);
-  // let exp = rex % 48;
+  let rex: number = between * 24 + timeNow;
+  level = Math.trunc(rex / 48);
+  let exp = rex % 48;
   if (endLevel < new Date()) {
     level = 100;
   }
   return {
     level,
-    // exp,
+    exp,
   };
 };
 
@@ -35,6 +35,7 @@ const create = async (request: Request, response: Response) => {
         email,
         main,
         role,
+
         avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
@@ -55,7 +56,7 @@ const getAll = async (request: Request, response: Response) => {
       role,
     }: {
       main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
     } = request.query;
 
     const users = await prismaInstance.user.findMany({
@@ -84,7 +85,6 @@ const getUserByEmail = async (request: Request, response: Response) => {
       where: { email },
       include: {
         badges: true,
-        profile: true,
       },
     });
 
@@ -108,7 +108,7 @@ const update = async (request: Request, response: Response) => {
       avatar,
     }: {
       email: string;
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
       name?: string;
       surname?: string;
       avatar?: string;
@@ -124,8 +124,7 @@ const update = async (request: Request, response: Response) => {
         name,
         surname,
         main,
-        // avatar,
-        // avatar,
+        avatar,
       },
     });
 
@@ -253,23 +252,6 @@ const getWatchedList = async (request: Request, response: Response) => {
   }
 };
 
-const getProfileByUserId = async (request: Request, response: Response) => {
-  const { id } = request.params;
-  try {
-    const profile = await prismaInstance.profile.findUnique({
-      where: { userId: id },
-      include: {
-        user: true,
-      },
-    });
-    return response.status(200).json({ profile });
-  } catch (error) {
-    return response
-      .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
-  }
-};
-
 const updateLessonsWatched = async (request: Request, response: Response) => {
   const { watched } = request.body;
 
@@ -291,116 +273,15 @@ const updateLessonsWatched = async (request: Request, response: Response) => {
   }
 };
 
-const profile = async (request: Request, response: Response) => {
-  const { userId, social, bio, avatar } = request.body;
-  try {
-    await prismaInstance.profile.upsert({
-      where: { userId },
-      create: {
-        userId,
-        bio,
-        avatar,
-        social: {
-          ...social,
-        },
-      },
-      update: {
-        userId,
-        bio,
-        avatar,
-        social: {
-          ...social,
-        },
-      },
-    });
-    return response.status(200).json({
-      message: `Perfil criado com sucesso para o userid: ${userId}`,
-    });
-  } catch (error) {
-    return response
-      .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
-  }
-};
-
-const getCoursesCompletedUser = async (
-  request: Request,
-  response: Response
-) => {
-  const { email, trailId } = request.body;
-
-  const courses = await prismaInstance.trail.findFirst({
-    where: { id: trailId },
-    select: {
-      course: {
-        include: {
-          modules: {
-            select: {
-              lessons: {
-                select: {
-                  id: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
-
-  const user = await prismaInstance.user.findFirst({
-    where: { email },
-    include: {
-      badges: true,
-      profile: true,
-    },
-  });
-
-  let courseBegining = false;
-  let courseIsCompleted = true;
-  let coursecompleted = 0;
-  let badgeCompleted = true;
-
-  const data = courses?.course.map((course) => {
-    courseBegining = false;
-    courseIsCompleted = true;
-    coursecompleted = 0;
-
-    course.modules.map((module) => {
-      module.lessons.map((lesson) => {
-        if (user?.watched.includes(lesson.id)) {
-          courseBegining = true;
-        } else {
-          courseIsCompleted = false;
-        }
-        // if (!user?.watched.includes(lesson.id)) {
-        //   courseIsCompleted = false;
-        // } else {
-        //   courseBegining = true;
-        // }
-      });
-    });
-    if (courseIsCompleted === true) coursecompleted = 1;
-    else if (courseBegining) coursecompleted = 2;
-    else coursecompleted = 3;
-
-    return { ...course, coursecompleted };
-  });
-  return response.status(200).json({ data, user });
-};
-
 export default {
   create,
-  profile,
   getUserByEmail,
   createWatched,
   getWatched,
   getWatchedList,
-  getProfileByUserId,
   getAll,
   update,
   levelMaker,
   updateLessonsWatched,
   // updateLessonsWatched,
-  getCoursesCompletedUser,
 };

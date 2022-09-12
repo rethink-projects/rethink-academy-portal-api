@@ -1,5 +1,6 @@
+import { verify } from "crypto";
 import { Request, Response } from "express";
-import { prismaInstance } from "../../database/prismaClient";
+import { prismaInstance, Roles } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
   const {
@@ -41,25 +42,95 @@ const create = async (request: Request, response: Response) => {
   }
 };
 
-const getAllByTrailId = async (request: Request, response: Response) => {
+const getCoursesByTrailId = async (request: Request, response: Response) => {
   const { trailId } = request.params;
+
+  const { email }: { email?: string } = request.query;
+
   try {
-    const trailName = await prismaInstance.trail.findUnique({
+    const courses = await prismaInstance.trail.findUnique({
       where: { id: trailId },
       select: {
         name: true,
+        main: true,
+        course: {
+          include: {
+            modules: {
+              select: {
+                lessons: {
+                  select: {
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
-    const course = await prismaInstance.course.findMany({
-      where: { trailId },
+    const trailName = courses?.name;
+    const trailMain = courses?.main;
+
+    if (!email) throw new Error("Não vem email");
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+      include: {
+        badges: true,
+      },
     });
 
-    return response.status(200).json({ course, trailName });
+    let courseBegining = false;
+    let courseIsCompleted = true;
+    let coursecompleted = 0;
+    let badgeCompleted: boolean = false;
+
+    const badgesUser = await prismaInstance.badges.findFirstOrThrow({
+      where: { userId: user?.id },
+    });
+
+    const data = courses?.course.map((course) => {
+      courseBegining = false;
+      courseIsCompleted = true;
+      coursecompleted = 0;
+      badgeCompleted = false;
+
+      course.modules.map((module) => {
+        module.lessons.map((lesson) => {
+          if (user?.watched.includes(lesson.id)) {
+            courseBegining = true;
+          } else {
+            courseIsCompleted = false;
+          }
+        });
+      });
+      if (courseIsCompleted === true) coursecompleted = 1;
+      else if (courseBegining) coursecompleted = 2;
+      else coursecompleted = 3;
+
+      const badge = courses.main.toLowerCase();
+
+      if (!badgesUser) throw new Error("User nao tem badges");
+      if (!badgesUser[badge]) throw new Error(`User nao tem badge ${badge}`);
+
+      console.log(badgeCompleted);
+      if (badgesUser[badge].includes(course.id)) {
+        badgeCompleted = true;
+      }
+
+      return {
+        ...course,
+        coursecompleted,
+        badgeCompleted,
+      };
+    });
+
+    return response.status(200).json({ user, trailName, data, trailMain });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -101,9 +172,109 @@ const getAll = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu aqui.", error });
   }
 };
+const getCourse = async (request: Request, response: Response) => {
+  const { courseId, email } = request.params;
+
+  try {
+    const course = await prismaInstance.course.findUnique({
+      where: { id: courseId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        level: true,
+        workload: true,
+        learning: true,
+        skills: true,
+        courseStyle: true,
+        imageTeacher: true,
+        teacherDescription: true,
+        teacherName: true,
+        trail: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    const modules = await prismaInstance.module.findMany({
+      where: { courseId },
+      select: {
+        id: true,
+        name: true,
+        lessons: {
+          select: {
+            id: true,
+            name: true,
+            embedUrl: true,
+          },
+        },
+      },
+      orderBy: {
+        cratedAt: "asc",
+      },
+    });
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+      select: {
+        role: true,
+        watched: true,
+      },
+    });
+
+    if (user!.role === ("AMBASSADOR" as Roles)) {
+      return response.status(200).json({ course, modules, role: user!.role });
+    } else {
+      const courseModules = [{}];
+      courseModules.shift();
+
+      modules!.map((module, index) => {
+        let blocked = false;
+        const completed = moduleCompleted(module, user?.watched);
+        if (index > 0) {
+          if (
+            !moduleCompleted(modules[index - 1], user?.watched) ||
+            modules[index - 1].lessons.length === 0
+          ) {
+            blocked = true;
+            module.lessons = [];
+          }
+        }
+        courseModules.push({
+          ...module!,
+          blocked,
+          completed,
+        });
+      });
+
+      return response.status(200).json({
+        course,
+        modules: courseModules,
+        role: user!.role,
+        watched: user?.watched,
+      });
+    }
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+const moduleCompleted = (module, watched) => {
+  let completed = true;
+  module.lessons.forEach((element) => {
+    if (!watched.includes(element.id)) {
+      completed = false;
+    }
+  });
+  return completed;
+};
 
 const getCourseModules = async (request: Request, response: Response) => {
   const { id } = request.params;
+  console.log(id);
+
   try {
     const modules = await prismaInstance.module.findMany({
       where: {
@@ -117,12 +288,11 @@ const getCourseModules = async (request: Request, response: Response) => {
         lessons: true,
       },
     });
-
     return response.status(200).json({ modules });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -138,6 +308,7 @@ const update = async (request: Request, response: Response) => {
     imageTeacher,
     teacherDescription,
     teacherName,
+    courseStyle,
   } = request.body;
   const { id } = request.params;
   try {
@@ -154,6 +325,7 @@ const update = async (request: Request, response: Response) => {
         imageTeacher,
         teacherDescription,
         teacherName,
+        courseStyle,
       },
     });
     return response
@@ -220,17 +392,13 @@ const getProgress = async (request: Request, response: Response) => {
         surname: true,
         watched: true,
         role: true,
-        profile: {
-          select: {
-            avatar: true,
-          },
-        },
+        avatar: true,
       },
     });
 
     const usersProgress = users.map((user) => {
       let completedModules: string[] = [];
-      let moduleCompleted;
+      let moduleCompleted: boolean;
 
       courses.map((course) => {
         course.modules.map((module) => {
@@ -252,7 +420,7 @@ const getProgress = async (request: Request, response: Response) => {
       return {
         userName: user.name + " " + user.surname,
         userImage:
-          user.profile?.avatar ??
+          user.avatar ??
           `https://ui-avatars.com/api/?name=${user.name}+${user.surname}`,
         completedModules,
       };
@@ -267,11 +435,12 @@ const getProgress = async (request: Request, response: Response) => {
 
 export default {
   create,
-  getAllByTrailId,
+  getCoursesByTrailId,
   update,
   deleteById,
   getById,
   getCourseModules,
   getProgress,
   getAll,
+  getCourse,
 };
