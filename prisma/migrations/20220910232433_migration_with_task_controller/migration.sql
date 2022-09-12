@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "Titles" AS ENUM ('ENGINEERING', 'DESIGN', 'PRODUCT');
+CREATE TYPE "Main" AS ENUM ('ENGINEERING', 'DESIGN', 'PRODUCT');
 
 -- CreateEnum
 CREATE TYPE "Roles" AS ENUM ('STUDENT', 'AMBASSADOR', 'RETHINKER');
@@ -10,8 +10,8 @@ CREATE TABLE "user" (
     "email" TEXT NOT NULL,
     "name" TEXT,
     "surname" TEXT,
-    "role" "Roles" DEFAULT 'STUDENT',
-    "main" "Titles" DEFAULT 'ENGINEERING',
+    "role" "Roles" NOT NULL DEFAULT 'STUDENT',
+    "main" "Main" NOT NULL DEFAULT 'ENGINEERING',
     "avatar" TEXT NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
@@ -21,15 +21,15 @@ CREATE TABLE "user" (
 CREATE TABLE "badges" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "product" INTEGER NOT NULL DEFAULT 0,
-    "engineering" INTEGER NOT NULL DEFAULT 0,
-    "academy" INTEGER NOT NULL DEFAULT 0,
-    "design" INTEGER NOT NULL DEFAULT 0,
-    "welcome" INTEGER NOT NULL DEFAULT 0,
-    "studies" INTEGER NOT NULL DEFAULT 0,
-    "timeRecord" INTEGER NOT NULL DEFAULT 0,
-    "troll" INTEGER NOT NULL DEFAULT 0,
-    "goals" INTEGER NOT NULL DEFAULT 0,
+    "product" TEXT[],
+    "engineering" TEXT[],
+    "academy" TEXT[],
+    "design" TEXT[],
+    "welcome" TEXT[],
+    "studies" TEXT[],
+    "timeRecord" TEXT[],
+    "troll" TEXT[],
+    "goals" TEXT[],
 
     CONSTRAINT "badges_pkey" PRIMARY KEY ("id")
 );
@@ -42,6 +42,21 @@ CREATE TABLE "Bucket" (
     "userId" TEXT NOT NULL,
 
     CONSTRAINT "Bucket_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "tasks" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "taskDate" TIMESTAMP(3) NOT NULL,
+    "startTime" TEXT NOT NULL,
+    "endTime" TEXT NOT NULL,
+    "tags" TEXT NOT NULL DEFAULT 'tags',
+    "status" TEXT NOT NULL DEFAULT 'status',
+    "description" TEXT NOT NULL DEFAULT 'description',
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "tasks_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
@@ -58,3 +73,6 @@ ALTER TABLE "badges" ADD CONSTRAINT "badges_userId_fkey" FOREIGN KEY ("userId") 
 
 -- AddForeignKey
 ALTER TABLE "Bucket" ADD CONSTRAINT "Bucket_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tasks" ADD CONSTRAINT "tasks_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -155,7 +155,6 @@ const users: {
   },
 ];
 async function main() {
-  const newUserList: string[] = [];
   users.forEach(async ({ email, name, surname, main, role }) => {
     const newUser = await prisma.user.upsert({
       where: {
@@ -166,6 +165,7 @@ async function main() {
         surname: surname,
         main: main,
         role: role ?? "STUDENT",
+        avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
       create: {
         name: name,
@@ -176,8 +176,12 @@ async function main() {
         avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
-    await prisma.badges.create({
-      data: {
+    await prisma.badges.upsert({
+      where: {
+        userId: newUser.id,
+      },
+      update: {},
+      create: {
         userId: newUser.id,
       },
     });
@@ -187,9 +191,45 @@ async function main() {
         taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
         startTime: "13:00",
         endTime: "14:00",
+        tags: "daily",
+        status: "finished",
+        description: "Daily do meu Squad, Daily da minha area",
+        userId: newUser.id,
+      },
+    });
+    await prisma.tasks.create({
+      data: {
+        name: "1:1",
+        taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+        startTime: "14:00",
+        endTime: "15:00",
         tags: "1:1",
         status: "finished",
-        description: "1:1 com o Gabriel",
+        description: "1:1 com o Embaixador",
+        userId: newUser.id,
+      },
+    });
+    await prisma.tasks.create({
+      data: {
+        name: "Criando Component",
+        taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+        startTime: "15:00",
+        endTime: "18:00",
+        tags: "Atividade Interna",
+        status: "finished",
+        description: "Criando o meu component Button",
+        userId: newUser.id,
+      },
+    });
+    await prisma.tasks.create({
+      data: {
+        name: "Estudos",
+        taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+        startTime: "18:00",
+        endTime: "19:00",
+        tags: "1:1",
+        status: "finished",
+        description: "Estudando JavaScript",
         userId: newUser.id,
       },
     });
