@@ -1,8 +1,9 @@
 import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
+
 const upsert = async (request: Request, response: Response) => {
+  const { title, email, url } = request.body;
   try {
-    const { title, email, url } = request.body;
     if (!email) throw new Error("não tem user");
 
     const user = await prismaInstance.user.findFirstOrThrow({
