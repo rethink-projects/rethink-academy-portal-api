@@ -138,6 +138,7 @@ const update = async (request: Request, response: Response) => {
     imageTeacher,
     teacherDescription,
     teacherName,
+    courseStyle,
   } = request.body;
   const { id } = request.params;
   try {
@@ -154,6 +155,7 @@ const update = async (request: Request, response: Response) => {
         imageTeacher,
         teacherDescription,
         teacherName,
+        courseStyle,
       },
     });
     return response
