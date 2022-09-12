@@ -1,5 +1,6 @@
+import { verify } from "crypto";
 import { Request, Response } from "express";
-import { prismaInstance } from "../../database/prismaClient";
+import { prismaInstance, Roles } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
   const {
@@ -101,7 +102,104 @@ const getAll = async (request: Request, response: Response) => {
       .json({ message: "Algo de errado aconteceu aqui.", error });
   }
 };
+const getCourse = async (request: Request, response: Response) => {
+  const { courseId, email } = request.params;
 
+  try {
+    const course = await prismaInstance.course.findUnique({
+      where: { id: courseId },
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        level: true,
+        workload: true,
+        learning: true,
+        skills: true,
+        courseStyle: true,
+        imageTeacher: true,
+        teacherDescription: true,
+        teacherName: true,
+        trail: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    const modules = await prismaInstance.module.findMany({
+      where: { courseId },
+      select: {
+        id: true,
+        name: true,
+        lessons: {
+          select: {
+            id: true,
+            name: true,
+            embedUrl: true,
+          },
+        },
+      },
+      orderBy: {
+        cratedAt: "asc",
+      },
+    });
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+      select: {
+        role: true,
+        watched: true,
+      },
+    });
+
+    if (user!.role === ("EMBASSADOR" as Roles)) {
+      return response.status(200).json({ course, modules, role: user!.role });
+    } else {
+      const courseModules = [{}];
+      courseModules.shift();
+
+      modules!.map((module, index) => {
+        let blocked = false;
+        const completed = moduleCompleted(module, user?.watched);
+        if (index > 0) {
+          if (
+            !moduleCompleted(modules[index - 1], user?.watched) ||
+            modules[index - 1].lessons.length === 0
+          ) {
+            blocked = true;
+            module.lessons = [];
+          }
+        }
+        courseModules.push({
+          ...module!,
+          blocked,
+          completed,
+        });
+      });
+
+      return response.status(200).json({
+        course,
+        modules: courseModules,
+        role: user!.role,
+        watched: user?.watched,
+      });
+    }
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+const moduleCompleted = (module, watched) => {
+  let completed = true;
+  module.lessons.forEach((element) => {
+    if (!watched.includes(element.id)) {
+      completed = false;
+    }
+  });
+  return completed;
+};
 const getCourseModules = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {
@@ -222,17 +320,13 @@ const getProgress = async (request: Request, response: Response) => {
         surname: true,
         watched: true,
         role: true,
-        profile: {
-          select: {
-            avatar: true,
-          },
-        },
+        avatar: true,
       },
     });
 
     const usersProgress = users.map((user) => {
       let completedModules: string[] = [];
-      let moduleCompleted;
+      let moduleCompleted: boolean;
 
       courses.map((course) => {
         course.modules.map((module) => {
@@ -254,7 +348,7 @@ const getProgress = async (request: Request, response: Response) => {
       return {
         userName: user.name + " " + user.surname,
         userImage:
-          user.profile?.avatar ??
+          user.avatar ??
           `https://ui-avatars.com/api/?name=${user.name}+${user.surname}`,
         completedModules,
       };
@@ -276,4 +370,5 @@ export default {
   getCourseModules,
   getProgress,
   getAll,
+  getCourse,
 };

@@ -80,7 +80,7 @@ model User {
   cratedAt DateTime @default(now())
   avatar  String
   bucket  Bucket?
-  badges  Badges?
+  badges  Badges[]
 
   @@map("user")
 }

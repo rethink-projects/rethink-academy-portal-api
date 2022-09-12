@@ -35,6 +35,7 @@ const create = async (request: Request, response: Response) => {
         email,
         main,
         role,
+        
         avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });

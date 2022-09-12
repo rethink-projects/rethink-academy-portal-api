@@ -22,7 +22,7 @@ router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 router.put("/user/:email", UserController.updateLessonsWatched);
 router.get("/user/:email", UserController.getUserByEmail);
-router.get("/teacher/:id", UserController.getProfileByUserId);
+// router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
 router.get("/user/watched/list/:email", UserController.getWatchedList);
@@ -30,7 +30,6 @@ router.get(
   "/user/watched/course/:email/:trailId",
   UserController.getCoursesCompletedUser
 );
-// http://localhost:5432/api/user/watched/lucas.paula@rethink.dev?trailId="idDoAcademy"
 
 router.post("/trail", TrailController.create);
 router.get("/trail", TrailController.getAll);
@@ -38,6 +37,8 @@ router.put("/trail/:id", TrailController.update);
 router.delete("/trail/:id", TrailController.deleteById);
 
 router.get("/course", CourseController.getAll);
+router.get("/course/:courseId/:email", CourseController.getCourse);
+
 router.get("/trail/course/:trailId", CourseController.getAllByTrailId);
 router.get("/course/:id", CourseController.getById);
 router.get("/course/:id/modules", CourseController.getCourseModules);
