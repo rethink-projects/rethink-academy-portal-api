@@ -43,13 +43,16 @@ const create = async (request: Request, response: Response) => {
 };
 
 const getCoursesByTrailId = async (request: Request, response: Response) => {
-  const { trailId, email } = request.params;
+  const { trailId } = request.params;
+
+  const { email }: { email?: string } = request.query;
 
   try {
     const courses = await prismaInstance.trail.findUnique({
       where: { id: trailId },
       select: {
         name: true,
+        main: true,
         course: {
           include: {
             modules: {
@@ -67,6 +70,9 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
     });
 
     const trailName = courses?.name;
+    const trailMain = courses?.main;
+
+    if (!email) throw new Error("Não vem email");
 
     const user = await prismaInstance.user.findFirst({
       where: { email },
@@ -78,12 +84,17 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
     let courseBegining = false;
     let courseIsCompleted = true;
     let coursecompleted = 0;
-    let badgeCompleted = true;
+    let badgeCompleted: boolean = false;
+
+    const badgesUser = await prismaInstance.badges.findFirstOrThrow({
+      where: { userId: user?.id },
+    });
 
     const data = courses?.course.map((course) => {
       courseBegining = false;
       courseIsCompleted = true;
       coursecompleted = 0;
+      badgeCompleted = false;
 
       course.modules.map((module) => {
         module.lessons.map((lesson) => {
@@ -98,14 +109,28 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
       else if (courseBegining) coursecompleted = 2;
       else coursecompleted = 3;
 
-      return { ...course, coursecompleted };
+      const badge = courses.main.toLowerCase();
+
+      if (!badgesUser) throw new Error("User nao tem badges");
+      if (!badgesUser[badge]) throw new Error(`User nao tem badge ${badge}`);
+
+      console.log(badgeCompleted);
+      if (badgesUser[badge].includes(course.id)) {
+        badgeCompleted = true;
+      }
+
+      return {
+        ...course,
+        coursecompleted,
+        badgeCompleted,
+      };
     });
 
-    return response.status(200).json({ user, trailName, data });
+    return response.status(200).json({ user, trailName, data, trailMain });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
