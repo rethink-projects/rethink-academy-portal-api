@@ -46,7 +46,10 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
   const { trailId } = request.params;
 
   const { email }: { email?: string } = request.query;
-
+  
+  // const { trailId, email } = request.params;
+  // console.log(email);
+  // console.log(trailId);
   try {
     const courses = await prismaInstance.trail.findUnique({
       where: { id: trailId },
