@@ -51,11 +51,16 @@ const create = async (request: Request, response: Response) => {
 
 const getAll = async (request: Request, response: Response) => {
   try {
-    const { main }: { main?: "ENGINEERING" | "DESIGN" | "PRODUCT" } =
-      request.query;
+    const {
+      main,
+      role,
+    }: {
+      main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
+    } = request.query;
 
     const users = await prismaInstance.user.findMany({
-      where: { main },
+      where: { main, role },
     });
     const userWithLevel = users.map((item) => {
       return {
@@ -104,7 +109,7 @@ const update = async (request: Request, response: Response) => {
       avatar,
     }: {
       email: string;
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
       name?: string;
       surname?: string;
       avatar?: string;
