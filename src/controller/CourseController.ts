@@ -120,6 +120,11 @@ const getCourse = async (request: Request, response: Response) => {
         imageTeacher: true,
         teacherDescription: true,
         teacherName: true,
+        trail: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
     const modules = await prismaInstance.module.findMany({
@@ -159,8 +164,8 @@ const getCourse = async (request: Request, response: Response) => {
         const completed = moduleCompleted(module, user?.watched);
         if (index > 0) {
           if (
-            !moduleCompleted(modules[index - 1], user?.watched) &&
-            modules[index - 1].lessons.length !== 0
+            !moduleCompleted(modules[index - 1], user?.watched) ||
+            modules[index - 1].lessons.length === 0
           ) {
             blocked = true;
             module.lessons = [];
@@ -173,14 +178,12 @@ const getCourse = async (request: Request, response: Response) => {
         });
       });
 
-      return response
-        .status(200)
-        .json({
-          course,
-          modules: courseModules,
-          role: user!.role,
-          watched: user?.watched,
-        });
+      return response.status(200).json({
+        course,
+        modules: courseModules,
+        role: user!.role,
+        watched: user?.watched,
+      });
     }
   } catch (error) {
     return response
