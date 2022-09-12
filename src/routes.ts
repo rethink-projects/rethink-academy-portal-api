@@ -36,22 +36,20 @@ router.get("/user/:email", UserController.getUserByEmail);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
 router.get("/user/watched/list/:email", UserController.getWatchedList);
-router.get(
-  "/user/watched/course/:email/:trailId",
-  UserController.getCoursesCompletedUser
-);
 
 router.post("/trail", TrailController.create);
 router.get("/trail", TrailController.getAll);
 router.put("/trail/:id", TrailController.update);
 router.delete("/trail/:id", TrailController.deleteById);
+router.get(
+  "/trail/course/:trailId/:email",
+  CourseController.getCoursesByTrailId
+);
 
 router.get("/course", CourseController.getAll);
 router.get("/course/:courseId/:email", CourseController.getCourse);
-
-router.get("/trail/course/:trailId", CourseController.getAllByTrailId);
 router.get("/course/:id", CourseController.getById);
-router.get("/course/:id/modules", CourseController.getCourseModules);
+router.get("/course/modules/:id", CourseController.getCourseModules);
 router.post("/course", CourseController.create);
 router.delete("/course/:id", CourseController.deleteById);
 router.put("/course/:id", CourseController.update);

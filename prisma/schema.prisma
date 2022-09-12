@@ -34,7 +34,7 @@ enum Titles {
 
 enum Roles {
   STUDENT
-  EMBASSADOR
+  AMBASSADOR
   RETHINKER
 }
 
@@ -77,7 +77,6 @@ model User {
   main     Main?    @default(ENGINEERING)
   watched  String[]
   role     Roles    @default(STUDENT)
-  profile  Profile?
   cratedAt DateTime @default(now())
   avatar  String
   bucket  Bucket?
@@ -87,17 +86,6 @@ model User {
   @@map("user")
 }
 
-model Profile {
-  id       String   @id @default(uuid())
-  bio      String?
-  avatar   String?
-  social   Json?
-  user     User     @relation(fields: [userId], references: [id])
-  userId   String   @unique
-  cratedAt DateTime @default(now())
-
-  @@map("profile")
-}
 
 model Trail {
   id             String           @id @default(uuid())
@@ -137,7 +125,6 @@ model Lesson {
   id          String   @id @default(uuid())
   name        String
   embedUrl    String
-  order       Int
   description String
   module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   moduleId    String

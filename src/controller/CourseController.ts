@@ -42,21 +42,66 @@ const create = async (request: Request, response: Response) => {
   }
 };
 
-const getAllByTrailId = async (request: Request, response: Response) => {
-  const { trailId } = request.params;
+const getCoursesByTrailId = async (request: Request, response: Response) => {
+  const { trailId, email } = request.params;
+
   try {
-    const trailName = await prismaInstance.trail.findUnique({
+    const courses = await prismaInstance.trail.findUnique({
       where: { id: trailId },
       select: {
         name: true,
+        course: {
+          include: {
+            modules: {
+              select: {
+                lessons: {
+                  select: {
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     });
 
-    const course = await prismaInstance.course.findMany({
-      where: { trailId },
+    const trailName = courses?.name;
+
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+      include: {
+        badges: true,
+      },
     });
 
-    return response.status(200).json({ course, trailName });
+    let courseBegining = false;
+    let courseIsCompleted = true;
+    let coursecompleted = 0;
+    let badgeCompleted = true;
+
+    const data = courses?.course.map((course) => {
+      courseBegining = false;
+      courseIsCompleted = true;
+      coursecompleted = 0;
+
+      course.modules.map((module) => {
+        module.lessons.map((lesson) => {
+          if (user?.watched.includes(lesson.id)) {
+            courseBegining = true;
+          } else {
+            courseIsCompleted = false;
+          }
+        });
+      });
+      if (courseIsCompleted === true) coursecompleted = 1;
+      else if (courseBegining) coursecompleted = 2;
+      else coursecompleted = 3;
+
+      return { ...course, coursecompleted };
+    });
+
+    return response.status(200).json({ user, trailName, data });
   } catch (error) {
     return response
       .status(400)
@@ -153,7 +198,7 @@ const getCourse = async (request: Request, response: Response) => {
       },
     });
 
-    if (user!.role === ("EMBASSADOR" as Roles)) {
+    if (user!.role === ("AMBASSADOR" as Roles)) {
       return response.status(200).json({ course, modules, role: user!.role });
     } else {
       const courseModules = [{}];
@@ -200,8 +245,11 @@ const moduleCompleted = (module, watched) => {
   });
   return completed;
 };
+
 const getCourseModules = async (request: Request, response: Response) => {
   const { id } = request.params;
+  console.log(id);
+
   try {
     const modules = await prismaInstance.module.findMany({
       where: {
@@ -215,12 +263,11 @@ const getCourseModules = async (request: Request, response: Response) => {
         lessons: true,
       },
     });
-
     return response.status(200).json({ modules });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -363,7 +410,7 @@ const getProgress = async (request: Request, response: Response) => {
 
 export default {
   create,
-  getAllByTrailId,
+  getCoursesByTrailId,
   update,
   deleteById,
   getById,
