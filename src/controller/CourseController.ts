@@ -1,4 +1,3 @@
-import { verify } from "crypto";
 import { Request, Response } from "express";
 import { prismaInstance, Roles } from "../../database/prismaClient";
 
@@ -47,9 +46,6 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
 
   const { email }: { email?: string } = request.query;
   
-  // const { trailId, email } = request.params;
-  // console.log(email);
-  // console.log(trailId);
   try {
     const courses = await prismaInstance.trail.findUnique({
       where: { id: trailId },
@@ -89,7 +85,7 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
     let coursecompleted = 0;
     let badgeCompleted: boolean = false;
 
-    const badgesUser = await prismaInstance.badges.findFirstOrThrow({
+    const badgesUser = await prismaInstance.badges.findFirst({
       where: { userId: user?.id },
     });
 
@@ -114,13 +110,13 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
 
       const badge = courses.main.toLowerCase();
 
-      if (!badgesUser) throw new Error("User nao tem badges");
-      if (!badgesUser[badge]) throw new Error(`User nao tem badge ${badge}`);
+      // if (!badgesUser) throw new Error("User nao tem badges");
+      // if (!badgesUser[badge]) throw new Error(`User nao tem badge ${badge}`);
 
-      console.log(badgeCompleted);
-      if (badgesUser[badge].includes(course.id)) {
-        badgeCompleted = true;
-      }
+      // console.log(badgeCompleted);
+      // if (badgesUser[badge].includes(course.id)) {
+      //   badgeCompleted = true;
+      // }
 
       return {
         ...course,
