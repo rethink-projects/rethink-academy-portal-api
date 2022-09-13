@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const create = async (request: Request, response: Response) => {
-  const { name, description, embedUrl, order, moduleId } = request.body;
+  const { name, description, embedUrl, moduleId } = request.body;
   try {
     const lesson = await prismaInstance.lesson.create({
       data: {
