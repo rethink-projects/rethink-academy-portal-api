@@ -58,18 +58,18 @@ const upsert = async (request: Request, response: Response) => {
   try {
     const stageLine = await prismaInstance.courseTimeline.upsert({
       where: { id },
+      update: {
+        stage,
+        start,
+        finish,
+        content,
+      },
       create: {
         stage,
         start,
         finish,
         content,
         trailId,
-      },
-      update: {
-        stage,
-        start,
-        finish,
-        content,
       },
     });
 
