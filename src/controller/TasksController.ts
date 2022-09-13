@@ -459,6 +459,7 @@ const getHoursLastDay = async (request: Request, response: Response) => {
     arrayHelper.map((task) => (hours += task.time));
 
     hours = hours / 60;
+    console.log(hours);
 
     return response.status(200).json(hours);
   } catch (error) {
@@ -469,79 +470,77 @@ const getHoursLastDay = async (request: Request, response: Response) => {
   }
 };
 
-// const getHoursOfMonth = async (request: Request, response: Response) => {
-//   try {
-//     const { email }: { email?: string } = request.params;
+const getHoursOfMonth = async (request: Request, response: Response) => {
+  try {
+    const { email }: { email?: string } = request.params;
 
-//     const currentDate  = new Date();
+    const currentDate = new Date();
 
-//     if (!email) throw new Error("Email obrigatório");
+    if (!email) throw new Error("Email obrigatório");
 
-//     const user = await prismaInstance.user.findFirst({
-//       where: { email },
-//     });
-//     if (!user) throw new Error("Usuário não encontrado");
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+    });
+    if (!user) throw new Error("Usuário não encontrado");
 
-//     let AND: any = [];
-//     if (email) {
-//       AND.push({ userId: user!.id });
-//     }
+    let AND: any = [];
+    if (email) {
+      AND.push({ userId: user!.id });
+    }
 
-//     const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
-//     const currentYear = new Date(currentDate).getFullYear().toString();
+    const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
+    const currentYear = new Date(currentDate).getFullYear().toString();
 
-//     const startDate = composeDate("01", currentMonth, currentYear);
-//     const lastDay = new Date(
-//       startDate.getFullYear(),
-//       startDate.getMonth() + 1,
-//       0
-//     )
-//       .getDate()
-//       .toString();
+    const startDate = composeDate("01", currentMonth, currentYear);
+    const lastDay = new Date(
+      startDate.getFullYear(),
+      startDate.getMonth() + 1,
+      0
+    )
+      .getDate()
+      .toString();
 
-//     const endDate = composeDate(lastDay, currentMonth, currentYear);
+    const endDate = composeDate(lastDay, currentMonth, currentYear);
 
-//     AND.push({ taskDate: { gte: new Date(startDate) } });
-//     AND.push({ taskDate: { lte: new Date(endDate) } });
+    AND.push({ taskDate: { gte: new Date(startDate) } });
+    AND.push({ taskDate: { lte: new Date(endDate) } });
 
-//     const recordsMonth = await prismaInstance.tasks.findMany({
-//       where: {
-//         AND,
-//       },
-//     });
+    const recordsMonth = await prismaInstance.tasks.findMany({
+      where: {
+        AND,
+      },
+    });
 
-//     const arrayHelper: any[] = [];
+    const arrayHelper: any[] = [];
 
-//     for (const key in recordsMonth) {
-//       arrayHelper.push({
-//         id: recordsMonth[key].id,
-//         name: recordsMonth[key].name,
-//         status: recordsMonth[key].status,
-//         time:
-//           timeKeeper(recordsMonth[key].endTime) -
-//           timeKeeper(recordsMonth[key].startTime),
-//         ...convertTime(
-//           timeKeeper(recordsMonth[key].endTime) -
-//             timeKeeper(recordsMonth[key].startTime)
-//         ),
-//       });
-//     }
+    for (const key in recordsMonth) {
+      arrayHelper.push({
+        id: recordsMonth[key].id,
+        name: recordsMonth[key].name,
+        status: recordsMonth[key].status,
+        time:
+          timeKeeper(recordsMonth[key].endTime) -
+          timeKeeper(recordsMonth[key].startTime),
+        ...convertTime(
+          timeKeeper(recordsMonth[key].endTime) -
+            timeKeeper(recordsMonth[key].startTime)
+        ),
+      });
+    }
 
-//     let hours = 0;
-//     arrayHelper.map((task) =>
-//       hours += task.time
-//     );
+    let hours = 0;
+    arrayHelper.map((task) => (hours += task.time));
 
-//     hours = hours / 60;
+    hours = hours / 60;
 
-//     return response.status(200).json(hours);
-//   } catch (error) {
-//     console.log(error);
-//     return response
-//       .status(400)
-//       .json({ message: "Algo de errado aconteceu.", error });
-//   }
-// };
+    return response.status(200).json(hours);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
 
 export default {
   getTaskByUserEmail,
@@ -551,4 +550,5 @@ export default {
   getGroupTaskByTag,
   getRecordOfDay,
   getHoursLastDay,
+  getHoursOfMonth,
 };
