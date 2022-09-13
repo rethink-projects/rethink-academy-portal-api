@@ -83,14 +83,11 @@ const getUserByEmail = async (request: Request, response: Response) => {
   try {
     const user = await prismaInstance.user.findUnique({
       where: { email },
-      include: {
-        badges: true,
-      },
     });
 
     const userWithLevel = { ...user, ...levelMaker() };
 
-    return response.status(200).json({ userWithLevel });
+    return response.status(200).json(userWithLevel);
   } catch (error) {
     return response
       .status(400)

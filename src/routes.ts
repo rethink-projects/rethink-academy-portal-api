@@ -27,11 +27,11 @@ router.post("/tasks/:email", TasksController.getTaskByUserEmail);
 router.get("/tasks/day/:email", TasksController.getRecordOfDay);
 router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
 
+router.get("/user/:email", UserController.getUserByEmail);
 router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 router.put("/user/:email", UserController.updateLessonsWatched);
-router.get("/user/:email", UserController.getUserByEmail);
 // router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
