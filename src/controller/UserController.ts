@@ -56,7 +56,7 @@ const getAll = async (request: Request, response: Response) => {
       role,
     }: {
       main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
     } = request.query;
 
     const users = await prismaInstance.user.findMany({
@@ -82,9 +82,6 @@ const getUserByEmail = async (request: Request, response: Response) => {
   try {
     const user = await prismaInstance.user.findFirst({
       where: { email },
-      include: {
-        note: true,
-      },
     });
 
     const userWithLevel = { ...user, ...levelMaker() };
@@ -107,7 +104,7 @@ const update = async (request: Request, response: Response) => {
       avatar,
     }: {
       email: string;
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
       name?: string;
       surname?: string;
       avatar?: string;

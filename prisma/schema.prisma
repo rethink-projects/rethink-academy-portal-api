@@ -6,47 +6,53 @@ generator erd {
   provider = "prisma-erd-generator"
 }
 
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-// }
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 // comente o datasource e insira o novo 
-datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
-}
+// datasource db {
+//   provider = "sqlite"
+//   url      = "file:./dev.db"
+// }
 
 // comente também o enum Roles completo 
 // comente a linha socials Json?  dentro model Profile
 
-// enum Roles {
-//   STUDENT
-//   EMBASSADOR
-//   RETHINKER
-// }
+enum Roles {
+  STUDENT
+  AMBASSADOR
+  RETHINKER
+}
 
-// enum Titles {
-//   ENGINEERING
-//   DESIGN
-//   PRODUCT
-// }
+enum Titles {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
+
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
 
 model User {
   id            String          @id @default(uuid())
   email         String          @unique
   name          String?
   surname       String?
-  // role    Roles?   @default(STUDENT)
-  role          String?         @default("STUDENT")
-  note          Note[]
+  role          Roles           @default(STUDENT)
+  main          Main            @default(ENGINEERING)
+  avatar        String
+  bucket        Bucket?
+  badges        Badges?
   info          Info?
-  main          String?         @default("ENGINEERING")
-  // main     Titles?    @default(ENGINEERING)
+  tasks         Tasks[]
   monthEvaluate MonthEvaluate[]
-  bucket        Bucket[]
+  Note          Note[]
   GoalList      GoalList[]
-  Badges        Badges?
 
   @@map("user")
 }
@@ -80,18 +86,18 @@ model Info {
 }
 
 model Badges {
-  id          String @id @default(uuid())
-  userId      String @unique
-  user        User   @relation(fields: [userId], references: [id])
-  product     Int    @default(0)
-  engineering Int    @default(0)
-  academy     Int    @default(0)
-  design      Int    @default(0)
-  welcome     Int    @default(0)
-  studies     Int    @default(0)
-  timeRecord  Int    @default(0)
-  troll       Int    @default(0)
-  goals       Int    @default(0)
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  product     String[]
+  engineering String[]
+  academy     String[]
+  design      String[]
+  welcome     String[]
+  studies     String[]
+  timeRecord  String[]
+  troll       String[]
+  goals       String[]
 
   @@map("badges")
 }
@@ -101,13 +107,14 @@ model MonthEvaluate {
   user      User    @relation(fields: [userId], references: [id])
   skillType Boolean @default(true)
   userId    String
+  email     String
   month     String
-  skill1    Float
-  skill2    Float
-  skill3    Float
-  skill4    Float
-  skill5    Float
-  skill6    Float
+  skill1    Int
+  skill2    Int
+  skill3    Int
+  skill4    Int
+  skill5    Int
+  skill6    Int
 
   @@map("monthEvaluate")
 }
@@ -116,7 +123,7 @@ model Bucket {
   id     String @id @default(uuid())
   title  String
   url    String
-  userId String
+  userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 }
 
@@ -138,4 +145,19 @@ model Goal {
   goalListId String
 
   @@map("goal")
+}
+
+model Tasks {
+  id          String   @id @default(uuid())
+  name        String
+  taskDate    DateTime
+  startTime   String
+  endTime     String
+  tags        String   @default("tags")
+  status      String   @default("status")
+  description String   @default("description")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("tasks")
 }

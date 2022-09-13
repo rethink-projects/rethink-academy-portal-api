@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import TasksController from "./controller/TasksController";
 import BadgesController from "./controller/BadgesController";
 import BucketController from "./controller/BucketController";
 import EvaluateController from "./controller/EvaluateController";
@@ -28,12 +29,15 @@ router.delete("/note/:id", NoteController.remove);
 router.get("/evaluate/chartData", EvaluateController.getEvaluateChartData);
 router.get("/evaluate/:month", EvaluateController.getEvaluates);
 router.post("/evaluate", EvaluateController.create);
-router.post("/evaluate/:id", EvaluateController.update);
+router.patch("/evaluate/:id", EvaluateController.update);
 router.delete("/evaluate/:id", EvaluateController.remove);
 
 router.post("/info", ContractInfoController.create);
 router.get("/info/:email", ContractInfoController.getInfoByUser);
 router.post("/info/:email", ContractInfoController.updateInfo);
+
+router.post("/badge", BadgesController.giveBadge);
+router.get("/badge/:email", BadgesController.getUserBadges);
 
 router.get("/goalList", GoalListController.getAll);
 router.get("/goalList/:email", GoalListController.getByUserEmail);
@@ -44,5 +48,14 @@ router.delete("/goalList/:id", GoalListController.remove);
 router.post("/goal/:goalListId", GoalController.create);
 router.patch("/goal/:id", GoalController.update);
 router.delete("/goal/:id", GoalController.remove);
+
+router.get("/tasks/:email", TasksController.getTaskByUserEmail);
+router.post("/tasks", TasksController.createTask);
+router.delete("/tasks/:id", TasksController.removeTask);
+router.put("/tasks/:id", TasksController.updateTask);
+router.get("/tasks/tag/:email", TasksController.getGroupTaskByTag);
+router.post("/tasks/:email", TasksController.getTaskByUserEmail);
+router.get("/tasks/day/:email", TasksController.getRecordOfDay);
+router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
 
 export { router };

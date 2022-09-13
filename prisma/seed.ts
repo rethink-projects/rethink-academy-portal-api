@@ -1,57 +1,57 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-const students: {
+const users: {
   name: string;
   surname: string;
   email: string;
   main: "ENGINEERING" | "DESIGN" | "PRODUCT";
-  role?: "EMBASSADOR";
+  role?: "AMBASSADOR";
 }[] = [
   {
     name: "Gabriel",
     surname: "Gomes",
     email: "gabriel.gomes@rethink.dev",
     main: "ENGINEERING",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Filipe",
     surname: "Prado",
     email: "filipe.prado@rethink.dev",
     main: "ENGINEERING",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Leticia",
     surname: "Lange",
     email: "leticia.lange@rethink.dev",
     main: "DESIGN",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Priscila",
     surname: "Ritschel",
     email: "priscila.ritschel@rethink.dev",
     main: "PRODUCT",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Marcela",
     surname: "Monteiro",
     email: "marcela.monteiro@rethink.dev",
     main: "PRODUCT",
-    role: "EMBASSADOR",
+    role: "AMBASSADOR",
   },
   {
     name: "Michelli",
     surname: "Araujo",
-    email: "michelli.arujo@rethink.dev",
+    email: "michelli.araujo@rethink.dev",
     main: "PRODUCT",
   },
   {
-    name: "hugo",
-    surname: "carvalho",
+    name: "Hugo",
+    surname: "Carvalho",
     email: "hugo.carvalho@rethink.dev",
     main: "PRODUCT",
   },
@@ -129,7 +129,7 @@ const students: {
   },
   {
     name: "Carolina",
-    surname: "Valeriano ",
+    surname: "Valeriano",
     email: "carolina.valeriano@rethink.dev",
     main: "ENGINEERING",
   },
@@ -141,14 +141,15 @@ const students: {
   },
 
   {
-    name: "Sthéphany",
+    name: "Sthephany",
     surname: "Tezza",
     email: "sthephany.tezza@rethink.dev",
     main: "ENGINEERING",
   },
 ];
 async function main() {
-  students.forEach(async ({ email, name, surname, main, role }) => {
+  const newUserList: string[] = [];
+  users.forEach(async ({ email, name, surname, main, role }) => {
     const newUser = await prisma.user.upsert({
       where: {
         email: email,
@@ -157,6 +158,11 @@ async function main() {
         name: name,
         surname: surname,
         main: main,
+        role: role ?? "STUDENT",
+      },
+      create: {
+        name: name,
+        surname: surname,
         email: email,
         main: main,
         role: role ?? "STUDENT",
@@ -165,6 +171,18 @@ async function main() {
     });
     await prisma.badges.create({
       data: {
+        userId: newUser.id,
+      },
+    });
+    await prisma.tasks.create({
+      data: {
+        name: "daily",
+        taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+        startTime: "13:00",
+        endTime: "14:00",
+        tags: "1:1",
+        status: "finished",
+        description: "1:1 com o Gabriel",
         userId: newUser.id,
       },
     });

@@ -25,6 +25,7 @@ const create = async (request: Request, response: Response) => {
     skill6: number;
   } = request.body;
   try {
+    console.log({ data: request.body });
     const userByEmail = await prismaInstance.user.findFirst({
       where: { email: userEmail },
     });
@@ -35,6 +36,7 @@ const create = async (request: Request, response: Response) => {
       data: {
         month,
         userId: userByEmail.id,
+        email: userByEmail.email,
         skillType,
         skill1,
         skill2,
@@ -51,7 +53,7 @@ const create = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -75,6 +77,7 @@ const getEvaluates = async (request: Request, response: Response) => {
         return {
           month,
           userId: user.id,
+          email: user.email,
           skillType: skillTypeBoolean,
           skill1: 0,
           skill2: 0,
@@ -163,9 +166,15 @@ const getEvaluateChartData = async (request: Request, response: Response) => {
       skill?: string;
       header?: "ENGINEERING" | "DESIGN" | "PRODUCT" | "SOFT";
     } = request.query;
+    const { email } = request.params;
+    const userByEmail = await prismaInstance.user.findFirst({
+      where: { email },
+    });
+
+    if (!userByEmail) throw new Error("Usuário não encontrado");
     let skillType = header === "SOFT" ? false : true;
     const evaluation = await prismaInstance.monthEvaluate.findMany({
-      where: { userId: "6b0fee41-02aa-410f-a59a-0503a694aba5", skillType },
+      where: { userId: userByEmail.id, skillType },
     });
     const chartData = evaluation.map((item) => ({
       name: item.month.replace(/\s/g, "/"),

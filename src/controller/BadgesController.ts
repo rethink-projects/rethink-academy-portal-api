@@ -30,7 +30,11 @@ const getUserBadges = async (request: Request, response: Response) => {
 
 const giveBadge = async (request: Request, response: Response) => {
   try {
-    const { badge, email }: { badge: badgeType; email: string } = request.body;
+    const {
+      badge,
+      email,
+      description,
+    }: { badge: badgeType; email: string; description: string } = request.body;
 
     const user = await prismaInstance.user.findFirstOrThrow({
       where: { email },
@@ -42,10 +46,13 @@ const giveBadge = async (request: Request, response: Response) => {
     });
 
     if (data) {
+      if (data[badge].includes(description)) {
+        throw new Error("User already have this badge");
+      }
       const badgeData = await prismaInstance.badges.update({
         where: { userId: user.id },
         data: {
-          [badge]: data[badge] + 1,
+          [badge]: [...data[badge], description],
         },
       });
       response.status(200).json(badgeData);
@@ -53,9 +60,10 @@ const giveBadge = async (request: Request, response: Response) => {
       const badgeData = await prismaInstance.badges.create({
         data: {
           userId: user.id,
-          [badge]: 1,
+          [badge]: [description],
         },
       });
+
       response.status(200).json(badgeData);
     }
   } catch (error) {
