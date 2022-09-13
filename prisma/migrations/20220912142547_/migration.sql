@@ -8,7 +8,7 @@ CREATE TYPE "CourseStyle" AS ENUM ('COURSE', 'WORKSHOP', 'TRAINING', 'LECTURE');
 CREATE TYPE "Titles" AS ENUM ('ENGINEERING', 'DESIGN', 'PRODUCT');
 
 -- CreateEnum
-CREATE TYPE "Roles" AS ENUM ('STUDENT', 'EMBASSADOR', 'RETHINKER');
+CREATE TYPE "Roles" AS ENUM ('STUDENT', 'AMBASSADOR', 'RETHINKER');
 
 -- CreateEnum
 CREATE TYPE "Levels" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
@@ -17,15 +17,15 @@ CREATE TYPE "Levels" AS ENUM ('LOW', 'MEDIUM', 'HIGH');
 CREATE TABLE "badges" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
-    "product" INTEGER NOT NULL DEFAULT 0,
-    "engineering" INTEGER NOT NULL DEFAULT 0,
-    "academy" INTEGER NOT NULL DEFAULT 0,
-    "design" INTEGER NOT NULL DEFAULT 0,
-    "welcome" INTEGER NOT NULL DEFAULT 0,
-    "studies" INTEGER NOT NULL DEFAULT 0,
-    "timeRecord" INTEGER NOT NULL DEFAULT 0,
-    "troll" INTEGER NOT NULL DEFAULT 0,
-    "goals" INTEGER NOT NULL DEFAULT 0,
+    "product" TEXT[],
+    "engineering" TEXT[],
+    "academy" TEXT[],
+    "design" TEXT[],
+    "welcome" TEXT[],
+    "studies" TEXT[],
+    "timeRecord" TEXT[],
+    "troll" TEXT[],
+    "goals" TEXT[],
 
     CONSTRAINT "badges_pkey" PRIMARY KEY ("id")
 );
@@ -53,18 +53,6 @@ CREATE TABLE "user" (
     "avatar" TEXT NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "profile" (
-    "id" TEXT NOT NULL,
-    "bio" TEXT,
-    "avatar" TEXT,
-    "social" JSONB,
-    "userId" TEXT NOT NULL,
-    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "profile_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -104,7 +92,6 @@ CREATE TABLE "lesson" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "embedUrl" TEXT NOT NULL,
-    "order" INTEGER NOT NULL,
     "description" TEXT NOT NULL,
     "moduleId" TEXT NOT NULL,
     "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -135,6 +122,21 @@ CREATE TABLE "timeline" (
     CONSTRAINT "timeline_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "tasks" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "taskDate" TIMESTAMP(3) NOT NULL,
+    "startTime" TEXT NOT NULL,
+    "endTime" TEXT NOT NULL,
+    "tags" TEXT NOT NULL DEFAULT 'tags',
+    "status" TEXT NOT NULL DEFAULT 'status',
+    "description" TEXT NOT NULL DEFAULT 'description',
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "tasks_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "badges_userId_key" ON "badges"("userId");
 
@@ -145,9 +147,6 @@ CREATE UNIQUE INDEX "Bucket_userId_key" ON "Bucket"("userId");
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "profile_userId_key" ON "profile"("userId");
-
--- CreateIndex
 CREATE UNIQUE INDEX "trail_name_key" ON "trail"("name");
 
 -- AddForeignKey
@@ -155,9 +154,6 @@ ALTER TABLE "badges" ADD CONSTRAINT "badges_userId_fkey" FOREIGN KEY ("userId") 
 
 -- AddForeignKey
 ALTER TABLE "Bucket" ADD CONSTRAINT "Bucket_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "profile" ADD CONSTRAINT "profile_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "course" ADD CONSTRAINT "course_trailId_fkey" FOREIGN KEY ("trailId") REFERENCES "trail"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -170,3 +166,6 @@ ALTER TABLE "module" ADD CONSTRAINT "module_courseId_fkey" FOREIGN KEY ("courseI
 
 -- AddForeignKey
 ALTER TABLE "timeline" ADD CONSTRAINT "timeline_trailId_fkey" FOREIGN KEY ("trailId") REFERENCES "trail"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "tasks" ADD CONSTRAINT "tasks_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
