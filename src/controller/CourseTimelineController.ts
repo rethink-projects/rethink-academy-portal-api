@@ -59,14 +59,14 @@ const upsert = async (request: Request, response: Response) => {
     try {
         const stageLine = await prismaInstance.courseTimeline.upsert({
             where: { id },
-            create: {
+            update: {
                 stage,
                 start,
                 finish,
                 content,
                 trailId,
             },
-            update: {
+            create: {
                 stage,
                 start,
                 finish,
@@ -81,7 +81,7 @@ const upsert = async (request: Request, response: Response) => {
     } catch (error) {
         return response
             .status(400)
-            .json({ message: "Algo de errado aconteceu.", error });
+            .json({ message: "Algo de errado aconteceu.", error: error.message });
     }
 };
 

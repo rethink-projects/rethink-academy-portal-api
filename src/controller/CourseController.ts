@@ -1,4 +1,3 @@
-import { verify } from "crypto";
 import { Request, Response } from "express";
 import { prismaInstance, Roles } from "../../database/prismaClient";
 
@@ -86,10 +85,12 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
     let coursecompleted = 0;
     let badgeCompleted: boolean = false;
 
-    const badgesUser = await prismaInstance.badges.findFirstOrThrow({
+    const badgesUser = await prismaInstance.badges.findFirst({
       where: { userId: user?.id },
     });
-
+    // const badgesUser = await prismaInstance.badges.findFirstOrThrow({
+    //   where: { userId: user?.id },
+    // });
     const data = courses?.course.map((course) => {
       courseBegining = false;
       courseIsCompleted = true;
@@ -111,13 +112,13 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
 
       const badge = courses.main.toLowerCase();
 
-      if (!badgesUser) throw new Error("User nao tem badges");
-      if (!badgesUser[badge]) throw new Error(`User nao tem badge ${badge}`);
+      // if (!badgesUser) throw new Error("User nao tem badges");
+      // if (!badgesUser[badge]) throw new Error(`User nao tem badge ${badge}`);
 
-      console.log(badgeCompleted);
-      if (badgesUser[badge].includes(course.id)) {
-        badgeCompleted = true;
-      }
+      // console.log(badgeCompleted);
+      // if (badgesUser[badge].includes(course.id)) {
+      //   badgeCompleted = true;
+      // }
 
       return {
         ...course,
@@ -419,9 +420,7 @@ const getProgress = async (request: Request, response: Response) => {
 
       return {
         userName: user.name + " " + user.surname,
-        userImage:
-          user.avatar ??
-          `https://ui-avatars.com/api/?name=${user.name}+${user.surname}`,
+        userImage: getUserAvatar(user),
         completedModules,
       };
     });
@@ -433,6 +432,11 @@ const getProgress = async (request: Request, response: Response) => {
   }
 };
 
+function getUserAvatar(user) {
+  if (user.avatar === "" || user.avatar === null || user.avatar === undefined) {
+    return `https://ui-avatars.com/api/?name=${user.name}+${user.surname}`;
+  } else return user.avatar;
+}
 export default {
   create,
   getCoursesByTrailId,

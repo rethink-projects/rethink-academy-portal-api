@@ -1,5 +1,5 @@
 import { application, Request, Response } from "express";
-import { prismaInstance } from "../../database/prismaClient";
+import { prismaInstance, Roles, Main } from "../../database/prismaClient";
 import { differenceInDays } from "date-fns";
 
 const levelMaker = () => {
@@ -55,8 +55,8 @@ const getAll = async (request: Request, response: Response) => {
       main,
       role,
     }: {
-      main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
-      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
+      main?: Main;
+      role?: Roles;
     } = request.query;
 
     const users = await prismaInstance.user.findMany({
@@ -108,11 +108,11 @@ const update = async (request: Request, response: Response) => {
       avatar,
     }: {
       email: string;
-      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
+      role?: Roles;
       name?: string;
       surname?: string;
       avatar?: string;
-      main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
+      main?: Main;
     } = request.body;
     const email: string = request.params.email;
     const updatedUser = await prismaInstance.user.update({
