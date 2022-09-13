@@ -88,7 +88,9 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
     const badgesUser = await prismaInstance.badges.findFirst({
       where: { userId: user?.id },
     });
-
+    // const badgesUser = await prismaInstance.badges.findFirstOrThrow({
+    //   where: { userId: user?.id },
+    // });
     const data = courses?.course.map((course) => {
       courseBegining = false;
       courseIsCompleted = true;
