@@ -45,7 +45,7 @@ const getCoursesByTrailId = async (request: Request, response: Response) => {
   const { trailId } = request.params;
 
   const { email }: { email?: string } = request.query;
-  
+
   try {
     const courses = await prismaInstance.trail.findUnique({
       where: { id: trailId },
@@ -418,9 +418,7 @@ const getProgress = async (request: Request, response: Response) => {
 
       return {
         userName: user.name + " " + user.surname,
-        userImage:
-          user.avatar ??
-          `https://ui-avatars.com/api/?name=${user.name}+${user.surname}`,
+        userImage: getUserAvatar(user),
         completedModules,
       };
     });
@@ -432,6 +430,11 @@ const getProgress = async (request: Request, response: Response) => {
   }
 };
 
+function getUserAvatar(user) {
+  if (user.avatar === "" || user.avatar === null || user.avatar === undefined) {
+    return `https://ui-avatars.com/api/?name=${user.name}+${user.surname}`;
+  } else return user.avatar;
+}
 export default {
   create,
   getCoursesByTrailId,
