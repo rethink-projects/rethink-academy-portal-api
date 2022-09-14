@@ -16,19 +16,20 @@ datasource db {
 }
 
 model User {
-  id      String   @id @default(uuid())
-  email   String   @unique
-  name    String?
-  surname String?
+  id       String     @id @default(uuid())
+  email    String     @unique
+  name     String?
+  surname  String?
   // role    Roles?  @default(STUDENT)
-  role    String?  @default("STUDENT")
+  role     String?    @default("STUDENT")
   // main    Titles?  @default(ENGINEERING)
-  main    String?  @default("ENGINEERING")
-  avatar  String
-  bucket  Bucket?
-  badges  Badges?
-  tasks   Tasks[]
-  Profile Profile?
+  main     String?    @default("ENGINEERING")
+  avatar   String
+  bucket   Bucket?
+  badges   Badges?
+  tasks    Tasks[]
+  Profile  Profile?
+  comments Comments[]
 
   @@map("user")
 }
@@ -77,6 +78,15 @@ model Tasks {
   userId      String
 
   @@map("tasks")
+}
+
+model Comments {
+  id     String @id @default(uuid())
+  text   String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@map("comments")
 }
 
 // enum Roles {

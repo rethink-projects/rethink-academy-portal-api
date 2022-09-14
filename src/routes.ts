@@ -3,6 +3,7 @@ import TasksController from "./controller/TasksController";
 import BadgesController from "./controller/BadgesController";
 import BucketController from "./controller/BucketController";
 import UserController from "./controller/UserController";
+import CommentsController from "./controller/CommentsController";
 
 const router = Router();
 router.get("/user/:email", UserController.getUserByEmail);
@@ -26,5 +27,9 @@ router.get("/tasks/tag/:email", TasksController.getGroupTaskByTag);
 router.post("/tasks/:email", TasksController.getTaskByUserEmail);
 router.get("/tasks/day/:email", TasksController.getRecordOfDay);
 router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
+
+router.get("/comments/:email", CommentsController.getCommentsByUserEmail);
+router.post("/comments", CommentsController.createComment);
+router.delete("/comments/:id", CommentsController.removeComment);
 
 export { router };
