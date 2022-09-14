@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { application, Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 import { differenceInDays } from "date-fns";
 
@@ -21,7 +21,7 @@ const levelMaker = () => {
 };
 
 const create = async (request: Request, response: Response) => {
-  const { email, role, name, surname, avatar } = request.body;
+  const { email, role, name, surname, main, avatar } = request.body;
   try {
     if (!email) {
       return response
@@ -33,10 +33,10 @@ const create = async (request: Request, response: Response) => {
         name,
         surname,
         email,
+        main,
         role,
-        avatar: avatar
-          ? avatar
-          : `https://ui-avatars.com/api/?name=${name}+${surname}`,
+
+        avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
     return response
@@ -56,7 +56,7 @@ const getAll = async (request: Request, response: Response) => {
       role,
     }: {
       main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
     } = request.query;
 
     const users = await prismaInstance.user.findMany({
@@ -78,9 +78,10 @@ const getAll = async (request: Request, response: Response) => {
 
 const getUserByEmail = async (request: Request, response: Response) => {
   const { email } = request.params;
+  console.log({ params: request.params });
 
   try {
-    const user = await prismaInstance.user.findFirst({
+    const user = await prismaInstance.user.findUnique({
       where: { email },
     });
 
@@ -90,7 +91,7 @@ const getUserByEmail = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error: error.message });
+      .json({ message: "Algo de errado aconteceu.", error });
   }
 };
 
@@ -104,7 +105,7 @@ const update = async (request: Request, response: Response) => {
       avatar,
     }: {
       email: string;
-      role?: "STUDENT" | "EMBASSADOR" | "RETHINKER";
+      role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
       name?: string;
       surname?: string;
       avatar?: string;
@@ -123,7 +124,145 @@ const update = async (request: Request, response: Response) => {
         avatar,
       },
     });
+
     return response.status(200).json({ updatedUser });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+const createWatched = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  const { watchedId } = request.body;
+
+  try {
+    const user = await prismaInstance.user.findUnique({
+      where: { email },
+      select: {
+        watched: true,
+      },
+    });
+
+    user?.watched.push(watchedId);
+
+    const userUpdated = await prismaInstance.user.update({
+      where: { email },
+      data: {
+        watched: user?.watched,
+      },
+    });
+
+    return response.status(200).json(userUpdated);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+const getWatched = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  try {
+    const user = await prismaInstance.user.findFirst({
+      where: { email },
+    });
+
+    const { trailId }: { trailId?: string } = request.query;
+    const courses = await prismaInstance.course.findMany({
+      where: { trailId },
+      // select: {
+      //   courseStyle: true,
+      //   trail: true,
+      //   modules: {
+      //     include: {
+      //       lessons: true,
+      //     },
+      //   },
+      // },
+      include: {
+        trail: true,
+        modules: {
+          include: {
+            lessons: true,
+          },
+        },
+      },
+    });
+
+    const maxLessons = courses.map((course) => {
+      const lessonsLength: any = [];
+      const userLessonsLength: any = [];
+
+      course.modules.map((module) => {
+        module.lessons.map((lesson) => {
+          if (user?.watched.includes(lesson.id)) {
+            userLessonsLength.push(lesson.id);
+          }
+          lessonsLength.push(lesson.id);
+        });
+      });
+
+      let completed: boolean = false;
+      if (
+        lessonsLength.length !== 0 &&
+        lessonsLength.length == userLessonsLength.length
+      ) {
+        completed = true;
+      }
+
+      return {
+        courseStyle: course.courseStyle,
+        lessonsLength: lessonsLength.length,
+        userLessonsLength: userLessonsLength.length,
+        completed,
+        name: course.name,
+        id: course.id,
+        trail: course.trail,
+      };
+    });
+
+    return response.status(200).json({ maxLessons, user });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+const getWatchedList = async (request: Request, response: Response) => {
+  const { email } = request.params;
+  try {
+    const watchedList = await prismaInstance.user.findUnique({
+      where: { email },
+      select: {
+        watched: true,
+      },
+    });
+
+    return response.status(200).json(watchedList);
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
+  }
+};
+
+const updateLessonsWatched = async (request: Request, response: Response) => {
+  const { watched } = request.body;
+
+  const { email } = request.params;
+  try {
+    const user = await prismaInstance.user.update({
+      where: { email },
+      data: {
+        watched,
+      },
+    });
+    return response
+      .status(200)
+      .json({ user, message: "Lições completadas pelo usuário!" });
   } catch (error) {
     return response
       .status(400)
@@ -131,4 +270,15 @@ const update = async (request: Request, response: Response) => {
   }
 };
 
-export default { create, getUserByEmail, getAll, update, levelMaker };
+export default {
+  create,
+  getUserByEmail,
+  createWatched,
+  getWatched,
+  getWatchedList,
+  getAll,
+  update,
+  levelMaker,
+  updateLessonsWatched,
+  // updateLessonsWatched,
+};
