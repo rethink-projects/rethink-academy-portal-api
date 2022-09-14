@@ -16,20 +16,21 @@ datasource db {
 }
 
 model User {
-  id       String     @id @default(uuid())
-  email    String     @unique
-  name     String?
-  surname  String?
+  id             String     @id @default(uuid())
+  email          String     @unique
+  name           String?
+  surname        String?
   // role    Roles?  @default(STUDENT)
-  role     String?    @default("STUDENT")
+  role           String?    @default("STUDENT")
   // main    Titles?  @default(ENGINEERING)
-  main     String?    @default("ENGINEERING")
-  avatar   String
-  bucket   Bucket?
-  badges   Badges?
-  tasks    Tasks[]
-  Profile  Profile?
-  comments Comments[]
+  main           String?    @default("ENGINEERING")
+  avatar         String
+  bucket         Bucket?
+  badges         Badges?
+  tasks          Tasks[]
+  Profile        Profile?
+  userCommented  Comments[] @relation("UserCommented")
+  commmentAuthor Comments[] @relation("CommmentAuthor")
 
   @@map("user")
 }
@@ -81,10 +82,12 @@ model Tasks {
 }
 
 model Comments {
-  id     String @id @default(uuid())
-  text   String
-  user   User   @relation(fields: [userId], references: [id])
-  userId String
+  id               String  @id @default(uuid())
+  text             String
+  user             User    @relation(name: "UserCommented", fields: [userId], references: [id])
+  userId           String
+  CommmentAuthor   User?   @relation(name: "CommmentAuthor", fields: [CommmentAuthorId], references: [id])
+  CommmentAuthorId String?
 
   @@map("comments")
 }

@@ -19,6 +19,7 @@ const getCommentsByUserEmail = async (request: Request, response: Response) => {
 
     const studentComments = await prismaInstance.comments.findMany({
       where: { userId: user.id },
+      include: { CommmentAuthor: true },
     });
 
     return response.status(200).json(studentComments);
@@ -32,7 +33,7 @@ const getCommentsByUserEmail = async (request: Request, response: Response) => {
 
 const createComment = async (request: Request, response: Response) => {
   try {
-    const { id, text, userEmail }: CommentsProps = request.body;
+    const { text, userEmail }: CommentsProps = request.body;
     if (!userEmail) throw new Error("Email obrigatório");
 
     const user = await prismaInstance.user.findFirst({
@@ -42,7 +43,6 @@ const createComment = async (request: Request, response: Response) => {
 
     const comment = await prismaInstance.comments.create({
       data: {
-        id,
         text,
         userId: user.id,
       },
