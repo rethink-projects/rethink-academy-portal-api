@@ -5,6 +5,7 @@ type CommentsProps = {
   id: string;
   text: string;
   userEmail: string;
+  commentAuthor: string;
 };
 
 const getCommentsByUserEmail = async (request: Request, response: Response) => {
@@ -33,7 +34,7 @@ const getCommentsByUserEmail = async (request: Request, response: Response) => {
 
 const createComment = async (request: Request, response: Response) => {
   try {
-    const { text, userEmail }: CommentsProps = request.body;
+    const { text, userEmail, commentAuthor }: CommentsProps = request.body;
     if (!userEmail) throw new Error("Email obrigatório");
 
     const user = await prismaInstance.user.findFirst({
@@ -41,10 +42,16 @@ const createComment = async (request: Request, response: Response) => {
     });
     if (!user) throw new Error("Usuário não encontrado");
 
+    const author = await prismaInstance.user.findFirst({
+      where: { email: commentAuthor },
+    });
+    if (!author) throw new Error("Usuário não encontrado");
+
     const comment = await prismaInstance.comments.create({
       data: {
         text,
         userId: user.id,
+        CommmentAuthorId: author.id,
       },
     });
 
