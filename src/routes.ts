@@ -27,6 +27,7 @@ router.get("/tasks/tag/:email", TasksController.getGroupTaskByTag);
 router.post("/tasks/:email", TasksController.getTaskByUserEmail);
 router.get("/tasks/day/:email", TasksController.getRecordOfDay);
 router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
+router.get("/tasks/day/hours/:email", TasksController.getHoursOfMonth);
 
 router.get("/comments/:email", CommentsController.getCommentsByUserEmail);
 router.post("/comments", CommentsController.createComment);
