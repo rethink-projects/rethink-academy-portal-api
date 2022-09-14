@@ -131,7 +131,7 @@ export const users: {
     main: "DESIGN",
   },
   {
-    name: "Gustavo ",
+    name: "Gustavo",
     surname: "Fernando",
     email: "gustavo.silva@rethink.dev",
     main: "DESIGN",
