@@ -9,6 +9,7 @@ import CommentsController from "./controller/CommentsController";
 import LessonController from "./controller/LessonController";
 import ModuleController from "./controller/ModuleController";
 import CourseTimelineController from "./controller/CourseTimelineController";
+import StickerNotesController from "./controller/StickerNotes";
 
 const router = Router();
 
@@ -78,5 +79,14 @@ router.delete("/lesson/:id", LessonController.deleteById);
 router.put("/lesson/:id", LessonController.update);
 
 router.get("/progress/:id", CourseController.getProgress);
+
+router.get(
+  "/stickernotes-user/:email",
+  StickerNotesController.getStickerNotesByUserEmail
+);
+router.get("/stickernotes/:id", StickerNotesController.getStickerNotesById);
+router.post("/stickernotes/", StickerNotesController.createstickerNotes);
+router.delete("/stickernotes/:id", StickerNotesController.removeStickerNotes);
+router.put("/stickernotes/:id", StickerNotesController.updateStickerNotes);
 
 export { router };

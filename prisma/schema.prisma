@@ -12,20 +12,21 @@ datasource db {
 }
 
 model User {
-  id             String     @id @default(uuid())
-  email          String     @unique
+  id             String         @id @default(uuid())
+  email          String         @unique
   name           String?
   surname        String?
-  role           Roles?     @default(STUDENT)
-  main           Titles?    @default(ENGINEERING)
+  role           Roles?         @default(STUDENT)
+  main           Titles?        @default(ENGINEERING)
   avatar         String
   watched        String[]
   bucket         Bucket?
   badges         Badges?
   tasks          Tasks[]
-  userCommented  Comments[] @relation("UserCommented")
-  commmentAuthor Comments[] @relation("CommmentAuthor")
-  cratedAt       DateTime   @default(now())
+  stickerNotes   StickerNotes[]
+  userCommented  Comments[]     @relation("UserCommented")
+  commmentAuthor Comments[]     @relation("CommmentAuthor")
+  cratedAt       DateTime       @default(now())
 }
 
 enum Main {
@@ -179,4 +180,15 @@ model Comments {
   CommmentAuthorId String?
 
   @@map("comments")
+}
+
+model StickerNotes {
+  id          String    @id @default(uuid())
+  description String
+  data        DateTime? @default(now())
+  priority    Int?      @default(3)
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("stickerNotes")
 }
