@@ -1,204 +1,150 @@
-import { Levels, PrismaClient, Main } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+import { users, trails, courses, modules, timeLine } from "./seedData";
 const prisma = new PrismaClient();
 
-const users: {
-  name: string;
-  surname: string;
-  email: string;
-  main: "ENGINEERING" | "DESIGN" | "PRODUCT";
-  role?: "AMBASSADOR";
-}[] = [
-  {
-    name: "Gabriel",
-    surname: "Gomes",
-    email: "gabriel.gomes@rethink.dev",
-    main: "ENGINEERING",
-    role: "AMBASSADOR",
-  },
-  {
-    name: "Filipe",
-    surname: "Prado",
-    email: "filipe.prado@rethink.dev",
-    main: "ENGINEERING",
-    role: "AMBASSADOR",
-  },
-  {
-    name: "Leticia",
-    surname: "Lange",
-    email: "leticia.lange@rethink.dev",
-    main: "DESIGN",
-    role: "AMBASSADOR",
-  },
-  {
-    name: "Priscila",
-    surname: "Ritschel",
-    email: "priscila.ritschel@rethink.dev",
-    main: "PRODUCT",
-    role: "AMBASSADOR",
-  },
-  {
-    name: "Marcela",
-    surname: "Monteiro",
-    email: "marcela.monteiro@rethink.dev",
-    main: "PRODUCT",
-    role: "AMBASSADOR",
-  },
-  {
-    name: "Michelli",
-    surname: "Araujo",
-    email: "michelli.arujo@rethink.dev",
-    main: "PRODUCT",
-  },
-  {
-    name: "Hugo",
-    surname: "Carvalho",
-    email: "hugo.carvalho@rethink.dev",
-    main: "PRODUCT",
-  },
-  {
-    name: "Bernado",
-    surname: "Carvalho",
-    email: "bernado.carvalho@rethink.dev",
-    main: "DESIGN",
-  },
-  {
-    name: "Gustavo ",
-    surname: "Fernando",
-    email: "gustavo.silva@rethink.dev",
-    main: "DESIGN",
-  },
-  {
-    name: "Luiza",
-    surname: "Queiroz",
-    email: "luiza.queiroz@rethink.dev",
-    main: "DESIGN",
-  },
-  {
-    name: "Pedro",
-    surname: "Silva",
-    email: "pedro.lucas@rethink.dev",
-    main: "DESIGN",
-  },
-  {
-    name: "Raiane",
-    surname: "Bispo",
-    email: "raiane.miguel@rethink.dev",
-    main: "DESIGN",
-  },
-  {
-    name: "Igor",
-    surname: "Ricardo",
-    email: "igor.ricardo@rethink.dev",
-    main: "DESIGN",
-  },
-  {
-    name: "Amanda",
-    surname: "Duarte",
-    email: "amanda.duarte@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "5",
-    name: "Gabriel",
-    surname: "Melo",
-    email: "gabriel.melo@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "6",
-    name: "Ana",
-    surname: "Ramos",
-    email: "ana.ramos@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "7",
-    name: "Felipe",
-    surname: "Reggiane",
-    email: "felipe.reggiane@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "8",
-    name: "Fernando",
-    surname: "Henrique",
-    email: "fernando.henrique@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "9",
-    name: "Fabiana",
-    surname: "Kamo",
-    email: "fabiana.kamo@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "10",
-    name: "Carolina",
-    surname: "Valeriano",
-    email: "carolina.valeriano@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "11",
-    name: "Lucas",
-    surname: "Araujo",
-    email: "lucas.paula@rethink.dev",
-    main: "ENGINEERING",
-  },
-  {
-    id: "12",
-    name: "Sthéphany",
-    surname: "Tezza",
-    email: "sthephany.tezza@rethink.dev",
-    main: "ENGINEERING",
-  },
-];
 async function main() {
-  const newUserList: string[] = [];
-  users.forEach(async ({ email, name, surname, main, role }) => {
-    const newUser = await prisma.user.upsert({
-      where: {
-        email: email,
-      },
-      update: {
-        name: name,
-        surname: surname,
-        main: main,
-        role: role ?? "STUDENT",
-      },
-      create: {
-        name: name,
-        surname: surname,
-        email: email,
-        main: main,
-        role: role ?? "STUDENT",
-        avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
-      },
-    });
-    await prisma.badges.create({
+  timeLine.forEach(async (timeLine) => {
+    await prisma.courseTimeline.create({
       data: {
-        userId: newUser.id,
-      },
-    });
-    await prisma.tasks.create({
-      data: {
-        name: "daily",
-        taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
-        startTime: "13:00",
-        endTime: "14:00",
-        tags: "1:1",
-        status: "finished",
-        description: "1:1 com o Gabriel",
-        userId: newUser.id,
+        content: timeLine.content,
+        finish: timeLine.finish,
+        start: timeLine.start,
+        stage: timeLine.stage,
+        trailId: "473e7285-4fbc-472d-9939-bf52b846af36",
       },
     });
   });
 }
+// async function main() {
+//   const newTrail = trails.map(async (trail) => {
+//     return await prisma.trail.create({
+//       data: {
+//         name: trail.name,
+//         description: trail.description,
+//         weight: trail.weight,
+//         main: trail.main,
+//         imageUrl: trail.imageUrl,
+//       },
+//     });
+//   });
 
-  await prisma.$disconnect();
-  console.log("Seeders generated");
-  console.timeEnd();
-}
+//   if ((await newTrail[1]).id) {
+
+//     const newCourses = await prisma.course.create({
+//       data: {
+//         name: courses.name,
+//         description: courses.description,
+//         level: courses.level,
+//         workload: courses.workload,
+//         skills: courses.skills,
+//         learning: courses.learning,
+//         courseStyle: courses.courseStyle,
+//         imageTeacher: courses.imageTeacher,
+//         teacherDescription: courses.teacherDescription,
+//         teacherName: courses.teacherName,
+//         trailId: (await newTrail[1]).id,
+//       },
+//     });
+
+//     const newModules = await prisma.module.create({
+//       data: {
+//         name: modules.name,
+//         courseId: newCourses.id,
+//       },
+//     });
+//     const newLesson = await prisma.lesson.create({
+//       data: {
+//         name: "o que é UX Design? (07:50)",
+//         embedUrl: "https://www.loom.com/embed/880284f2e0354526a6cc9da4812d5e11",
+//         description:
+//           "Aprenda a executar pesquisas de UX Design, fazer testes de usabilidade e elaborar análises, além de utilizar frameworks e métodos para a criação de designs de qualidade e que ofereçam uma boa experiência ao usuário. Ao concluir as aulas, você estará pronto para definir processos e construir frameworks baseados em estudos sobre as necessidades dos usuários, seus objetivos, habilidades e limitações, para alcançar os objetivos de negócios.",
+
+//         moduleId: newModules.id,
+//       },
+//     });
+//   }
+//   users.forEach(async ({ email, name, surname, main, role }) => {
+//     const newUser = await prisma.user.upsert({
+//       where: {
+//         email: email,
+//       },
+//       update: {
+//         name: name,
+//         surname: surname,
+//         main: main,
+//         role: role ?? "STUDENT",
+//         avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
+//       },
+//       create: {
+//         name: name,
+//         surname: surname,
+//         email: email,
+//         main: main,
+//         role: role ?? "STUDENT",
+//         avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
+//       },
+//     });
+//     await prisma.badges.upsert({
+//       where: {
+//         userId: newUser.id,
+//       },
+//       update: {},
+//       create: {
+//         userId: newUser.id,
+//       },
+//     });
+//     await prisma.tasks.create({
+//       data: {
+//         name: "daily",
+//         taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+//         startTime: "13:00",
+//         endTime: "14:00",
+//         tags: "daily",
+//         status: "finished",
+//         description: "Daily do meu Squad, Daily da minha area",
+//         userId: newUser.id,
+//       },
+//     });
+//     await prisma.tasks.create({
+//       data: {
+//         name: "1:1",
+//         taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+//         startTime: "14:00",
+//         endTime: "15:00",
+//         tags: "1:1",
+//         status: "finished",
+//         description: "1:1 com o Embaixador",
+//         userId: newUser.id,
+//       },
+//     });
+//     await prisma.tasks.create({
+//       data: {
+//         name: "Criando Component",
+//         taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+//         startTime: "15:00",
+//         endTime: "18:00",
+//         tags: "Atividade Interna",
+//         status: "finished",
+//         description: "Criando o meu component Button",
+//         userId: newUser.id,
+//       },
+//     });
+//     await prisma.tasks.create({
+//       data: {
+//         name: "Estudos",
+//         taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+//         startTime: "18:00",
+//         endTime: "19:00",
+//         tags: "1:1",
+//         status: "finished",
+//         description: "Estudando JavaScript",
+//         userId: newUser.id,
+//       },
+//     });
+//   });
+//   await prisma.$disconnect();
+//   console.log("Seeders generated");
+//   console.timeEnd();
+// }
 
 main();

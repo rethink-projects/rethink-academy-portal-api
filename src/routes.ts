@@ -27,11 +27,12 @@ router.post("/tasks/:email", TasksController.getTaskByUserEmail);
 router.get("/tasks/day/:email", TasksController.getRecordOfDay);
 router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
 
+router.get("/user/:email", UserController.getUserByEmail);
 router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
 router.post("/user/:email", UserController.update);
 router.put("/user/:email", UserController.updateLessonsWatched);
-router.get("/user/:email", UserController.getUserByEmail);
+// router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);
 router.get("/user/watched/:email", UserController.getWatched);
 router.get("/user/watched/list/:email", UserController.getWatchedList);
@@ -41,7 +42,7 @@ router.get("/trail", TrailController.getAll);
 router.put("/trail/:id", TrailController.update);
 router.delete("/trail/:id", TrailController.deleteById);
 router.get("/trail/course/:trailId", CourseController.getCoursesByTrailId);
-  
+
 router.get("/course", CourseController.getAll);
 router.get("/course/:courseId/:email", CourseController.getCourse);
 router.get("/course/:id", CourseController.getById);

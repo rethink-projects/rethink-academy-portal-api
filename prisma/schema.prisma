@@ -7,9 +7,8 @@ generator erd {
 }
 
 datasource db {
-  provider          = "postgresql"
-  url               = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 enum Main {
@@ -78,14 +77,13 @@ model User {
   watched  String[]
   role     Roles    @default(STUDENT)
   cratedAt DateTime @default(now())
-  avatar  String
-  bucket  Bucket?
-  badges  Badges[]
-  tasks   Tasks[]
+  avatar   String
+  bucket   Bucket?
+  badges   Badges?
+  tasks    Tasks[]
 
   @@map("user")
 }
-
 
 model Trail {
   id             String           @id @default(uuid())
