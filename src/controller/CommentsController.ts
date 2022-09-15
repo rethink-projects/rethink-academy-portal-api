@@ -53,6 +53,7 @@ const createComment = async (request: Request, response: Response) => {
         userId: user.id,
         CommmentAuthorId: author.id,
       },
+      include: { CommmentAuthor: true },
     });
 
     return response.status(200).json({
