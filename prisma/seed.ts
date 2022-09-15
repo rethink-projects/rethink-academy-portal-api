@@ -62,7 +62,7 @@ async function main() {
       },
     });
   }
-  users.forEach(async ({ email, name, surname, main, role }) => {
+  users.forEach(async ({ email, name, surname, main, role, receiveGIF }) => {
     const newUser = await prisma.user.upsert({
       where: {
         email: email,
@@ -73,6 +73,7 @@ async function main() {
         main: main,
         role: role ?? "STUDENT",
         avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
+        receiveGIF: receiveGIF,
       },
       create: {
         name: name,
@@ -81,6 +82,7 @@ async function main() {
         main: main,
         role: role ?? "STUDENT",
         avatar: `https://ui-avatars.com/api/?name=${name}+${surname}`,
+        receiveGIF: receiveGIF,
       },
     });
     await prisma.badges.upsert({

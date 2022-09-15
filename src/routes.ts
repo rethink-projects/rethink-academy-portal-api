@@ -28,7 +28,8 @@ router.get("/tasks/tag/:email", TasksController.getGroupTaskByTag);
 router.post("/tasks/:email", TasksController.getTaskByUserEmail);
 router.get("/tasks/day/:email", TasksController.getRecordOfDay);
 router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
-router.get("/tasks/day/hours/:email", TasksController.getHoursOfMonth);
+// router.get("/tasks/day/hours/:email", TasksController.getHoursOfThreeLastDays);
+// router.get("/tasks/month/hours/:email", TasksController.getHoursOfMonth);
 
 router.get("/comments/:email", CommentsController.getCommentsByUserEmail);
 router.post("/comments", CommentsController.createComment);
@@ -37,7 +38,7 @@ router.delete("/comments/:id", CommentsController.removeComment);
 router.get("/user/:email", UserController.getUserByEmail);
 router.get("/user", UserController.getAll);
 router.post("/user", UserController.create);
-router.post("/user/:email", UserController.update);
+router.patch("/user/:email", UserController.update);
 router.put("/user/:email", UserController.updateLessonsWatched);
 // router.get("/teacher/:id", UserController.getProfileByUserId);
 router.post("/user/watched/:email", UserController.createWatched);

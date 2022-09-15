@@ -76,6 +76,7 @@ export const users: {
   email: string;
   main: "ENGINEERING" | "DESIGN" | "PRODUCT";
   role?: "AMBASSADOR";
+  receiveGIF: boolean;
 }[] = [
   {
     name: "Gabriel",
@@ -83,6 +84,7 @@ export const users: {
     email: "gabriel.gomes@rethink.dev",
     main: "ENGINEERING",
     role: "AMBASSADOR",
+    receiveGIF: false,
   },
   {
     name: "Filipe",
@@ -90,6 +92,7 @@ export const users: {
     email: "filipe.prado@rethink.dev",
     main: "ENGINEERING",
     role: "AMBASSADOR",
+    receiveGIF: false,
   },
   {
     name: "Leticia",
@@ -97,6 +100,7 @@ export const users: {
     email: "leticia.lange@rethink.dev",
     main: "DESIGN",
     role: "AMBASSADOR",
+    receiveGIF: false,
   },
   {
     name: "Priscila",
@@ -104,6 +108,7 @@ export const users: {
     email: "priscila.ritschel@rethink.dev",
     main: "PRODUCT",
     role: "AMBASSADOR",
+    receiveGIF: false,
   },
   {
     name: "Marcela",
@@ -111,108 +116,126 @@ export const users: {
     email: "marcela.monteiro@rethink.dev",
     main: "PRODUCT",
     role: "AMBASSADOR",
+    receiveGIF: false,
   },
   {
     name: "Michelli",
     surname: "Araujo",
     email: "michelli.arujo@rethink.dev",
     main: "PRODUCT",
+    receiveGIF: false,
   },
   {
     name: "Hugo",
     surname: "Carvalho",
     email: "hugo.carvalho@rethink.dev",
     main: "PRODUCT",
+    receiveGIF: false,
   },
   {
     name: "Bernado",
     surname: "Carvalho",
     email: "bernado.carvalho@rethink.dev",
     main: "DESIGN",
+    receiveGIF: false,
   },
   {
     name: "Gustavo",
     surname: "Fernando",
     email: "gustavo.silva@rethink.dev",
     main: "DESIGN",
+    receiveGIF: false,
   },
   {
     name: "Luiza",
     surname: "Queiroz",
     email: "luiza.queiroz@rethink.dev",
     main: "DESIGN",
+    receiveGIF: false,
   },
   {
     name: "Pedro",
     surname: "Silva",
     email: "pedro.lucas@rethink.dev",
     main: "DESIGN",
+    receiveGIF: false,
   },
   {
     name: "Raiane",
     surname: "Bispo",
     email: "raiane.miguel@rethink.dev",
     main: "DESIGN",
+    receiveGIF: false,
   },
   {
     name: "Igor",
     surname: "Ricardo",
     email: "igor.ricardo@rethink.dev",
     main: "DESIGN",
+    receiveGIF: false,
   },
   {
     name: "Amanda",
     surname: "Duarte",
     email: "amanda.duarte@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Gabriel",
     surname: "Melo",
     email: "gabriel.melo@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Ana",
     surname: "Ramos",
     email: "ana.ramos@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Felipe",
     surname: "Reggiane",
     email: "felipe.reggiane@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Fernando",
     surname: "Henrique",
     email: "fernando.henrique@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Fabiana",
     surname: "Kamo",
     email: "fabiana.kamo@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Carolina",
     surname: "Valeriano",
     email: "carolina.valeriano@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Lucas",
     surname: "Araujo",
     email: "lucas.paula@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
   {
     name: "Sthéphany",
     surname: "Tezza",
     email: "sthephany.tezza@rethink.dev",
     main: "ENGINEERING",
+    receiveGIF: false,
   },
 ];
 

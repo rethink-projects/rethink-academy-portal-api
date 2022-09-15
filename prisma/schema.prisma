@@ -27,6 +27,7 @@ model User {
   userCommented  Comments[]     @relation("UserCommented")
   commmentAuthor Comments[]     @relation("CommmentAuthor")
   cratedAt       DateTime       @default(now())
+  receiveGIF     String?
 }
 
 enum Main {

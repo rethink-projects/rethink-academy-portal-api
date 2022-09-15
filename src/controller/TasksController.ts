@@ -384,9 +384,8 @@ const getHoursLastDay = async (request: Request, response: Response) => {
     arrayHelper.map((task) => (hours += task.time));
 
     hours = hours / 60;
-    console.log(hours);
 
-    return response.status(200).json(hours);
+    return response.status(200).json({ hours, user });
   } catch (error) {
     console.log(error);
     return response
@@ -395,77 +394,152 @@ const getHoursLastDay = async (request: Request, response: Response) => {
   }
 };
 
-const getHoursOfMonth = async (request: Request, response: Response) => {
-  try {
-    const { email }: { email?: string } = request.params;
+// const getHoursOfThreeLastDays = async (
+//   request: Request,
+//   response: Response
+// ) => {
+//   try {
+//     const { email }: { email?: string } = request.params;
 
-    const currentDate = new Date();
+//     if (!email) throw new Error("Email obrigatório");
 
-    if (!email) throw new Error("Email obrigatório");
+//     const user = await prismaInstance.user.findFirst({
+//       where: { email },
+//     });
+//     if (!user) throw new Error("Usuário não encontrado");
 
-    const user = await prismaInstance.user.findFirst({
-      where: { email },
-    });
-    if (!user) throw new Error("Usuário não encontrado");
+//     let AND: any = [];
+//     if (email) {
+//       AND.push({ userId: user!.id });
+//     }
 
-    let AND: any = [];
-    if (email) {
-      AND.push({ userId: user!.id });
-    }
+//     const currentDate = new Date();
 
-    const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
-    const currentYear = new Date(currentDate).getFullYear().toString();
+//     const threeDaysAgo = (new Date(currentDate).getDate() - 3).toString();
+//     const yesterday = new Date().getDate().toString();
+//     const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
+//     const currentYear = new Date(currentDate).getFullYear().toString();
 
-    const startDate = composeDate("01", currentMonth, currentYear);
-    const lastDay = new Date(
-      startDate.getFullYear(),
-      startDate.getMonth() + 1,
-      0
-    )
-      .getDate()
-      .toString();
+//     const startDate = composeDate(threeDaysAgo, currentMonth, currentYear);
+//     const endDate = composeDate(yesterday, currentMonth, currentYear);
 
-    const endDate = composeDate(lastDay, currentMonth, currentYear);
+//     console.log(new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0));
+//     console.log(startDate, yesterday, endDate);
+//     console.log(new Date().toString());
 
-    AND.push({ taskDate: { gte: new Date(startDate) } });
-    AND.push({ taskDate: { lte: new Date(endDate) } });
+//     AND.push({ taskDate: { gte: new Date(startDate) } });
+//     AND.push({ taskDate: { lte: new Date(endDate) } });
 
-    const recordsMonth = await prismaInstance.tasks.findMany({
-      where: {
-        AND,
-      },
-    });
+//     const recordsMonth = await prismaInstance.tasks.findMany({
+//       where: {
+//         AND,
+//       },
+//     });
 
-    const arrayHelper: any[] = [];
+//     const arrayHelper: any[] = [];
 
-    for (const key in recordsMonth) {
-      arrayHelper.push({
-        id: recordsMonth[key].id,
-        name: recordsMonth[key].name,
-        status: recordsMonth[key].status,
-        time:
-          timeKeeper(recordsMonth[key].endTime) -
-          timeKeeper(recordsMonth[key].startTime),
-        ...convertTime(
-          timeKeeper(recordsMonth[key].endTime) -
-            timeKeeper(recordsMonth[key].startTime)
-        ),
-      });
-    }
+//     for (const key in recordsMonth) {
+//       arrayHelper.push({
+//         id: recordsMonth[key].id,
+//         name: recordsMonth[key].name,
+//         status: recordsMonth[key].status,
+//         time:
+//           timeKeeper(recordsMonth[key].endTime) -
+//           timeKeeper(recordsMonth[key].startTime),
+//         ...convertTime(
+//           timeKeeper(recordsMonth[key].endTime) -
+//             timeKeeper(recordsMonth[key].startTime)
+//         ),
+//       });
+//     }
 
-    let hours = 0;
-    arrayHelper.map((task) => (hours += task.time));
+//     console.log(arrayHelper[0].time);
 
-    hours = hours / 60;
+//     let hours = 0;
+//     arrayHelper.map((task) => (hours += task.time));
 
-    return response.status(200).json(hours);
-  } catch (error) {
-    console.log(error);
-    return response
-      .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
-  }
-};
+//     hours = hours / 60;
+
+//     return response.status(200).json(hours);
+//   } catch (error) {
+//     console.log(error);
+//     return response
+//       .status(400)
+//       .json({ message: "Algo de errado aconteceu.", error });
+//   }
+// };
+
+// const getHoursOfMonth = async (request: Request, response: Response) => {
+//   try {
+//     const { email }: { email?: string } = request.params;
+
+//     const currentDate = new Date();
+
+//     if (!email) throw new Error("Email obrigatório");
+
+//     const user = await prismaInstance.user.findFirst({
+//       where: { email },
+//     });
+//     if (!user) throw new Error("Usuário não encontrado");
+
+//     let AND: any = [];
+//     if (email) {
+//       AND.push({ userId: user!.id });
+//     }
+
+//     const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
+//     const currentYear = new Date(currentDate).getFullYear().toString();
+
+//     const startDate = composeDate("01", currentMonth, currentYear);
+//     const lastDay = new Date(
+//       startDate.getFullYear(),
+//       startDate.getMonth() + 1,
+//       0
+//     )
+//       .getDate()
+//       .toString();
+
+//     const endDate = composeDate(lastDay, currentMonth, currentYear);
+
+//     AND.push({ taskDate: { gte: new Date(startDate) } });
+//     AND.push({ taskDate: { lte: new Date(endDate) } });
+
+//     const recordsMonth = await prismaInstance.tasks.findMany({
+//       where: {
+//         AND,
+//       },
+//     });
+
+//     const arrayHelper: any[] = [];
+
+//     for (const key in recordsMonth) {
+//       arrayHelper.push({
+//         id: recordsMonth[key].id,
+//         name: recordsMonth[key].name,
+//         status: recordsMonth[key].status,
+//         time:
+//           timeKeeper(recordsMonth[key].endTime) -
+//           timeKeeper(recordsMonth[key].startTime),
+//         ...convertTime(
+//           timeKeeper(recordsMonth[key].endTime) -
+//             timeKeeper(recordsMonth[key].startTime)
+//         ),
+//       });
+//     }
+
+//     let hours = 0;
+//     arrayHelper.map((task) => (hours += task.time));
+
+//     hours = hours / 60;
+
+//     return response.status(200).json(hours);
+//   } catch (error) {
+//     console.log(error);
+//     return response
+//       .status(400)
+//       .json({ message: "Algo de errado aconteceu.", error });
+//   }
+// };
 
 export default {
   getTaskByUserEmail,
@@ -475,5 +549,6 @@ export default {
   getGroupTaskByTag,
   getRecordOfDay,
   getHoursLastDay,
-  getHoursOfMonth,
+  // getHoursOfThreeLastDays,
+  // getHoursOfMonth,
 };

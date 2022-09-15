@@ -21,7 +21,7 @@ const levelMaker = () => {
 };
 
 const create = async (request: Request, response: Response) => {
-  const { email, role, name, surname, main, avatar } = request.body;
+  const { email, role, name, surname, main, avatar, receiveGIF } = request.body;
   try {
     if (!email) {
       return response
@@ -35,7 +35,7 @@ const create = async (request: Request, response: Response) => {
         email,
         main,
         role,
-
+        receiveGIF,
         avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
@@ -103,6 +103,7 @@ const update = async (request: Request, response: Response) => {
       surname,
       main,
       avatar,
+      receiveGIF,
     }: {
       email: string;
       role?: "STUDENT" | "AMBASSADOR" | "RETHINKER";
@@ -110,6 +111,7 @@ const update = async (request: Request, response: Response) => {
       surname?: string;
       avatar?: string;
       main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
+      receiveGIF: boolean;
     } = request.body;
     const email: string = request.params.email;
     const updatedUser = await prismaInstance.user.update({
@@ -122,10 +124,11 @@ const update = async (request: Request, response: Response) => {
         surname,
         main,
         avatar,
+        receiveGIF,
       },
     });
 
-    return response.status(200).json({ updatedUser });
+    return response.status(200).json(updatedUser);
   } catch (error) {
     return response
       .status(400)
