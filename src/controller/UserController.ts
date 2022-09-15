@@ -111,7 +111,7 @@ const update = async (request: Request, response: Response) => {
       surname?: string;
       avatar?: string;
       main?: "ENGINEERING" | "DESIGN" | "PRODUCT";
-      receiveGIF: boolean;
+      receiveGIF?: string;
     } = request.body;
     const email: string = request.params.email;
     const updatedUser = await prismaInstance.user.update({
