@@ -11,6 +11,20 @@ import {
   composeDate,
 } from "../helpers/dateTimeHelpers";
 
+const getSingleTask = async (request: Request, response: Response) => {
+  try {
+    const task = await prismaInstance.tasks.findFirst({
+      where: { id: request.params.id },
+    });
+    return response.status(200).json(task);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
+  }
+};
+
 const getTaskByUserEmail = async (request: Request, response: Response) => {
   try {
     const { email } = request.params;
@@ -556,6 +570,7 @@ const getHoursOfMonth = async (request: Request, response: Response) => {
 };
 
 export default {
+  getSingleTask,
   getTaskByUserEmail,
   createTask,
   removeTask,

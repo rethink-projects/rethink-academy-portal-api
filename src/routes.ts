@@ -20,6 +20,7 @@ router.post("/bucket", BucketController.upsert);
 router.post("/badge", BadgesController.giveBadge);
 router.get("/badge/:email", BadgesController.getUserBadges);
 
+router.get("/tasks/single/:id", TasksController.getSingleTask);
 router.get("/tasks/:email", TasksController.getTaskByUserEmail);
 router.post("/tasks", TasksController.createTask);
 router.delete("/tasks/:id", TasksController.removeTask);
