@@ -24,18 +24,9 @@ CREATE TABLE "User" (
     "avatar" TEXT NOT NULL,
     "watched" TEXT[],
     "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "receiveGIF" TEXT,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "gifreceived" (
-    "id" TEXT NOT NULL,
-    "gifIdentifier" INTEGER NOT NULL,
-    "cratedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "userId" TEXT,
-
-    CONSTRAINT "gifreceived_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -179,9 +170,6 @@ CREATE UNIQUE INDEX "Bucket_userId_key" ON "Bucket"("userId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "trail_name_key" ON "trail"("name");
-
--- AddForeignKey
-ALTER TABLE "gifreceived" ADD CONSTRAINT "gifreceived_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "badges" ADD CONSTRAINT "badges_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

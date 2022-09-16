@@ -413,20 +413,40 @@ const getHoursOfThreeLastDays = async (
       AND.push({ userId: user!.id });
     }
 
-    const currentDate = new Date();
+    const date = new Date();
+    const modifiedDate = new Date(
+      date.valueOf() - date.getTimezoneOffset() * 60000
+    );
 
-    const threeDaysAgo = (new Date(currentDate).getDate() - 3).toString();
-    const yesterday = new Date().getDate().toString();
-    const currentMonth = (new Date(currentDate).getMonth() + 1).toString();
-    const currentYear = new Date(currentDate).getFullYear().toString();
+    let month = (modifiedDate.getMonth() + 1).toString();
+    let startDay = (modifiedDate.getDate() - 3).toString();
+    let endDay = (modifiedDate.getDate() - 1).toString();
+    let year = modifiedDate.getFullYear().toString();
 
-    const startDate = composeDate(threeDaysAgo, currentMonth, currentYear);
-    const endDate = composeDate(yesterday, currentMonth, currentYear);
+    if (parseInt(month, 10) < 10) {
+      month = "0" + month;
+    }
+    if (parseInt(startDay, 10) < 10) {
+      startDay = "0" + startDay;
+    }
+    if (parseInt(endDay, 10) < 10) {
+      endDay = "0" + endDay;
+    }
 
-    AND.push({ taskDate: { gte: new Date(startDate) } });
-    AND.push({ taskDate: { lte: new Date(endDate) } });
+    const startDate = [year, month, startDay].join("-") + "T00:00:00.000Z";
+    const endDate = [year, month, endDay].join("-") + "T23:59:59.000Z";
 
-    const recordsMonth = await prismaInstance.tasks.findMany({
+    console.log(startDate, endDate);
+
+    AND.push({ taskDate: { gte: startDate } });
+    AND.push({ taskDate: { lte: endDate } });
+
+    const recordsDay = await prismaInstance.tasks.findMany({
+      orderBy: [
+        {
+          status: "desc",
+        },
+      ],
       where: {
         AND,
       },
@@ -434,17 +454,17 @@ const getHoursOfThreeLastDays = async (
 
     const arrayHelper: any[] = [];
 
-    for (const key in recordsMonth) {
+    for (const key in recordsDay) {
       arrayHelper.push({
-        id: recordsMonth[key].id,
-        name: recordsMonth[key].name,
-        status: recordsMonth[key].status,
+        id: recordsDay[key].id,
+        name: recordsDay[key].name,
+        status: recordsDay[key].status,
         time:
-          timeKeeper(recordsMonth[key].endTime) -
-          timeKeeper(recordsMonth[key].startTime),
+          timeKeeper(recordsDay[key].endTime) -
+          timeKeeper(recordsDay[key].startTime),
         ...convertTime(
-          timeKeeper(recordsMonth[key].endTime) -
-            timeKeeper(recordsMonth[key].startTime)
+          timeKeeper(recordsDay[key].endTime) -
+            timeKeeper(recordsDay[key].startTime)
         ),
       });
     }
