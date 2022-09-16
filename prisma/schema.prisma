@@ -11,19 +11,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// comente o datasource e insira o novo 
-// datasource db {
-//   provider = "sqlite"
-//   url      = "file:./dev.db"
-// }
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+  ALL
+}
 
-// comente também o enum Roles completo 
-// comente a linha socials Json?  dentro model Profile
-
-enum Roles {
-  STUDENT
-  AMBASSADOR
-  RETHINKER
+enum CourseStyle {
+  COURSE
+  WORKSHOP
+  TRAINING
+  LECTURE
 }
 
 enum Titles {
@@ -32,29 +31,16 @@ enum Titles {
   PRODUCT
 }
 
-enum Main {
-  ENGINEERING
-  DESIGN
-  PRODUCT
+enum Roles {
+  STUDENT
+  AMBASSADOR
+  RETHINKER
 }
 
-model User {
-  id            String          @id @default(uuid())
-  email         String          @unique
-  name          String?
-  surname       String?
-  role          Roles           @default(STUDENT)
-  main          Main            @default(ENGINEERING)
-  avatar        String
-  bucket        Bucket?
-  badges        Badges?
-  info          Info?
-  tasks         Tasks[]
-  monthEvaluate MonthEvaluate[]
-  Note          Note[]
-  GoalList      GoalList[]
-
-  @@map("user")
+enum Levels {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 model Note {
@@ -127,6 +113,112 @@ model Bucket {
   user   User   @relation(fields: [userId], references: [id])
 }
 
+model User {
+  id            String          @id @default(uuid())
+  email         String          @unique
+  name          String?
+  surname       String?
+  main          Main?           @default(ENGINEERING)
+  watched       String[]
+  role          Roles           @default(STUDENT)
+  cratedAt      DateTime        @default(now())
+  avatar        String
+  bucket        Bucket?
+  badges        Badges?
+  tasks         Tasks[]
+  info          Info?
+  monthEvaluate MonthEvaluate[]
+  Note          Note[]
+  GoalList      GoalList[]
+
+  @@map("user")
+}
+
+model Trail {
+  id             String           @id @default(uuid())
+  name           String           @unique
+  description    String
+  weight         Int
+  imageUrl       String
+  course         Course[]
+  courseTimeline CourseTimeline[]
+  main           Main             @default(ENGINEERING)
+  cratedAt       DateTime         @default(now())
+
+  @@map("trail")
+}
+
+model Course {
+  id                 String      @id @default(uuid())
+  name               String
+  description        String
+  level              Levels
+  workload           Int
+  learning           String
+  skills             String
+  courseStyle        CourseStyle @default(COURSE)
+  imageTeacher       String
+  teacherDescription String
+  teacherName        String
+  trailId            String
+  trail              Trail       @relation(fields: [trailId], references: [id])
+  cratedAt           DateTime    @default(now())
+  modules            Module[]
+
+  @@map("course")
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  name        String
+  embedUrl    String
+  description String
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId    String
+  cratedAt    DateTime @default(now())
+
+  @@map("lesson")
+}
+
+model Module {
+  id       String   @id @default(uuid())
+  name     String
+  course   Course   @relation(fields: [courseId], references: [id])
+  courseId String
+  lessons  Lesson[]
+  cratedAt DateTime @default(now())
+
+  @@map("module")
+}
+
+model CourseTimeline {
+  id       String   @id @default(uuid())
+  stage    String
+  start    DateTime
+  finish   DateTime
+  content  String
+  trail    Trail    @relation(fields: [trailId], references: [id])
+  trailId  String
+  cratedAt DateTime @default(now())
+
+  @@map("timeline")
+}
+
+model Tasks {
+  id          String   @id @default(uuid())
+  name        String
+  taskDate    DateTime
+  startTime   String
+  endTime     String
+  tags        String   @default("tags")
+  status      String   @default("status")
+  description String   @default("description")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("tasks")
+}
+
 model GoalList {
   id     String @id @default(uuid())
   name   String
@@ -145,19 +237,4 @@ model Goal {
   goalListId String
 
   @@map("goal")
-}
-
-model Tasks {
-  id          String   @id @default(uuid())
-  name        String
-  taskDate    DateTime
-  startTime   String
-  endTime     String
-  tags        String   @default("tags")
-  status      String   @default("status")
-  description String   @default("description")
-  user        User     @relation(fields: [userId], references: [id])
-  userId      String
-
-  @@map("tasks")
 }
