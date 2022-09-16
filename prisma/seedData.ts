@@ -82,6 +82,20 @@ export const users: {
   role?: "AMBASSADOR";
 }[] = [
   {
+    name: "Yuji",
+    surname: "Asofu",
+    email: "yuji.asofu@rethink.dev",
+    main: "ENGINEERING",
+    role: "AMBASSADOR",
+  },
+  {
+    name: "Louise",
+    surname: "Azevedo",
+    email: "louise.azevedo@rethink.dev",
+    main: "ENGINEERING",
+    role: "AMBASSADOR",
+  },
+  {
     name: "Gabriel",
     surname: "Gomes",
     email: "gabriel.gomes@rethink.dev",
@@ -119,7 +133,7 @@ export const users: {
   {
     name: "Michelli",
     surname: "Araujo",
-    email: "michelli.arujo@rethink.dev",
+    email: "michelli.araujo@rethink.dev",
     main: "PRODUCT",
   },
   {

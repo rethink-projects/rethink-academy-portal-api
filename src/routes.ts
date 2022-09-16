@@ -34,7 +34,6 @@ router.post("/evaluate", EvaluateController.create);
 router.patch("/evaluate/:id", EvaluateController.update);
 router.delete("/evaluate/:id", EvaluateController.remove);
 
-router.post("/info", ContractInfoController.create);
 router.get("/info/:email", ContractInfoController.getInfoByUser);
 router.post("/info/:email", ContractInfoController.updateInfo);
 
