@@ -1,4 +1,3 @@
-import { verify } from "crypto";
 import { Request, Response } from "express";
 import { prismaInstance, Roles } from "../../database/prismaClient";
 
@@ -178,18 +177,7 @@ const getCourse = async (request: Request, response: Response) => {
   try {
     const course = await prismaInstance.course.findUnique({
       where: { id: courseId },
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        level: true,
-        workload: true,
-        learning: true,
-        skills: true,
-        courseStyle: true,
-        imageTeacher: true,
-        teacherDescription: true,
-        teacherName: true,
+      include: {
         trail: {
           select: {
             name: true,
@@ -207,6 +195,7 @@ const getCourse = async (request: Request, response: Response) => {
             id: true,
             name: true,
             embedUrl: true,
+            description: true,
           },
         },
       },
