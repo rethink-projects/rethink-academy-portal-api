@@ -39,22 +39,54 @@ enum Main {
 }
 
 model User {
-  id            String          @id @default(uuid())
-  email         String          @unique
-  name          String?
-  surname       String?
-  role          Roles           @default(STUDENT)
-  main          Main            @default(ENGINEERING)
-  avatar        String
-  bucket        Bucket?
-  badges        Badges?
-  info          Info?
-  tasks         Tasks[]
-  monthEvaluate MonthEvaluate[]
-  Note          Note[]
-  GoalList      GoalList[]
+  id             String         @id @default(uuid())
+  email          String         @unique
+  name           String?
+  surname        String?
+  role           Roles?         @default(STUDENT)
+  main           Titles?        @default(ENGINEERING)
+  avatar         String
+  watched        String[]
+  bucket         Bucket?
+  badges         Badges?
+  tasks          Tasks[]
+  stickerNotes   StickerNotes[]
+  userCommented  Comments[]     @relation("UserCommented")
+  commmentAuthor Comments[]     @relation("CommmentAuthor")
+  cratedAt       DateTime       @default(now())
+  receiveGIF     String?
+}
 
-  @@map("user")
+enum Main {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+  ALL
+}
+
+enum CourseStyle {
+  COURSE
+  WORKSHOP
+  TRAINING
+  LECTURE
+}
+
+enum Titles {
+  ENGINEERING
+  DESIGN
+  PRODUCT
+}
+
+enum Roles {
+  STUDENT
+  AMBASSADOR
+  RETHINKER
+}
+
+enum Levels {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 model Note {
@@ -127,24 +159,74 @@ model Bucket {
   user   User   @relation(fields: [userId], references: [id])
 }
 
-model GoalList {
-  id     String @id @default(uuid())
-  name   String
-  userId String
-  user   User   @relation(fields: [userId], references: [id])
-  goal   Goal[] @relation
+model Trail {
+  id             String           @id @default(uuid())
+  name           String           @unique
+  description    String
+  weight         Int
+  imageUrl       String
+  course         Course[]
+  courseTimeline CourseTimeline[]
+  main           Main             @default(ENGINEERING)
+  cratedAt       DateTime         @default(now())
 
-  @@map("goalList")
+  @@map("trail")
 }
 
-model Goal {
-  id         String   @id @default(uuid())
-  title      String
-  conclude   Boolean
-  goalList   GoalList @relation(fields: [goalListId], references: [id], onDelete: Cascade)
-  goalListId String
+model Course {
+  id                 String      @id @default(uuid())
+  name               String
+  description        String
+  level              Levels
+  workload           Int
+  learning           String
+  skills             String
+  courseStyle        CourseStyle @default(COURSE)
+  imageTeacher       String
+  teacherDescription String
+  teacherName        String
+  trailId            String
+  trail              Trail       @relation(fields: [trailId], references: [id])
+  cratedAt           DateTime    @default(now())
+  modules            Module[]
 
-  @@map("goal")
+  @@map("course")
+}
+
+model Lesson {
+  id          String   @id @default(uuid())
+  name        String
+  embedUrl    String
+  description String
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  moduleId    String
+  cratedAt    DateTime @default(now())
+
+  @@map("lesson")
+}
+
+model Module {
+  id       String   @id @default(uuid())
+  name     String
+  course   Course   @relation(fields: [courseId], references: [id])
+  courseId String
+  lessons  Lesson[]
+  cratedAt DateTime @default(now())
+
+  @@map("module")
+}
+
+model CourseTimeline {
+  id       String   @id @default(uuid())
+  stage    String
+  start    DateTime
+  finish   DateTime
+  content  String
+  trail    Trail    @relation(fields: [trailId], references: [id])
+  trailId  String
+  cratedAt DateTime @default(now())
+
+  @@map("timeline")
 }
 
 model Tasks {
@@ -160,4 +242,26 @@ model Tasks {
   userId      String
 
   @@map("tasks")
+}
+
+model Comments {
+  id               String  @id @default(uuid())
+  text             String
+  user             User    @relation(name: "UserCommented", fields: [userId], references: [id])
+  userId           String
+  CommmentAuthor   User?   @relation(name: "CommmentAuthor", fields: [CommmentAuthorId], references: [id])
+  CommmentAuthorId String?
+
+  @@map("comments")
+}
+
+model StickerNotes {
+  id          String    @id @default(uuid())
+  description String
+  data        DateTime? @default(now())
+  priority    Int?      @default(3)
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+
+  @@map("stickerNotes")
 }

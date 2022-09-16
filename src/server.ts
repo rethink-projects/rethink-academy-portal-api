@@ -12,6 +12,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 app.use(expressStatusMonitor());
+
 app.use("/api", router);
 
 const PORT = process.env.PORT;
