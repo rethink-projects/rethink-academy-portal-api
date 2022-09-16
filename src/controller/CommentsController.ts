@@ -37,6 +37,8 @@ const createComment = async (request: Request, response: Response) => {
     const { text, userEmail, commentAuthor }: CommentsProps = request.body;
     if (!userEmail) throw new Error("Email obrigatório");
 
+    console.log(userEmail, commentAuthor)
+
     const user = await prismaInstance.user.findFirst({
       where: { email: userEmail },
     });
