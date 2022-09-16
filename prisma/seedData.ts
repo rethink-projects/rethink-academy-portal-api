@@ -1,6 +1,5 @@
-export const modules: { name: string; courseId: string } = {
+export const modules: { name: string } = {
   name: "UX Design",
-  courseId: "--------Id do Curso UX Design--------",
 };
 
 export const courses: {
@@ -29,6 +28,7 @@ export const courses: {
   teacherDescription: "Desenvolvedor Sênior",
   teacherName: "Filipe Prado",
 };
+
 export const trails: {
   name: string;
   description: string;
@@ -41,7 +41,8 @@ export const trails: {
     description:
       "Focando nas principais tecnologias utilizadas no mercado de produtos digitais atualmente, ensinamos sobre Javascript, Node Js e React JS, que também são as principais linguagens e bibliotecas que usamos dentro da Rethink.",
     weight: 4,
-    imageUrl: "",
+    imageUrl:
+      "https://thmagiefukyzaerdvxob.supabase.co/storage/v1/object/public/rethink-academy-portal/engenharia.png",
     main: "ENGINEERING",
   },
   {
@@ -49,7 +50,8 @@ export const trails: {
     description:
       "Você vai aprender desde os princípios mais básicos até especificidades mais avançadas da profissão. Assim, ensinamos sobre os Fundamentos de UX, UI, além de conteúdos mais particulares.",
     weight: 3,
-    imageUrl: "",
+    imageUrl:
+      "https://thmagiefukyzaerdvxob.supabase.co/storage/v1/object/public/rethink-academy-portal/design.png",
     main: "DESIGN",
   },
   {
@@ -57,7 +59,8 @@ export const trails: {
     description:
       "Unindo teoria e prática, ensinamos sobre como trabalhar para garantir o sucesso de um produto digital, tendo em vista a relação entre design, desenvolvimento e estratégias de negócio.",
     weight: 2,
-    imageUrl: "",
+    imageUrl:
+      "https://thmagiefukyzaerdvxob.supabase.co/storage/v1/object/public/rethink-academy-portal/produto.png",
     main: "PRODUCT",
   },
   {
@@ -65,7 +68,8 @@ export const trails: {
     description:
       "A trilha base liberada inicialmente, com conteúdos gerais do dia-a-dia, para preparar o básico antes de se especializar nos estudos da sua área! ",
     weight: 1,
-    imageUrl: "",
+    imageUrl:
+      "https://thmagiefukyzaerdvxob.supabase.co/storage/v1/object/public/rethink-academy-portal/academy.png",
     main: "ALL",
   },
 ];
@@ -281,5 +285,44 @@ export const timeLine: {
     start: new Date(new Date(2022, 3, 23).setHours(0, 0, 0)).toISOString(),
     finish: new Date(new Date(2022, 3, 23).setHours(23, 59, 59)).toISOString(),
     content: "Curso de Design System",
+  },
+];
+
+export const newTasks = [
+  {
+    name: "daily",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "13:00",
+    endTime: "14:00",
+    tags: "daily",
+    status: "finished",
+    description: "Daily do meu Squad, Daily da minha area",
+  },
+  {
+    name: "1:1",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "14:00",
+    endTime: "15:00",
+    tags: "1:1",
+    status: "finished",
+    description: "1:1 com o Embaixador",
+  },
+  {
+    name: "Criando Component",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "15:00",
+    endTime: "18:00",
+    tags: "Atividade Interna",
+    status: "finished",
+    description: "Criando o meu component Button",
+  },
+  {
+    name: "Estudos",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "18:00",
+    endTime: "19:00",
+    tags: "1:1",
+    status: "finished",
+    description: "Estudando JavaScript",
   },
 ];
