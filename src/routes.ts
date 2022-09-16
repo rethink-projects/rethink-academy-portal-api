@@ -58,4 +58,6 @@ router.post("/tasks/:email", TasksController.getTaskByUserEmail);
 router.get("/tasks/day/:email", TasksController.getRecordOfDay);
 router.get("/tasks/hours/:email", TasksController.getHoursLastDay);
 
+router.get("/chart/:email", TasksController.getHoursForChart);
+
 export { router };

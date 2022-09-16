@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { userInfo } from "os";
 import { prismaInstance } from "../../database/prismaClient";
 import {
   timeKeeper,
@@ -394,7 +395,65 @@ const getHoursLastDay = async (request: Request, response: Response) => {
   }
 };
 
+const getHoursForChart = async (request: Request, response: Response) => {
+  let months = [
+    { month: "Jan", hours: 0, pv: 1 },
+    { month: "Fev", hours: 0, pv: 1 },
+    { month: "Mar", hours: 0, pv: 1 },
+    { month: "Abr", hours: 0, pv: 1 },
+    { month: "Mai", hours: 0, pv: 1 },
+    { month: "Jun", hours: 0, pv: 1 },
+    { month: "Jul", hours: 0, pv: 1 },
+    { month: "Ago", hours: 0, pv: 1 },
+    { month: "Set", hours: 0, pv: 1 },
+    { month: "Out", hours: 0, pv: 1 },
+    { month: "Nov", hours: 0, pv: 1 },
+    { month: "Dez", hours: 0, pv: 1 },
+  ];
+  try {
+    const { email } = request.params;
+    const { tags } = request.query;
+
+    const user = await prismaInstance.user.findFirstOrThrow({
+      where: { email },
+    });
+
+    let AND: any[] = [
+      { userId: user!.id },
+      { taskDate: { gte: new Date(new Date().getFullYear(), 0, 1) } },
+      {
+        taskDate: { lte: new Date(new Date().getFullYear() + 1, 0, 0) },
+      },
+    ];
+
+    if (tags) {
+      AND.push({ tags });
+    }
+
+    const groupTasks = await prismaInstance.tasks.findMany({
+      where: { AND },
+    });
+
+    groupTasks.forEach((item) => {
+      const monthIndex = item.taskDate.getMonth();
+      months[monthIndex].hours +=
+        (timeKeeper(item.endTime) - timeKeeper(item.startTime)) / 60;
+      if (item.endTime) {
+        months[monthIndex].pv = 0;
+      }
+    });
+
+    return response.status(200).json(months);
+  } catch (error) {
+    console.log(error);
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
+  }
+};
+
 export default {
+  getHoursForChart,
   getTaskByUserEmail,
   createTask,
   removeTask,
