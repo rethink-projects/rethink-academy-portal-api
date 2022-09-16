@@ -2,23 +2,19 @@ import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
 
 const upsert = async (request: Request, response: Response) => {
-  const { title, email, url } = request.body;
   try {
+    const { title, email, url }: { title: string; email: string; url: string } =
+      request.body;
     if (!email) throw new Error("não tem user");
 
     const user = await prismaInstance.user.findFirstOrThrow({
       where: { email },
     });
 
-    const data = await prismaInstance.bucket.upsert({
-      where: { userId: user.id },
-      create: {
+    const data = await prismaInstance.bucket.create({
+      data: {
         title,
         userId: user.id,
-        url,
-      },
-      update: {
-        title,
         url,
       },
     });
@@ -39,11 +35,31 @@ const getOneBucket = async (request: Request, response: Response) => {
     });
 
     const data = await prismaInstance.bucket.findFirstOrThrow({
-      where: { userId: user.id, title },
+      where: {
+        userId: user.id,
+        url: Buffer.from(title, "base64").toString(),
+      },
     });
     response.status(200).json(data);
   } catch (error) {
     return response.status(400).json(error.message);
+  }
+};
+
+const deleteFile = async (request: Request, response: Response) => {
+  const { id } = request.params;
+  try {
+    await prismaInstance.bucket.delete({
+      where: { id },
+    });
+
+    return response
+      .status(200)
+      .json({ message: "Arquivo deletado com sucesso." });
+  } catch (error) {
+    return response
+      .status(400)
+      .json({ message: "Algo de errado aconteceu.", error });
   }
 };
 
@@ -65,4 +81,4 @@ const getUserBucket = async (request: Request, response: Response) => {
   }
 };
 
-export default { upsert, getOneBucket, getUserBucket };
+export default { upsert, getOneBucket, getUserBucket, deleteFile };
