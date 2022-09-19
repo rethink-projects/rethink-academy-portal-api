@@ -13,7 +13,7 @@ export const skillLibrary = {
     ["Wireframe e Fluxo"]: "skill3",
     ["Design system"]: "skill4",
     ["Product Design"]: "skill5",
-    ["Padronização e "]: "skill6",
+    ["Padronização e Documentação"]: "skill6",
   },
   PRODUCT: {
     Produto: "skill1",
