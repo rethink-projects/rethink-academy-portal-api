@@ -92,7 +92,7 @@ const deleteById = async (request: Request, response: Response) => {
 
     return response
       .status(200)
-      .json({ stageLine, message: "etapa deletada com sucesso" });
+      .json({ stageLine, message: "Etapa deletada com sucesso" });
   } catch (error) {
     return response
       .status(400)
