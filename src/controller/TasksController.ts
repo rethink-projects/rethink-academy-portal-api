@@ -249,7 +249,7 @@ const getGroupTaskByTag = async (request: Request, response: Response) => {
     console.log(error);
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -325,7 +325,7 @@ const getRecordOfDay = async (request: Request, response: Response) => {
     console.log(error);
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -405,7 +405,7 @@ const getHoursLastDay = async (request: Request, response: Response) => {
     console.log(error);
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -494,7 +494,7 @@ const getHoursOfThreeLastDays = async (
     console.log(error);
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -566,7 +566,7 @@ const getHoursOfMonth = async (request: Request, response: Response) => {
     console.log(error);
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
