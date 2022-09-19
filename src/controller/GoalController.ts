@@ -10,7 +10,7 @@ const create = async (request: Request, response: Response) => {
       where: { id: goalListId },
     });
 
-    if (!goalListById) throw new Error("Usuário não encontrado");
+    if (!goalListById) throw new Error("Meta não encontrada");
 
     const goal = await prismaInstance.goal.create({
       data: {
