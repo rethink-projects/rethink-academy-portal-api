@@ -43,7 +43,7 @@ const create = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -66,17 +66,17 @@ const getInfoByUser = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
 const updateInfo = async (request: Request, response: Response) => {
   const { email } = request.params;
-    const userByEmail = await prismaInstance.user.findFirst({
-      where: { email },
-    });
+  const userByEmail = await prismaInstance.user.findFirst({
+    where: { email },
+  });
 
-    if (!userByEmail) throw new Error("Usuário não encontrado");
+  if (!userByEmail) throw new Error("Usuário não encontrado");
   const {
     college,
     semester,
@@ -94,7 +94,7 @@ const updateInfo = async (request: Request, response: Response) => {
   } = request.body;
   try {
     const info = await prismaInstance.info.update({
-      where: {userId: userByEmail.id },
+      where: { userId: userByEmail.id },
       data: {
         college,
         semester,
@@ -112,7 +112,7 @@ const updateInfo = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 

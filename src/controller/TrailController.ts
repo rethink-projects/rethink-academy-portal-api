@@ -6,7 +6,7 @@ type TrailType = {
   description: string;
   weight: number;
   imageUrl: string;
-}
+};
 
 const create = async (request: Request, response: Response) => {
   const { name, description, weight, imageUrl }: TrailType = request.body;
@@ -25,7 +25,7 @@ const create = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -33,15 +33,15 @@ const getAll = async (request: Request, response: Response) => {
   try {
     const trail = await prismaInstance.trail.findMany({
       orderBy: {
-        weight: 'asc',
-      }
-    })
+        weight: "asc",
+      },
+    });
 
     return response.status(200).json({ trail });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -65,7 +65,7 @@ const update = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -82,7 +82,7 @@ const deleteById = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 export default { create, getAll, update, deleteById };

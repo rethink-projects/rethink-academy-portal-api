@@ -8,10 +8,13 @@ type StickerNotesProps = {
   email: string;
 };
 
-const getStickerNotesByUserEmail = async (request: Request, response: Response) => {
+const getStickerNotesByUserEmail = async (
+  request: Request,
+  response: Response
+) => {
   try {
     const { email }: { email?: string } = request.params;
-    console.log(email)
+    console.log(email);
 
     const user = await prismaInstance.user.findFirst({
       where: { email },
@@ -22,10 +25,10 @@ const getStickerNotesByUserEmail = async (request: Request, response: Response) 
     const stickerNotes = await prismaInstance.stickerNotes.findMany({
       orderBy: [
         {
-          priority: 'asc',
+          priority: "asc",
         },
         {
-          description: 'asc',
+          description: "asc",
         },
       ],
       where: {
@@ -37,16 +40,13 @@ const getStickerNotesByUserEmail = async (request: Request, response: Response) 
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
 const createstickerNotes = async (request: Request, response: Response) => {
   try {
-    const {
-      description,
-      email,
-    }: StickerNotesProps = request.body;
+    const { description, email }: StickerNotesProps = request.body;
 
     if (!email) throw new Error("Email obrigatório");
 
@@ -71,7 +71,7 @@ const createstickerNotes = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -79,7 +79,7 @@ const removeStickerNotes = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {
     await prismaInstance.stickerNotes.delete({
-      where: {id},
+      where: { id },
     });
 
     return response
@@ -88,22 +88,19 @@ const removeStickerNotes = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
 const updateStickerNotes = async (request: Request, response: Response) => {
   const { id } = request.params;
-  const {
-    description,
-    priority,
-  }: StickerNotesProps = request.body;  
+  const { description, priority }: StickerNotesProps = request.body;
 
-  console.log(request.body)
+  console.log(request.body);
 
   try {
     const stickerNotes = await prismaInstance.stickerNotes.update({
-      where: {id},
+      where: { id },
       data: {
         description,
         priority,
@@ -116,7 +113,7 @@ const updateStickerNotes = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -132,8 +129,14 @@ const getStickerNotesById = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
-export default { getStickerNotesByUserEmail, createstickerNotes, removeStickerNotes, updateStickerNotes, getStickerNotesById };
+export default {
+  getStickerNotesByUserEmail,
+  createstickerNotes,
+  removeStickerNotes,
+  updateStickerNotes,
+  getStickerNotesById,
+};

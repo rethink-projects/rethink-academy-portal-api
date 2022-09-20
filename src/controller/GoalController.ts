@@ -10,7 +10,7 @@ const create = async (request: Request, response: Response) => {
       where: { id: goalListId },
     });
 
-    if (!goalListById) throw new Error("Usuário não encontrado");
+    if (!goalListById) throw new Error("Meta não encontrada");
 
     const goal = await prismaInstance.goal.create({
       data: {
@@ -26,7 +26,7 @@ const create = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -50,7 +50,7 @@ const update = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -67,7 +67,7 @@ const remove = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 

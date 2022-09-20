@@ -8,7 +8,13 @@ const create = async (request: Request, response: Response) => {
     content,
     categories,
     isPublic,
-  }: { email:string, title: string; content: string; categories: boolean[]; isPublic: boolean } = request.body;
+  }: {
+    email: string;
+    title: string;
+    content: string;
+    categories: boolean[];
+    isPublic: boolean;
+  } = request.body;
   try {
     const userByEmail = await prismaInstance.user.findFirst({
       where: { email },
@@ -21,8 +27,7 @@ const create = async (request: Request, response: Response) => {
         userId: userByEmail.id,
         title,
         content,
-        categories: 
-          JSON.stringify(categories),
+        categories: JSON.stringify(categories),
         isPublic,
       },
     });
@@ -34,7 +39,7 @@ const create = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -54,8 +59,7 @@ const getNotesByUser = async (request: Request, response: Response) => {
     const notesFormated = notes.map((note) => {
       return {
         ...note,
-        categories:
-          JSON.parse(note.categories!),
+        categories: JSON.parse(note.categories!),
       };
     });
 
@@ -63,7 +67,7 @@ const getNotesByUser = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -74,15 +78,19 @@ const update = async (request: Request, response: Response) => {
     content,
     categories,
     isPublic,
-  }: { title: string; content: string; categories: boolean[], isPublic: boolean } = request.body;
+  }: {
+    title: string;
+    content: string;
+    categories: boolean[];
+    isPublic: boolean;
+  } = request.body;
   try {
     const note = await prismaInstance.note.update({
-      where: {id},
+      where: { id },
       data: {
         title,
         content,
-        categories:
-          JSON.stringify(categories),
+        categories: JSON.stringify(categories),
         isPublic,
       },
     });
@@ -94,7 +102,7 @@ const update = async (request: Request, response: Response) => {
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
@@ -102,16 +110,14 @@ const remove = async (request: Request, response: Response) => {
   const { id } = request.params;
   try {
     await prismaInstance.note.delete({
-      where: {id},
+      where: { id },
     });
 
-    return response
-      .status(200)
-      .json({ message: "Nota deletada com sucesso." });
+    return response.status(200).json({ message: "Nota deletada com sucesso." });
   } catch (error) {
     return response
       .status(400)
-      .json({ message: "Algo de errado aconteceu.", error });
+      .json({ message: "Algo de errado aconteceu.", error: error.message });
   }
 };
 
