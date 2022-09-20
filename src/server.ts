@@ -5,7 +5,7 @@ import morgan from "morgan";
 import cors from "cors";
 import expressStatusMonitor from "express-status-monitor";
 import { router } from "./routes";
-
+import { Request, Response } from "express";
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -14,6 +14,10 @@ app.use(cors());
 app.use(expressStatusMonitor());
 
 app.use("/api", router);
+
+app.get("", (request: Request, response: Response) => {
+  response.send("Rethink Academy Portal API - Versão 01");
+});
 
 const PORT = process.env.PORT;
 const NODE_ENV = process.env.NODE_ENV;
