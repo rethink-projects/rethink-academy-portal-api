@@ -29,7 +29,7 @@ model User {
   main           Titles?         @default(ENGINEERING)
   avatar         String
   watched        String[]
-  bucket         Bucket?
+  bucket         Bucket[]
   badges         Badges?
   tasks          Tasks[]
   stickerNotes   StickerNotes[]
@@ -161,7 +161,7 @@ model Bucket {
   id     String @id @default(uuid())
   title  String
   url    String
-  userId String @unique
+  userId String
   user   User   @relation(fields: [userId], references: [id])
 }
 

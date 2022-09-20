@@ -69,6 +69,7 @@ const getTaskByUserEmail = async (request: Request, response: Response) => {
           timeKeeper(task.endTime) - timeKeeper(task.startTime)
         ),
         taskDate: convertMonth(task.taskDate.toISOString()),
+        realTaskDate: task.taskDate.toISOString(),
       });
     });
 
@@ -158,6 +159,15 @@ const updateTask = async (request: Request, response: Response) => {
   }: TasksPropsUpdate = request.body;
 
   try {
+    for (const key in request.body) {
+      if (!request.body[key]) {
+        throw new Error(`Você precisa enviar : ${key}`);
+      }
+    }
+    const verify = await prismaInstance.tasks.findFirst({
+      where: { id },
+    });
+    if (!verify) throw new Error("task not found");
     const task = await prismaInstance.tasks.update({
       where: { id },
       data: {
@@ -171,9 +181,7 @@ const updateTask = async (request: Request, response: Response) => {
       },
     });
 
-    return response
-      .status(200)
-      .json({ task, message: "Task alterada com sucesso." });
+    return response.status(200).json(task);
   } catch (error) {
     return response
       .status(400)

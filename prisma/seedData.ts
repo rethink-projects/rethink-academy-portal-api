@@ -1,7 +1,44 @@
 export const modules: { name: string } = {
   name: "UX Design",
 };
-
+export const tasksData = [
+  {
+    name: "daily",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "13:00",
+    endTime: "14:00",
+    tags: "daily",
+    status: "finished",
+    description: "Daily do meu Squad, Daily da minha area",
+  },
+  {
+    name: "1:1",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "14:00",
+    endTime: "15:00",
+    tags: "1:1",
+    status: "finished",
+    description: "1:1 com o Embaixador",
+  },
+  {
+    name: "Criando Component",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "15:00",
+    endTime: "18:00",
+    tags: "Atividade Interna",
+    status: "finished",
+    description: "Criando o meu component Button",
+  },
+  {
+    name: "Estudos",
+    taskDate: new Date(new Date().setHours(13, 0, 0, 0)).toISOString(),
+    startTime: "18:00",
+    endTime: "19:00",
+    tags: "1:1",
+    status: "finished",
+    description: "Estudando JavaScript",
+  },
+];
 export const courses: {
   name: string;
   description: string;

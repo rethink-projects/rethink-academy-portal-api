@@ -8,9 +8,10 @@ const levelMaker = () => {
   let endLevel = new Date(2022, 8, 22);
   const between = differenceInDays(new Date(), startLevel);
   let timeNow = new Date(2022, 4, 1).getHours();
+  let hoursNow = new Date().getHours();
   let rex: number = between * 24 + timeNow;
   level = Math.trunc(rex / 48);
-  let exp = rex % 48;
+  let exp = (rex + hoursNow) % 48;
   if (endLevel < new Date()) {
     level = 100;
   }
@@ -39,6 +40,7 @@ const create = async (request: Request, response: Response) => {
         avatar: avatar || `https://ui-avatars.com/api/?name=${name}+${surname}`,
       },
     });
+
     return response
       .status(200)
       .json({ user, message: "Usuário criado com sucesso" });
@@ -84,7 +86,7 @@ const getUserByEmail = async (request: Request, response: Response) => {
     const user = await prismaInstance.user.findUnique({
       where: { email },
     });
-
+    if (!user) throw new Error("Usuário não encontrado");
     const userWithLevel = { ...user, ...levelMaker() };
 
     return response.status(200).json(userWithLevel);
