@@ -166,12 +166,10 @@ const getAll = async (request: Request, response: Response) => {
 
     return response.status(200).json({ course });
   } catch (error) {
-    return response
-      .status(400)
-      .json({
-        message: "Algo de errado aconteceu aqui.",
-        error: error.message,
-      });
+    return response.status(400).json({
+      message: "Algo de errado aconteceu aqui.",
+      error: error.message,
+    });
   }
 };
 const getCourse = async (request: Request, response: Response) => {
@@ -220,10 +218,12 @@ const getCourse = async (request: Request, response: Response) => {
     } else {
       const courseModules = [{}];
       courseModules.shift();
+      let lessonQnt = 0;
 
       modules!.map((module, index) => {
         let blocked = false;
         const completed = moduleCompleted(module, user?.watched);
+        lessonQnt += module.lessons.length;
         if (index > 0) {
           if (
             !moduleCompleted(modules[index - 1], user?.watched) ||
@@ -245,6 +245,7 @@ const getCourse = async (request: Request, response: Response) => {
         modules: courseModules,
         role: user!.role,
         watched: user?.watched,
+        lessonQnt,
       });
     }
   } catch (error) {
