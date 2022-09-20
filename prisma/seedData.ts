@@ -1,6 +1,7 @@
 export const modules: { name: string } = {
   name: "UX Design",
 };
+
 export const tasksData = [
   {
     name: "daily",
