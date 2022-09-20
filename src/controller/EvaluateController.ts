@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { prismaInstance } from "../../database/prismaClient";
-import { skillLibrary, skillLibraryType } from "../Helper/skillLibrary";
+import { skillLibrary, skillLibraryType } from "../helpers/skillLibrary";
 
 const create = async (request: Request, response: Response) => {
   const {
