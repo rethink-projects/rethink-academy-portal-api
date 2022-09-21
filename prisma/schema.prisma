@@ -114,7 +114,6 @@ model Badges {
   welcome     String[]
   studies     String[]
   timeRecord  String[]
-  troll       String[]
   goals       String[]
 
   @@map("badges")

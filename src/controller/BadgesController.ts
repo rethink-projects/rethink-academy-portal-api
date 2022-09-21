@@ -9,7 +9,6 @@ type badgeType =
   | "welcome"
   | "studies"
   | "timeRecord"
-  | "troll"
   | "goals";
 
 const getUserBadges = async (request: Request, response: Response) => {
