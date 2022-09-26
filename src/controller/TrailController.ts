@@ -23,7 +23,7 @@ const create = async (request: Request, response: Response) => {
       .status(201)
       .json({ trail, message: "Trilha criada com sucesso" });
   } catch (error) {
-    return response
+    response
       .status(400)
       .json({ message: "Algo de errado aconteceu.", error: error.message });
   }

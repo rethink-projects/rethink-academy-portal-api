@@ -5,14 +5,14 @@ import { differenceInDays } from "date-fns";
 const levelMaker = () => {
   let level = 0;
   let startLevel = new Date(2022, 2, 7);
-  let endLevel = new Date(2022, 8, 22);
+  let endLevel = new Date(2022, 8, 22).getTime();
   const between = differenceInDays(new Date(), startLevel);
   let timeNow = new Date(2022, 4, 1).getHours();
   let hoursNow = new Date().getHours();
   let rex: number = between * 24 + timeNow;
   level = Math.trunc(rex / 48);
   let exp = (rex + hoursNow) % 48;
-  if (endLevel < new Date()) {
+  if (endLevel < new Date().getTime()) {
     level = 100;
   }
   return {
